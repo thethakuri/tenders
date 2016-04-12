@@ -1,19 +1,18 @@
 {
-  "name": "OpenShift-Sample-App",
+  "name": "Rudra International Tenders",
   "version": "1.0.0",
-  "description": "OpenShift Sample Application",
+  "description": "Tenders, Quotations, EOI etc. listings and management application",
   "keywords": [
-    "OpenShift",
-    "Node.js",
-    "application",
-    "openshift"
+    "tender",
+    "Nepal",
+    "listing"
   ],
   "author": {
-    "name": "OpenShift",
-    "email": "ramr@example.org",
-    "url": "http://www.openshift.com/"
+    "name": "Ashish Singh",
+    "email": "ashish.singh@rudra.com.np",
+    "url": "http://www.rudra.com.np/"
   },
-  "homepage": "http://www.openshift.com/",
+  "homepage": "http://tenders-rudraintl.rhcloud.com/",
   "repository": {
     "type": "git",
     "url": "https://github.com/openshift/origin-server"
@@ -26,6 +25,7 @@
 
   "dependencies": {
     "express": "~3.4.4"
+    "mongodb": "~2.4"
   },
   "devDependencies": {},
   "bundleDependencies": [],
