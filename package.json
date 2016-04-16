@@ -1,5 +1,5 @@
 {
-  "name": "Rudra International Tenders",
+  "name": "tender-listing",
   "version": "1.0.0",
   "description": "Tenders, Quotations, EOI etc. listings and management application",
   "keywords": [
@@ -15,21 +15,19 @@
   "homepage": "http://tenders-rudraintl.rhcloud.com/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openshift/origin-server"
+    "url": "https://github.com/thethakuri/tenders"
   },
-
   "engines": {
     "node": ">= 0.6.0",
     "npm": ">= 1.0.0"
   },
-
   "dependencies": {
-    "express": "~3.4.4"
-    "mongodb": "~2.4"
+    "express": "~3.4.4",
+    "mongodb": "~2.x",
+    "mongoose": "~4.4.12"
   },
   "devDependencies": {},
   "bundleDependencies": [],
-
   "private": true,
   "main": "server.js"
 }

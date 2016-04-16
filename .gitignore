@@ -1,0 +1,4 @@
+# Dependency and other directories
+node_modules
+backups
+fetchers
