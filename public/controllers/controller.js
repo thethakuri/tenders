@@ -1,6 +1,6 @@
 //$scope is the glue between application controller and the view
 var tenderApp = angular
-    .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar'])
+    .module('tenderApp', ['angularUtils.directives.dirPagination'])
     .controller('TenderAppCtrl', ['$scope', '$http', function ($scope, $http) {
         console.log("Hello world from controller");
         
