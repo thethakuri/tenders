@@ -44,6 +44,7 @@ Responsive navbar-brand image CSS
 #beta{
     padding: 2px;
     border-radius: 2px;
+    font-size: x-small;
 }
 .navbar-brand {
     padding: 0px;

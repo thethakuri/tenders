@@ -15,6 +15,7 @@ app.listen(server_port, server_ip_address, function(){
     console.log("Listening on " + server_ip_address + ":" + server_port);
 });
 
+//MongoD
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
     mongodb_connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + "tenders";
 }
