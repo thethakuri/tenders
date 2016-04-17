@@ -1,7 +1,7 @@
 <!DOCTYPE>
 <html ng-app="tenderApp">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="icon" type="image/png" href="elements/favicon.ico">
     
     <!-- BOOTSTRAP -->
@@ -43,7 +43,7 @@
                 <li><a href="#">About</a></li>
                 <li><a href="#">Contact</a></li>
                 <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Account<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="#">Participated Tenders</a></li>
                     <li><a href="#">Add Listing</a></li>
@@ -59,11 +59,11 @@
     <!--/.container-fluid -->
     </nav>
     
-    <div class="container" ng-controller="TenderAppCtrl">
+    <div class="container" ng-controller="TenderAppCtrl" ng-cloak>
         <h3></h3>
         <div class="row marginbottom20">
             
-            <div class="col-xs-5">     
+            <div class="col-sm-6 col-xs-9">     
                 <i class="glyphicon glyphicon-remove clear" ng-click="userSearch = null"></i>
                 <div class="input-group">
                     <div class="input-group-addon">
@@ -82,10 +82,10 @@
                 </div>
             </div>   
             
-            <div class="col-xs-5"></div>
+            <div class="col-sm-3"></div>
                 
-            <div class="col-xs-2 text-right">
-                <label>Per page:</label>
+            <div class="col-sm-3 col-xs-3 text-right">
+                <label class="hidden-xs">Per page:</label>
                 <select ng-model="perPage" ng-options="i for i in recordsPerPage" ng-change="updateRecordsPerPage()">
                 </select>
             </div>
@@ -110,7 +110,7 @@
                             </a>
                             <span class="glyphicon pull-right" ng-show="sortKey=='caller'" ng-class="{'glyphicon-sort-by-alphabet-alt':reverse,'glyphicon-sort-by-alphabet':!reverse}"></span>
                         </th>
-                        <th ng-click="sortKey='pubDate'; reverse = !reverse">
+                        <th ng-click="sortKey='pubDate'; reverse = !reverse" class="hidden-xs">
                             <a href="#" data-toggle='tooltip' title="Sort by publication date">
                                 Publication Date
                             </a>
@@ -142,7 +142,7 @@
                         <td scope="row">{{ ($index + 1) + (currentPage - 1) * pageSize}}</td>
                         <td>{{tender.item}}</td>
                         <td>{{tender.caller}}</td>
-                        <td>{{tender.pubDate | date : 'dd/MM/yyyy'}}</td>
+                        <td class="hidden-xs">{{tender.pubDate | date : 'dd/MM/yyyy'}}</td>
                         <td class="hidden-xs">{{tender.pubDaily}}</td>
                         <td>{{tender.subDate | date : 'dd/MM/yyyy'}}</td>
                         <td class="hidden-xs">{{tender.remarks}}</td>
@@ -174,5 +174,6 @@
     <script src="controllers/controller.js"></script>
     <script src="scripts/custom.js"></script>
     
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.7.1/loading-bar.min.js'></script>
 </body>
 </html>

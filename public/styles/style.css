@@ -92,3 +92,8 @@ line height is 20px by default so add 30px top and bottom to equal the new .navb
 .navbar-nav>li>.dropdown-menu {
 	z-index: 9999;
 }
+
+/*Angularjs:-Remove double curly brace notation from displaying momentarily before loading*/
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
