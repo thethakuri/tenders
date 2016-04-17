@@ -60,7 +60,9 @@ var tenderApp = angular
             
         }
     }])
-  
+   .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+        cfpLoadingBarProvider.includeSpinner = false;
+    }])
    .filter('multipleFilter', ['filterFilter', function (myFilter) {
     return function (tenderlist, query) {
       if (!query) return tenderlist;
