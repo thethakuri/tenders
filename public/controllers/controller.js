@@ -1,6 +1,9 @@
 //$scope is the glue between application controller and the view
 var tenderApp = angular
     .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar'])
+    .controller('FooterCtrl', function($scope){
+        $scope.currentYear = new Date().getFullYear();
+    })
     .controller('TenderAppCtrl', ['$scope', '$http', function ($scope, $http) {
         console.log("Hello world from controller");
         
@@ -13,31 +16,30 @@ var tenderApp = angular
         
         
         //default sort table headers
-        $scope.sortKey = 'subDate';
-        $scope.reverse = false;
+        $scope.sortTable = {
+            sortKey : 'subDate',
+            reverse : false
+        };        
         
-     
+        
         //pagination 
-        $scope.currentPage = 1;
-        $scope.pageSize = 15;
+        $scope.pagination = {
+            currentPage : 1,
+            pageSize : 15,
+            perPage : 15,
+            recordsPerPage : [15, 25, 40, 50],
+            updateRecordsPerPage : function(){
+                this.pageSize = this.perPage;
+            }
+        };
         
-        //perpage
-        $scope.recordsPerPage = [15, 25, 40, 50];
-        $scope.updateRecordsPerPage = function(){
-            $scope.perPage ? $scope.pageSize = $scope.perPage : $scope.pageSize = 15;
-        }
-        $scope.perPage = $scope.recordsPerPage[0];
-        
-        //View
-        $scope.currentView = "Active";
+        //Views (Active, All, Recent)
+        $scope.currentView = "Active"; //default
         $scope.fetch = function(givenView){
             if($scope.currentView != givenView){
                 $scope.currentView = givenView;
-                //alert('/' + $scope.currentView);
                 $http.get('/' + givenView).then(function(response){
-                    
-                   $scope.tenderlist = response.data; 
-                   
+                   $scope.tenderlist = response.data;
                 });
             }
         }
@@ -59,6 +61,7 @@ var tenderApp = angular
             else return"text-muted";
             
         }
+        
     }])
    .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
         cfpLoadingBarProvider.includeSpinner = false;

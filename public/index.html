@@ -41,11 +41,11 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Account<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="#">Participated Tenders</a></li>
+                    <li><a href="#">Watchlist</a></li>
                     <li><a href="#">Add Listing</a></li>
                     <li class="divider"></li>
                     <li><a href="#">Settings</a></li>
@@ -86,7 +86,7 @@
                 
             <div class="col-sm-3 col-xs-3 text-right">
                 <label class="hidden-xs">Per page:</label>
-                <select ng-model="perPage" ng-options="i for i in recordsPerPage" ng-change="updateRecordsPerPage()">
+                <select ng-model="pagination.perPage" ng-options="i for i in pagination.recordsPerPage" ng-change="pagination.updateRecordsPerPage()">
                 </select>
             </div>
             
@@ -98,48 +98,48 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th ng-click="sortKey='item'; reverse = !reverse">
+                        <th ng-click="sortTable.sortKey='item'; sortTable.reverse = !sortTable.reverse">
                             <a href="#" data-toggle='tooltip' title="Sort by item">
                                 Title
                             </a>
-                            <span class="glyphicon  pull-right" ng-show="sortKey=='item'" ng-class="{'glyphicon-sort-by-alphabet-alt':reverse,'glyphicon-sort-by-alphabet':!reverse}"></span>
+                            <span class="glyphicon  pull-right" ng-show="sortTable.sortKey=='item'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
                         </th>
-                        <th ng-click="sortKey='caller'; reverse = !reverse">
+                        <th ng-click="sortTable.sortKey='caller'; sortTable.reverse = !sortTable.reverse">
                             <a href="#" data-toggle='tooltip' title="Sort by caller">
                                 Caller
                             </a>
-                            <span class="glyphicon pull-right" ng-show="sortKey=='caller'" ng-class="{'glyphicon-sort-by-alphabet-alt':reverse,'glyphicon-sort-by-alphabet':!reverse}"></span>
+                            <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='caller'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
                         </th>
-                        <th ng-click="sortKey='pubDate'; reverse = !reverse" class="hidden-xs">
+                        <th ng-click="sortTable.sortKey='pubDate'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
                             <a href="#" data-toggle='tooltip' title="Sort by publication date">
                                 Publication Date
                             </a>
-                            <span class="glyphicon pull-right" ng-show="sortKey=='pubDate'" ng-class="{'glyphicon-sort-by-order-alt':reverse,'glyphicon-sort-by-order':!reverse}"></span>
+                            <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='pubDate'" ng-class="{'glyphicon-sort-by-order-alt':sortTable.reverse,'glyphicon-sort-by-order':!sortTable.reverse}"></span>
                         </th>
-                        <th ng-click="sortKey='pubDaily'; reverse = !reverse" class="hidden-xs">
+                        <th ng-click="sortTable.sortKey='pubDaily'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
                             <a href="#" data-toggle='tooltip' title="Sort by publication">
                                 Publication Daily
                             </a>
-                            <span class="glyphicon pull-right" ng-show="sortKey=='pubDaily'" ng-class="{'glyphicon-sort-by-alphabet-alt':reverse,'glyphicon-sort-by-alphabet':!reverse}"></span>
+                            <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='pubDaily'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
                         </th>
-                        <th ng-click="sortKey='subDate'; reverse = !reverse">
+                        <th ng-click="sortTable.sortKey='subDate'; sortTable.reverse = !sortTable.reverse">
                             <a href="#" data-toggle='tooltip' title="Sort by submission date">
                                 Submission Date
                             </a>
-                            <span class="glyphicon pull-right" ng-show="sortKey=='subDate'" ng-class="{'glyphicon-sort-by-order-alt':reverse,'glyphicon-sort-by-order':!reverse}"></span>
+                            <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='subDate'" ng-class="{'glyphicon-sort-by-order-alt':sortTable.reverse,'glyphicon-sort-by-order':!sortTable.reverse}"></span>
                         </th>
-                        <th ng-click="sortKey='remarks'; reverse = !reverse" class="hidden-xs">
+                        <th ng-click="sortTable.sortKey='remarks'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
                             <a href="#" data-toggle='tooltip' title="Sort by classification">
                                 Remarks
                             </a>
-                            <span class="glyphicon pull-right" ng-show="sortKey=='remarks'" ng-class="{'glyphicon-sort-by-alphabet-alt':reverse,'glyphicon-sort-by-alphabet':!reverse}"></span>
+                            <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='remarks'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <!--Using dir-paginate directive instead of ng-repeat for pagination support -->
-                    <tr dir-paginate="tender in filtered = (tenderlist | multipleFilter : userSearch) | orderBy : sortKey : reverse | itemsPerPage : pageSize" current-page="currentPage" ng-class="getStatus(tender.subDate)">
-                        <td scope="row">{{ ($index + 1) + (currentPage - 1) * pageSize}}</td>
+                    <tr dir-paginate="tender in filtered = (tenderlist | multipleFilter : userSearch) | orderBy : sortTable.sortKey : sortTable.reverse | itemsPerPage : pagination.pageSize" current-page="pagination.currentPage" ng-class="getStatus(tender.subDate)">
+                        <td scope="row">{{ ($index + 1) + (pagination.currentPage - 1) * pagination.pageSize}}</td>
                         <td>{{tender.item}}</td>
                         <td>{{tender.caller}}</td>
                         <td class="hidden-xs">{{tender.pubDate | date : 'dd/MM/yyyy'}}</td>
@@ -160,6 +160,13 @@
             </div>
         </div>
     </div>
+    <footer class="footer" ng-controller="FooterCtrl">
+      <div class="container">
+        <p class="navbar-text pull-right text-muted">
+            <i class = "glyphicon glyphicon-copyright-mark"></i>{{currentYear}} Rudra International. All Rights Reserved. 
+        </p>
+      </div>
+    </footer>
     
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
