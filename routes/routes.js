@@ -59,10 +59,10 @@ module.exports = function (app, passport) {
                 res.json({ message: info.response});
             };
         });
-        /* Following hack if required from keeping user authenticated after signup (not verfied yet)
+        /* Following hack if required from keeping user authenticated after signup (not verfied yet)*/
         req.logOut(); 
         req.session.destroy();
-        */
+        
     });
     // Verification email api
     app.get('/verify', function(req, res) {
