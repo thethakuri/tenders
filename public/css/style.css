@@ -204,7 +204,7 @@ line height is 20px by default so add 30px top and bottom to equal the new .navb
     display: block;
     margin-top: 10px;
 }
-.btn {
+.fbtn {
    
     border: 0;
     font-family: 'Roboto', sans-serif;
@@ -214,10 +214,10 @@ line height is 20px by default so add 30px top and bottom to equal the new .navb
     -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
     -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
 }
-.btn:hover { opacity: 0.6; color: #fff; }
-.btn:active { outline: 0; opacity: 0.6; color: #fff; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
-.btn:focus { outline: 0; opacity: 0.6; background: #19b9e7; color: #fff; }
-.btn:active:focus, .btn.active:focus { outline: 0; opacity: 0.6; background: #19b9e7; color: #fff; }
+.fbtn:hover { opacity: 0.6; color: #fff; }
+.fbtn:active { outline: 0; opacity: 0.6; color: #fff; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
+.fbtn:focus { outline: 0; opacity: 0.6; background: #19b9e7; color: #fff; }
+.fbtn:active:focus, .fbtn.active:focus { outline: 0; opacity: 0.6; background: #19b9e7; color: #fff; }
 
 .checkbox {
     padding-left: 20px;

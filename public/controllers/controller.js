@@ -5,7 +5,6 @@ var tenderApp = angular
         $scope.currentYear = new Date().getFullYear();
     })
     .controller('TenderAppCtrl', ['$scope', '$http', function ($scope, $http) {
-        console.log("Hello world from controller");
         
         // to get the data from server
         $http.get('/Active').success(function(response){
@@ -46,20 +45,34 @@ var tenderApp = angular
         
         //Row color
         $scope.getStatus = function (subDate) {  
-            var now = new Date();
-            subDate = new Date(subDate);
-            var timeDiff = subDate.getTime() - now.getTime()    ;
-            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
-            //alert(diffDays);
-            if(diffDays >= 0){
-                if (diffDays > 2 && diffDays < 7) 
+        
+            var diff = diffDays(subDate); 
+            
+            if(diff >= 0){
+                if (diff > 2 && diff < 7) 
                     return "text-warning"; 
-                else if (diffDays <= 2) 
+                else if (diff <= 2) 
                     return "text-danger";
                 else return;
             }
             else return"text-muted";
             
+        }
+        
+        //Days left
+        $scope.daysLeft = function (subDate) {  
+            
+            var daysRemaining = diffDays(subDate);
+            if (daysRemaining < 0) return 'Expired';
+            else return daysRemaining;
+        }
+        
+        function diffDays(subDate) {
+            //Today
+            var now = new Date();
+            subDate = new Date(subDate);
+            var timeDiff = subDate.getTime() - now.getTime();
+            return Math.ceil(timeDiff / (1000 * 3600 * 24)); 
         }
         
     }])

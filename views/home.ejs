@@ -127,12 +127,16 @@
                             </a>
                             <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='subDate'" ng-class="{'glyphicon-sort-by-order-alt':sortTable.reverse,'glyphicon-sort-by-order':!sortTable.reverse}"></span>
                         </th>
+                        <th class="hidden-xs">
+                                Days Left
+                        </th>
                         <th ng-click="sortTable.sortKey='remarks'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
                             <a href="#" data-toggle='tooltip' title="Sort by classification">
                                 Remarks
                             </a>
                             <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='remarks'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
                         </th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -145,6 +149,7 @@
                         <td class="hidden-xs">{{tender.pubDate | date : 'dd/MM/yyyy'}}</td>
                         <td class="hidden-xs">{{tender.pubDaily}}</td>
                         <td>{{tender.subDate | date : 'dd/MM/yyyy'}}</td>
+                        <td class="hidden-xs">{{daysLeft(tender.subDate)}}</td>
                         <td class="hidden-xs">{{tender.remarks}}</td>
                     </tr>
                 </tbody>
