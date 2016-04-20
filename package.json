@@ -23,9 +23,21 @@
   },
   "dependencies": {
     "angular-loading-bar": "^0.9.0",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "~1.0.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "~1.0.0",
+    "ejs": "^2.4.1",
     "express": "~3.4.4",
+    "express-session": "~1.0.0",
+    "method-override": "~1.0.0",
     "mongodb": "~2.x",
-    "mongoose": "~4.4.12"
+    "mongoose": "~4.4.12",
+    "morgan": "~1.0.0",
+    "nodemailer": "^2.3.2",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "recaptcha2": "^1.0.8"
   },
   "devDependencies": {},
   "bundleDependencies": [],

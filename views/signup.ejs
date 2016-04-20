@@ -1,0 +1,117 @@
+<!DOCTYPE>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/png" href="/assets/favicon.ico">
+
+    <!-- BOOTSTRAP -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+    crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Tender Portal - Rudra International</title>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+</head>
+
+<body ng-app="formValidationApp" ng-controller="FormCtrl">
+
+    <div class="container">
+        <div class="row">
+            <div class="form-box col-sm-5">
+                <div class="form-top">
+                    <div class="form-top-left">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <h3>Registration</h3>
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <span class="text-right"><a href="/">Back to Login</a></span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info" role="alert">This portal is accessible only to the employees, members and associates of Rudra International and
+                            its concerns. You will need a valid email id <strong>@rudra.com.np</strong> to sign up.
+                        </div>
+
+                    </div>
+                </div>
+                <% if (message.length > 0) { %>
+                    <div class="alert <%= alert %> alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <%= message %>
+                    </div>
+                    <% } %>
+                        <div class="form-signup">
+                            <form role="form" action="/signup" method="post" class="registration-form" name="userForm" , ng-submit="submitForm(userForm.$valid)"
+                            novalidate>
+                                <!-- Hack for browser prepopulating form -->
+                                <input type="text" class="hidden">
+                                <input type="password" class="hidden">
+                                <!----------------------------------------->
+
+
+                                <div class="input-group form-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
+                                    <label class="sr-only" for="email">Email ID</label>
+                                    <input type="text" name="email" placeholder="Email ID" class="form-control" id="email" required ng-model="email">
+                                    <span class="input-group-addon">@rudra.com.np</span>
+                                </div>
+                                <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="formError text-danger">
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Email user id is required.</p>
+
+                                <div class="form-group" ng-class="{ 'has-error' : userForm.password.$invalid && !userForm.password.$pristine }">
+                                    <label class="sr-only" for="password">Password</label>
+                                    <input type="password" name="password" placeholder="Password" class="form-control" id="password" required ng-minlength="6"
+                                    ng-model="password">
+                                </div>
+                                <p ng-show="userForm.password.$error.minlength" class="formError text-danger">
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Your password is too short.</p>
+
+                                <div class="form-group" ng-class="{ 'has-error' : userForm.confirm_password.$invalid && !userForm.confirm_password.$pristine }">
+                                    <label class="sr-only" for="confirm_password">Confirm Password</label>
+                                    <input type="password" name="confirm_password" placeholder="Confirm Password" class="form-control" id="confirm_password"
+                                    required ng-model="confirm_password" compare-to="password">
+                                </div>
+                                <p ng-show="userForm.confirm_password.$invalid && !userForm.confirm_password.$pristine" class="formError text-danger">
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Both passwords should match.</p>
+
+                                <div class="form-group">
+                                    <div class="g-recaptcha" data-sitekey="6Lc05h0TAAAAAAWK14mmdPPon7lKdPBLyeOW3RNb"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <button type="submit" class="btn btn-lg btn-primary" ng-disabled="userForm.$invalid">Sign me up!</button>
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+            </div>
+            <div class="col-sm-1 middle-border"></div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-5"></div>
+        </div>
+    </div>
+    <footer class="footer" ng-controller="FooterCtrl">
+        <div class="container">
+            <p class="navbar-text pull-right text-muted">
+                © {{currentYear}} Rudra International. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+    crossorigin="anonymous"></script>
+
+    <script src="/controllers/formcontrol.js"></script>
+
+</body>
+
+</html>

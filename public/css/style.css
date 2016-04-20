@@ -1,0 +1,270 @@
+* {
+    font-size: 14px;
+}
+
+/* Footer*/
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 100px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+/*********************/
+
+.highlighted{
+            color: red;
+}
+.marginbottom20{
+    margin-bottom: 20px;
+}
+
+/* x button on the searchfield*/
+.hasclear{
+    position: relative;
+}
+.clear{
+    position: absolute;
+    right: 20px;
+    top: 0;
+    bottom: 0;
+    height: 14px;
+    margin: auto;
+    font-size: 14px;
+    cursor: pointer;
+    color: #ccc;
+    z-index: 9;
+}
+th {
+	cursor:pointer;
+    color: steelblue;
+}
+th > a:hover{
+    text-decoration: none;
+}
+
+
+/**********************************
+Responsive navbar-brand image CSS
+- Remove navbar-brand padding for firefox bug workaround
+- add 100% height and width auto ... similar to how bootstrap img-responsive class works
+***********************************/
+#t{
+    font-size: 25px;
+    font-weight: bolder;
+    margin: 2px;
+}
+.logoText{
+    color: white;
+    font-size: 20px;
+}
+#beta{
+    padding: 1px;
+    border-radius: 2px;
+    font-size: x-small;
+}
+.navbar-brand {
+    padding: 0px;
+}
+.navbar-brand>span>img {
+    height: 100%;
+    padding: 5px;
+    width: auto;
+}
+
+/* EXAMPLE 3
+
+line height is 20px by default so add 30px top and bottom to equal the new .navbar-brand 80px height  */
+
+.example3 .navbar-brand {
+    height: 200px;
+}
+
+.example3 .nav >li >a {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+.example3 .navbar-toggle {
+    padding: 10px;
+    margin: 25px 15px 25px 0;
+}
+
+/* CSS Transform Align Navbar Brand Text ... This could also be achieved with table / table-cells */
+.navbar-alignit .navbar-header {
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    height: 50px;
+}
+.navbar-alignit .navbar-brand {
+    top: 50%;
+    display: block;
+    position: relative;
+    height: auto;
+    transform: translate(0,-50%);
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.navbar-nav>li>.dropdown-menu {
+	z-index: 9999;
+}
+
+/*Angularjs:-Remove double curly brace notation from displaying momentarily before loading*/
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+.nav_user{
+    padding: 15px;
+    color: white;
+}
+
+/**********************************************/
+
+.formError{
+    margin-top: -10px;
+}
+.alertLogin{
+    margin: 0 30px;
+}
+.paddingbottom20{
+    padding-bottom: 20px;
+}
+.paddingtop20{
+    padding-top: 20px;
+}
+.form-signin
+{
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading, .form-signin .checkbox
+{
+    margin-bottom: 10px;
+}
+.form-signin .checkbox
+{
+    font-weight: normal;
+}
+.form-signin .form-control
+{
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.form-signin .form-control:focus
+{
+    z-index: 2;
+}
+
+.account-wall
+{
+    margin-top: 40px;
+    padding: 40px 0px 20px 0px;
+    background-color: #f7f7f7;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+.login-title
+{
+    color: #555;
+    font-size: 18px;
+    font-weight: 400;
+    display: block;
+}
+.profile-img
+{
+    
+    margin: 0 auto 10px;
+    display: block;
+
+}
+.need-help
+{
+    margin-top: 10px;
+}
+.new-account
+{
+    display: block;
+    margin-top: 10px;
+}
+.btn {
+   
+    border: 0;
+    font-family: 'Roboto', sans-serif;
+    color: #fff;
+    -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+    text-shadow: none;
+    -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
+    -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
+}
+.btn:hover { opacity: 0.6; color: #fff; }
+.btn:active { outline: 0; opacity: 0.6; color: #fff; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
+.btn:focus { outline: 0; opacity: 0.6; background: #19b9e7; color: #fff; }
+.btn:active:focus, .btn.active:focus { outline: 0; opacity: 0.6; background: #19b9e7; color: #fff; }
+
+.checkbox {
+    padding-left: 20px;
+}
+
+/**SUBMIT**/
+.form-box {
+	margin-top: 40px;
+}
+
+.form-top {
+	
+	text-align: left;
+}
+
+.form-top-left h3 { margin-top: 0; }
+
+#email {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+div.form-signup .btn {
+	height: 50px;
+    margin: 0;
+    padding: 0 50px;
+    vertical-align: middle;
+    
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 50px;
+    
+    
+}
+
+div.form-signup input[type="text"], 
+div.form-signup input[type="password"] {
+	height: 50px;
+    margin: 0;
+    padding: 0 20px;
+    vertical-align: middle;
+    
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 50px;
+    
+    -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+    -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
+    -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
+}
