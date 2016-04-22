@@ -1,3 +1,5 @@
-The OpenShift `nodejs` cartridge documentation can be found at:
+Rudra International - Tender Portal App
+(Portal for viewing and managing various kinds of Tenders, Quotations, EOIs etc.)
 
-http://openshift.github.io/documentation/oo_cartridge_guide.html#nodejs
+A product of <a href="http://www.rudra.com.np">Rudra International</a>
+

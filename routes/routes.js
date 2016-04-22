@@ -1,5 +1,4 @@
-//routes/routes.js
-/// <reference path="../typings/main.d.ts" />  
+//routes/routes.js 
 
 var Tender = require('../models/tender');
 var Users = require('../models/users');
