@@ -1,5 +1,5 @@
 var formValidationApp = angular
-    .module('formValidationApp', [])
+    .module('formValidationApp', ['angular-loading-bar'])
     .controller('FooterCtrl', function($scope){
         $scope.currentYear = new Date().getFullYear();
     })
