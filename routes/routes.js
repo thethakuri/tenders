@@ -1,4 +1,6 @@
 //routes/routes.js
+/// <reference path="../typings/main.d.ts" />  
+
 var Tender = require('../models/tender');
 var Users = require('../models/users');
 var nodemailer = require('nodemailer');

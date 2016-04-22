@@ -1,5 +1,5 @@
 #!/bin/env node
-//  
+/// <reference path="typings/main.d.ts" />  
 
 var express = require('express');
 var fs      = require('fs');
