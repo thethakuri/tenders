@@ -33,9 +33,6 @@ body {
 .highlighted{
             color: red;
 }
-.marginbottom20{
-    margin-bottom: 20px;
-}
 
 /* x button on the searchfield*/
 .hasclear{
@@ -133,12 +130,7 @@ line height is 20px by default so add 30px top and bottom to equal the new .navb
 .alertLogin{
     margin: 0 30px;
 }
-.paddingbottom20{
-    padding-bottom: 20px;
-}
-.paddingtop20{
-    padding-top: 20px;
-}
+
 .form-signin
 {
     max-width: 330px;
@@ -178,8 +170,6 @@ line height is 20px by default so add 30px top and bottom to equal the new .navb
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 }
 .account-wall > img {
-    max-width: 100%;
-  height: auto;
     padding: 0 20px 20px;
 }
 .login-title
@@ -269,3 +259,80 @@ div.form-signup input[type="password"] {
     -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
     -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
 }
+
+/*==================================================
+=            Helper Styles:         ;             =
+==================================================*/
+.marginbottom20{
+    margin-bottom: 20px;
+}
+.paddingbottom20{
+    padding-bottom: 20px;
+}
+.paddingtop20{
+    padding-top: 20px;
+}
+/*==================================================
+=            Bootstrap 3 Media Queries             =
+==================================================*/
+
+
+
+
+    /*==========  Mobile First Method  ==========*/
+
+    /* Custom, iPhone Retina */ 
+    @media only screen and (min-width : 320px) {
+        
+    }
+
+    /* Extra Small Devices, Phones */ 
+    @media only screen and (min-width : 480px) {
+
+    }
+
+    /* Small Devices, Tablets */
+    @media only screen and (min-width : 768px) {
+
+    }
+
+    /* Medium Devices, Desktops */
+    @media only screen and (min-width : 992px) {
+
+    }
+
+    /* Large Devices, Wide Screens */
+    @media only screen and (min-width : 1200px) {
+        .account-wall > img {
+            padding: 0 30px 20px;
+        }
+    }
+
+
+
+    /*==========  Non-Mobile First Method  ==========*/
+
+    /* Large Devices, Wide Screens */
+    @media only screen and (max-width : 1200px) {
+
+    }
+
+    /* Medium Devices, Desktops */
+    @media only screen and (max-width : 992px) {
+
+    }
+
+    /* Small Devices, Tablets */
+    @media only screen and (max-width : 768px) {
+
+    }
+
+    /* Extra Small Devices, Phones */ 
+    @media only screen and (max-width : 480px) {
+
+    }
+
+    /* Custom, iPhone Retina */ 
+    @media only screen and (max-width : 320px) {
+        
+    }
