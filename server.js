@@ -46,7 +46,8 @@ app.use(bodyParser()); // get information from html forms
 
 app.set('view engine', 'ejs'); // set up ejs for templating
 // required for passport
-app.use(session({ secret: (process.env.SECRET) ? process.env.SECRET : 'Hhkox50D' })); // session secret
+//app.use(session({ secret: (process.env.SECRET) ? process.env.SECRET : 'Hhkox50D' })); // session secret
+app.use(session({ secret: process.env.SECRET })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // expose the req.flash() method that allows to create and retrieve the flash message

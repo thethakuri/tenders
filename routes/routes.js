@@ -6,8 +6,8 @@ var nodemailer = require('nodemailer');
 var reCAPTCHA=require('recaptcha2')
  
 recaptcha = new reCAPTCHA({
-    siteKey:'6Lc05h0TAAAAAAWK14mmdPPon7lKdPBLyeOW3RNb',
-    secretKey:'6Lc05h0TAAAAAJQAfV3G61FIbCj5K0qd09RpMTqR'
+    siteKey: process.env.RECAPTCHA_SITEKEY,
+    secretKey: process.env.RECAPTCHA_SECRETKEY
 });
 
 var path = require('path');
@@ -39,8 +39,8 @@ module.exports = function (app, passport) {
         var transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
-                user: '', // Your email id
-                pass: '' // Your password
+                user: process.env.NODEMAILUSER,
+                pass: process.env.NODEMAILPASS
             }
         });
         var recipient = req.user.email + '@rudra.com.np';
