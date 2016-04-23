@@ -39,8 +39,8 @@ module.exports = function (app, passport) {
         var transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
-                user: 'no-reply@rudra.com.np', // Your email id
-                pass: 'NodeMailer2016' // Your password
+                user: '', // Your email id
+                pass: '' // Your password
             }
         });
         var recipient = req.user.email + '@rudra.com.np';
