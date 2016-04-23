@@ -7,6 +7,8 @@ var userSchema = new Schema({
         type : String,
         unique : true,
         required : true
+        //trim : true,
+        //lowercase : true
     },
     password : {
         type : String,
@@ -14,14 +16,13 @@ var userSchema = new Schema({
     },
     authToken : {
         type : String,
-        required : true,
-        unique : true
+        required : true
     },
     isAuthenticated : { 
         type : Boolean, 
         required : true 
-    } 
-}, {collection: 'users'});
+    }
+}, { timestamps : true }, {collection: 'users'});
 
 // methods ======================
 // generating a hash
@@ -33,6 +34,7 @@ userSchema.methods.generateHash = function(password) {
 userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 };
+
 
 // create the model for users and expose it to our app
 module.exports = mongoose.model('User', userSchema);

@@ -99,19 +99,8 @@ module.exports = function (app, passport) {
     });
     
     app.get('/', isLoggedIn, function(req, res) {
-     
-         Users.findOne({email : req.user.email},{isAuthenticated:1, _id:0}, function(err, docs){
-            if (docs.isAuthenticated)
-                res.render(path.join(__dirname, '/../views', 'home.ejs'), {
-                    user : req.user // get the user out of session and pass to template
-                });
-            else{
-                req.flash('verificationMessage', 'User not verified');
-                res.render('login', { 
-                    message: req.flash('verificationMessage'),
-                    alert : 'alert-danger'
-                });
-            }
+        res.render(path.join(__dirname, '/../views', 'home.ejs'), {
+            user : req.user // get the user out of session and pass to template
         });
        
     });

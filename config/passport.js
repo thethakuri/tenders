@@ -42,8 +42,7 @@ module.exports = function(passport) {
     },
     function(req, email, password, done) {
         
-        email = email.toLowerCase().trim();
- 
+        email = email.trim().toLowerCase();
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(function() {
@@ -57,9 +56,31 @@ module.exports = function(passport) {
 
             // check to see if theres already a user with that email
             if (user) {
-                return done(null, false, req.flash('signupMessage', 'User already exists'));
-            } else {
-                
+                // if the user is already authenticated
+                if (user.isAuthenticated){
+                    console.log("user is authenticated : " + user.email);
+                    return done(null, false, req.flash('signupMessage', 'User already exists'));
+                }
+                // if user exists but not authenticated update password & token to send new verification email
+                else {
+                    //generate authentication token
+                    var seed = crypto.randomBytes(20);
+                    var authToken = crypto.createHash('sha1').update(seed + email + '@rudra.com.np').digest('hex');
+
+                    // update the user's local credentials
+                    user.password = user.generateHash(password);
+                    user.authToken = authToken;
+                    
+                    // save the user
+                    user.save(function(err) {
+                        if (err)
+                            throw err;
+                        return done(null, user);
+                    });
+                }
+            }
+            // if the user does not exists
+            else{
                 //generate authentication token
                 var seed = crypto.randomBytes(20);
                 var authToken = crypto.createHash('sha1').update(seed + email + '@rudra.com.np').digest('hex');
@@ -80,6 +101,7 @@ module.exports = function(passport) {
                         throw err;
                     return done(null, newUser);
                 });
+                
             }
 
         });    
@@ -102,8 +124,7 @@ module.exports = function(passport) {
     },
     function(req, email, password, done) { // callback with email and password from our form
         
-        email = email.toLowerCase().trim();
-
+        email = email.trim().toLowerCase();
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         User.findOne({ 'email' :  email }, function(err, user) {
@@ -114,10 +135,12 @@ module.exports = function(passport) {
             // if no user is found, return the message
             if (!user)
                 return done(null, false, req.flash('loginMessage', 'User not found')); // req.flash is the way to set flashdata using connect-flash
-
+            // if user is not verified 
+            if (!user.isAuthenticated)
+                return done(null, false, req.flash('loginMessage', 'User not verified'));
             // if the user is found but the password is wrong
             if (!user.validPassword(password))
-                return done(null, false, req.flash('loginMessage', 'Invalid password')); // create the loginMessage and save it to session as flashdata
+                return done(null, false, req.flash('loginMessage', 'Invalid password'));
 
             // all is well, return successful user
             return done(null, user);
