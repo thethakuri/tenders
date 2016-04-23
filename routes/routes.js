@@ -188,8 +188,8 @@ function captchaVerify(req, res, next){
     })
     .catch(function(errorCodes){
         // invalid
-        res.json({formSubmit:false,errors:recaptcha.translateErrors(errorCodes)});// translate error codes to human readable text
-        req.flash('recaptchaFailed', 'Verify you are not a robot')
+        //res.json({formSubmit:false,errors:recaptcha.translateErrors(errorCodes)});// translate error codes to human readable text
+        req.flash('recaptchaFailed', recaptcha.translateErrors(errorCodes));
         res.render('signup', { 
             message : req.flash('recaptchaFailed'),
             alert : 'alert-danger' 
