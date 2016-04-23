@@ -189,7 +189,7 @@ function captchaVerify(req, res, next){
     .catch(function(errorCodes){
         // invalid
         //res.json({formSubmit:false,errors:recaptcha.translateErrors(errorCodes)});// translate error codes to human readable text
-        req.flash('recaptchaFailed', recaptcha.translateErrors(errorCodes));
+        req.flash('recaptchaFailed', 'reCAPTCHA : ' + recaptcha.translateErrors(errorCodes));
         res.render('signup', { 
             message : req.flash('recaptchaFailed'),
             alert : 'alert-danger' 
