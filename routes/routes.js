@@ -10,8 +10,6 @@ recaptcha = new reCAPTCHA({
     secretKey: process.env.RECAPTCHA_SECRETKEY
 });
 
-var path = require('path');
-
 module.exports = function (app, passport) {
     /* Define http endpoints */
     
@@ -33,8 +31,7 @@ module.exports = function (app, passport) {
             return res.redirect('/');
         }
         res.render('message', { 
-            message: 'An email with verification link has been sent to ' +  req.user.email + '@rudra.com.np. Please follow the link in your mail to verify your account before logging in.',
-            alert : 'alert-success'
+            user : req.user.email
         });
         var transporter = nodemailer.createTransport({
             service: 'Gmail',
@@ -99,7 +96,7 @@ module.exports = function (app, passport) {
     });
     
     app.get('/', isLoggedIn, function(req, res) {
-        res.render(path.join(__dirname, '/../views', 'home.ejs'), {
+        res.render('home', {
             user : req.user // get the user out of session and pass to template
         });
        
@@ -115,7 +112,7 @@ module.exports = function (app, passport) {
     
     /*********************************/
     // Get only active tenders
-    app.get('/Active', function(req, res){
+    app.get('/Active', isLoggedIn, function(req, res){
         var now = new Date();
         console.log('GET Request: ' + now);
         
@@ -125,7 +122,7 @@ module.exports = function (app, passport) {
         
     });
     // Get tenders published within last one week
-    app.get('/Recent', function(req, res){
+    app.get('/Recent', isLoggedIn, function(req, res){
         var now = new Date();
         //60*60*24*7 would be the number of seconds in a week. Convert to miliseconds by * 1000
         var lastWeek = new Date(now.getTime()-1000*60*60*24*7);
@@ -136,7 +133,7 @@ module.exports = function (app, passport) {
         
     });
     // Get it all
-    app.get('/All', function(req, res){
+    app.get('/All', isLoggedIn, function(req, res){
         Tender.find(function(err, docs){
             res.json(docs);
         });

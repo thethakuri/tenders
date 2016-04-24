@@ -39,38 +39,33 @@ process.on('SIGINT', function (){
    }); 
 });
 
-// set up our express application
-app.use(morgan('dev')); // log every request to the console
-app.use(cookieParser()); // read cookies (needed for auth)
-app.use(bodyParser()); // get information from html forms
-
+/* Configuration */
 app.set('view engine', 'ejs'); // set up ejs for templating
-// required for passport
-//app.use(session({ secret: (process.env.SECRET) ? process.env.SECRET : 'Hhkox50D' })); // session secret
-app.use(session({ secret: process.env.SECRET })); // session secret
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // expose the req.flash() method that allows to create and retrieve the flash message
-/*
-app.use('/sendmail', function(req, res, next) { // Middleware for only the `/sendmail` route
-    if (req.user) {
-        next();
-    } else {
-        res.redirect("/");
-    }
-});
-*/
+
+/* Middlewares */
 //app.use(favicon(__dirname + '/public/assets/favicon.ico'));
 // Look for static files like html, css, js in the given directory
 //app.use(express.static(__dirname + "/public", {index:'login.html'}));
 app.use(express.static(__dirname + "/views"));
 app.use(express.static(__dirname + "/public"));
 
+// set up our express application
+app.use(morgan('dev')); // log every request to the console
+app.use(cookieParser()); // read cookies (needed for auth)
+app.use(bodyParser()); // get information from html forms
+
+// required for passport
+//app.use(session({ secret: (process.env.SECRET) ? process.env.SECRET : 'Hhkox50D' })); // session secret
+app.use(session({ secret: process.env.SECRET })); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // expose the req.flash() method that allows to create and retrieve the flash message
+
+
 // ======================================================================
 require('./routes/routes')(app, passport); // load our routes and pass in our app and fully configured passport
 require('./config/passport')(passport); // pass passport for configuration
 
-/* Middlewares */
 // route undefined routes to default '/'
 app.use(function(req, res) {
     res.redirect('/')
@@ -83,7 +78,7 @@ app.use(function (err, req, res, next) {
   }
 });
 
-// Start server
+/* Start server */
 app.listen(server_port, server_ip_address, function(){
     console.log("Listening on " + server_ip_address + ":" + server_port);
 });

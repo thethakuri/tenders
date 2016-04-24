@@ -17,4 +17,17 @@ $(function (){
        /// alert($("#viewSelect > button").width());
         $(".clear").css("right", $("#viewSelect > button").width() + 50 +"px");
     });
+    
+    
+    $('.new-account').on('click', function(){
+        $.ajax({
+            method : 'GET',
+            url : '/signup',
+            success : function (returnedData) {
+                $('#formContent').html(returnedData);
+                
+            }
+            
+        })
+    })
 });
