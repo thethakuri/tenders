@@ -1,6 +1,6 @@
 //Custom jQueries
 $(function (){
-    
+    /*
     // Clear button for search field
     $(".clear").css("right", $("#viewSelect > button").width() + 50 +"px");
     $(".clear").hide();
@@ -30,4 +30,5 @@ $(function (){
             
         })
     })
+    */
 });

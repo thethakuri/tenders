@@ -97,7 +97,7 @@ module.exports = function (app, passport) {
     
     app.get('/', isLoggedIn, function(req, res) {
         res.render('home', {
-            user : req.user // get the user out of session and pass to template
+            user : req.user.email // get the user out of session and pass to template
         });
        
     });
@@ -132,6 +132,7 @@ module.exports = function (app, passport) {
         });
         
     });
+    
     // Get it all
     app.get('/All', isLoggedIn, function(req, res){
         Tender.find(function(err, docs){
@@ -139,6 +140,13 @@ module.exports = function (app, passport) {
         });
         
     });
+    
+    // Get specific tender detail
+    app.get('/:id', isLoggedIn, function (req, res) {
+        Tender.findById(req.params.id, function (err, doc) {
+            res.json(doc);
+        })
+    })
     
     // process the signup form
     app.post('/signup', captchaVerify, passport.authenticate('local-signup', {

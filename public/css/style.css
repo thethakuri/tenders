@@ -6,6 +6,7 @@
 html {
   position: relative;
   min-height: 100%;
+  overflow-y: scroll; /* fix for scrollbar pageshift behavior*/
 }
 body {
   /* Margin bottom by footer height */
@@ -38,9 +39,15 @@ body {
 .hasclear{
     position: relative;
 }
+/*IE10 fix*/
+.hasclear::-ms-clear {
+    display: none;
+    width : 0; height: 0;
+}
+
 .clear{
     position: absolute;
-    right: 20px;
+    
     top: 0;
     bottom: 0;
     height: 14px;
@@ -112,9 +119,17 @@ line height is 20px by default so add 30px top and bottom to equal the new .navb
 	z-index: 9999;
 }
 
+.navbar {
+    margin-bottom: 0 !important;
+}
+
 /*Angularjs:-Remove double curly brace notation from displaying momentarily before loading*/
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
+}
+
+[ng-click] {
+  cursor: pointer;
 }
 
 .nav_user{
@@ -260,6 +275,13 @@ div.form-signup input[type="password"] {
     -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
 }
 
+.tenderOption input[type=checkbox]{
+    margin-left: 0;
+}
+.tenderOption > span {
+   margin-left: 20px;
+}
+
 /*==================================================
 =            Helper Styles:         ;             =
 ==================================================*/
@@ -267,13 +289,39 @@ div.form-signup input[type="password"] {
     margin-bottom: 20px;
 }
 .margintop20{
-    margin-top: 20px;
+    margin-top: 20px !important;
+}
+.marginright10{
+    margin-right: 10px;
 }
 .paddingbottom20{
     padding-bottom: 20px;
 }
+.paddingbottom5{
+    padding-bottom: 5px;
+}
 .paddingtop20{
     padding-top: 20px;
+}
+.paddingleft15{
+    padding-left: 15px;
+}
+.padding5{
+    padding: 5px !important;
+}
+.margin5{
+    margin: 5px !important;
+}
+.nopaddingleftright {
+   padding-left: 0 !important;
+   padding-right: 0 !important;
+}
+.marginbottomnegative2{
+    margin-bottom: -2px !important;
+}
+.nounderline:hover { text-decoration: none; }
+.lineheight24{
+    line-height:24px !important;
 }
 /*==================================================
 =            Bootstrap 3 Media Queries             =

@@ -13,152 +13,18 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-inverse navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar3">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="http://tenders.rudra.com.np">
-                    <span><img src="/assets/tender_logo_black.png" alt="Tender Portal"></span>
-                </a>
-
-            </div>
-            <div id="navbar3" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="nav_user" ng-init="user = '<%= user.email %>'">Welcome, {{user}}@rudra.com.np</li>
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Account<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#"><i class="glyphicon glyphicon-check"></i> Participated Tenders</a></li>
-                            <li><a href="#"><i class="glyphicon glyphicon-eye-open"></i> Watch List</a></li>
-                            <li><a href="#"><i class="glyphicon glyphicon-edit"></i> Add Listing</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#"><i class="glyphicon glyphicon-cog"></i> Settings</a></li>
-                            <li><a href="/logout"><i class="glyphicon glyphicon-log-out"></i> Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <!--/.nav-collapse -->
-        </div>
-        <!--/.container-fluid -->
-    </nav>
-
-    <div class="container" ng-controller="TenderAppCtrl" ng-cloak>
-        <h3></h3>
-        <div class="row marginbottom20">
-
-            <div class="col-sm-6 col-xs-9">
-                <i class="glyphicon glyphicon-remove clear" ng-click="userSearch = null"></i>
-                <div class="input-group">
-                    <div class="input-group-addon">
-                        <i class="glyphicon glyphicon-search"></i>
-                    </div>
-                    <input class="form-control hasclear" ng-model="userSearch" type="text" placeholder="Search">
-                    <div id="viewSelect" class="input-group-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{currentView}} <span class="caret"></span></button>
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            <li ng-click="fetch('Active')"><a href="#">Active Tenders</a></li>
-                            <li ng-click="fetch('Recent')"><a href="#">Recent Tenders</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li ng-click="fetch('All')"><a href="#">All Tenders</a></li>
-                        </ul>
-                    </div>
-                    <!-- /btn-group -->
-                </div>
-            </div>
-
-            <div class="col-sm-3"></div>
-
-            <div class="col-sm-3 col-xs-3 text-right">
-                <label class="hidden-xs">Per page:</label>
-                <select ng-model="pagination.perPage" ng-options="i for i in pagination.recordsPerPage" ng-change="pagination.updateRecordsPerPage()">
-                </select>
-            </div>
-
-        </div>
-        <samp class="text-info marginbottom20">No. of records found: {{filtered.length}}</samp>
-
-        <div class="row">
-            <table class="table table-condensed table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th ng-click="sortTable.sortKey='item'; sortTable.reverse = !sortTable.reverse">
-                            <a href="#" data-toggle='tooltip' title="Sort by item">
-                                Title
-                            </a>
-                            <span class="glyphicon  pull-right" ng-show="sortTable.sortKey=='item'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
-                        </th>
-                        <th ng-click="sortTable.sortKey='caller'; sortTable.reverse = !sortTable.reverse">
-                            <a href="#" data-toggle='tooltip' title="Sort by caller">
-                                Caller
-                            </a>
-                            <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='caller'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
-                        </th>
-                        <th ng-click="sortTable.sortKey='pubDate'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
-                            <a href="#" data-toggle='tooltip' title="Sort by publication date">
-                                Publication Date
-                            </a>
-                            <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='pubDate'" ng-class="{'glyphicon-sort-by-order-alt':sortTable.reverse,'glyphicon-sort-by-order':!sortTable.reverse}"></span>
-                        </th>
-                        <th ng-click="sortTable.sortKey='pubDaily'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
-                            <a href="#" data-toggle='tooltip' title="Sort by publication">
-                                Publication Daily
-                            </a>
-                            <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='pubDaily'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
-                        </th>
-                        <th ng-click="sortTable.sortKey='subDate'; sortTable.reverse = !sortTable.reverse">
-                            <a href="#" data-toggle='tooltip' title="Sort by submission date">
-                                Submission Date
-                            </a>
-                            <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='subDate'" ng-class="{'glyphicon-sort-by-order-alt':sortTable.reverse,'glyphicon-sort-by-order':!sortTable.reverse}"></span>
-                        </th>
-                        <th class="hidden-xs">
-                                Days Left
-                        </th>
-                        <th ng-click="sortTable.sortKey='remarks'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
-                            <a href="#" data-toggle='tooltip' title="Sort by classification">
-                                Remarks
-                            </a>
-                            <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='remarks'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
-                        </th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    <!--Using dir-paginate directive instead of ng-repeat for pagination support -->
-                    <tr dir-paginate="tender in filtered = (tenderlist | multipleFilter : userSearch) | orderBy : sortTable.sortKey : sortTable.reverse | itemsPerPage : pagination.pageSize"
-                    current-page="pagination.currentPage" ng-class="getStatus(tender.subDate)">
-                        <td scope="row">{{ ($index + 1) + (pagination.currentPage - 1) * pagination.pageSize}}</td>
-                        <td>{{tender.item}}</td>
-                        <td>{{tender.caller}}</td>
-                        <td class="hidden-xs">{{tender.pubDate | date : 'dd/MM/yyyy'}}</td>
-                        <td class="hidden-xs">{{tender.pubDaily}}</td>
-                        <td>{{tender.subDate | date : 'dd/MM/yyyy'}}</td>
-                        <td class="hidden-xs">{{daysLeft(tender.subDate)}}</td>
-                        <td class="hidden-xs">{{tender.remarks}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <dir-pagination-controls max-size="12" direction-links="true" boundary-links="true">
-                </dir-pagination-controls>
-            </div>
-        </div>
-    </div>
+    <!-- navBar directive -->
+    <nav-bar></nav-bar>
+    
+    <!-- var user is passed on from the server upon user login -->
+    <div ui-view ng-init="user = '<%= user %>'"></div>
+ 
     <%- include footer.ejs %>
     <%- include scripts.ejs %>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-route.js"></script>
     <script src="/scripts/dirPagination.js"></script>
     <script src="/controllers/controller.js"></script>
+    
 
     
 </body>

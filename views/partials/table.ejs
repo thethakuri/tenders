@@ -1,0 +1,115 @@
+
+<div class="row marginbottom20 margintop20">
+    <h3 class="marginbottomnegative2 paddingbottom5 paddingleft15"><span class="label label-success">{{currentView}} postings</span></h3> 
+    <div class="col-sm-6 col-xs-9">
+        
+        <i class="glyphicon glyphicon-remove clear" ng-click="userSearch = null" ng-show="userSearch.length > 0" search-clear></i>
+        <div class="input-group">
+            <div class="input-group-addon">
+                <i class="glyphicon glyphicon-search"></i>
+            </div>
+            <input class="form-control hasclear" ng-model="userSearch" type="text" placeholder="Search">
+            <div id="viewSelect" class="input-group-btn">
+                <button type="button" id="searchViewButton" ng-model="searchViewButton" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span ng-bind="currentView"></span><span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li ng-click="fetch('Active')"><a href="#/">Active Postings</a></li>
+                    <li ng-click="fetch('Recent')"><a href="#/">Recent Postings</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li ng-click="fetch('All')"><a href="#/">All Postings</a></li>
+                </ul>
+            </div>
+            <!-- /btn-group -->
+        </div>
+    </div>
+
+    <div class="col-sm-3 hidden-xs"></div>
+
+    <div class="col-sm-3 col-xs-3 text-right">
+        <label class="hidden-xs">Per page:</label>
+        <select ng-model="pagination.perPage" ng-options="i for i in pagination.recordsPerPage" ng-change="pagination.updateRecordsPerPage()">
+        </select>
+    </div>
+</div> <!-- end of search bar  -->
+
+<div class="row paddingbottom20">
+    <div class="col-sm-12">
+        <samp class="text-danger marginbottom20" ng-hide="filtered.length">No records found !</samp>
+        
+        <samp class="text-info marginbottom20" ng-show="filtered.length">Showing records: {{1 + (pagination.currentPage - 1) * pagination.pageSize}} to {{getMinimum(filtered.length,pagination.pageSize + (pagination.currentPage - 1) * pagination.pageSize)}} of {{filtered.length}}</samp>
+        <br><br>
+        <kbd ng-show="userSearch.length" class="padding5 margintop20">Searching for : <em>{{userSearch}}</em></kbd>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th ng-click="sortTable.sortKey='item'; sortTable.reverse = !sortTable.reverse">
+                        <a href="#/" data-toggle='tooltip' title="Sort by item" initialize-tooltip>
+                            Title
+                        </a>
+                        <span class="glyphicon  pull-right" ng-show="sortTable.sortKey=='item'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
+                    </th>
+                    <th ng-click="sortTable.sortKey='caller'; sortTable.reverse = !sortTable.reverse">
+                        <a href="#/" data-toggle='tooltip' title="Sort by caller" initialize-tooltip>
+                            Caller
+                        </a>
+                        <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='caller'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
+                    </th>
+                    <th ng-click="sortTable.sortKey='pubDate'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
+                        <a href="#/" data-toggle='tooltip' title="Sort by publication date" initialize-tooltip>
+                            Publication Date
+                        </a>
+                        <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='pubDate'" ng-class="{'glyphicon-sort-by-order-alt':sortTable.reverse,'glyphicon-sort-by-order':!sortTable.reverse}"></span>
+                    </th>
+                    <th ng-click="sortTable.sortKey='pubDaily'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
+                        <a href="#/" data-toggle='tooltip' title="Sort by publication" initialize-tooltip>
+                            Publication Daily
+                        </a>
+                        <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='pubDaily'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
+                    </th>
+                    <th ng-click="sortTable.sortKey='subDate'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
+                        <a href="#/" data-toggle='tooltip' title="Sort by submission date" initialize-tooltip>
+                            Submission Date
+                        </a>
+                        <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='subDate'" ng-class="{'glyphicon-sort-by-order-alt':sortTable.reverse,'glyphicon-sort-by-order':!sortTable.reverse}"></span>
+                    </th>
+                    <th>
+                        <a href="#/" data-toggle='tooltip' title="Days left until submission" initialize-tooltip>
+                            Days Left
+                        </a>
+                    </th>
+                    <th ng-click="sortTable.sortKey='remarks'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
+                        <a href="#/" data-toggle='tooltip' title="Sort by classification" initialize-tooltip>
+                            Remarks
+                        </a>
+                        <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='remarks'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
+                    </th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <!--Using dir-paginate directive instead of ng-repeat for pagination support -->
+                <tr dir-paginate="tender in filtered = (tenderlist | multipleFilter : userSearch) | orderBy : sortTable.sortKey : sortTable.reverse | itemsPerPage : pagination.pageSize"
+                current-page="pagination.currentPage" ng-class="getStatus(tender.subDate)" ng-click="loadTender(tender)" ng-cloak>
+                    <td>{{ ($index + 1) + (pagination.currentPage - 1) * pagination.pageSize}}</td>
+                    <td>{{tender.item}}</td>
+                    <td>{{tender.caller}}</td>
+                    <td class="hidden-xs">{{tender.pubDate | date : 'dd/MM/yyyy'}}</td>
+                    <td class="hidden-xs">{{tender.pubDaily}}</td>
+                    <td class="hidden-xs">{{tender.subDate | date : 'dd/MM/yyyy'}}</td>
+                    <td>{{daysLeft(tender.subDate)}}</td>
+                    <td class="hidden-xs">{{tender.remarks}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <dir-pagination-controls max-size="12" direction-links="true" boundary-links="true">
+        </dir-pagination-controls>
+    </div>
+</div>

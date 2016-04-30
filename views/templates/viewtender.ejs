@@ -1,0 +1,121 @@
+<h3 class="page-header">{{tenderDetail.item}} </h3>
+<h4>{{tenderDetail.caller}}</h4>
+<div class="well">
+    <span>Published in<a ui-sref="home" class="padding5 nounderline" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
+    <span><text class="text-primary">Publication Date</text> : {{tenderDetail.pubDate | date : 'EEEE MMMM d, yyyy'}}</span><br>
+    <span><text class="text-primary">Submission Date</text> : {{tenderDetail.subDate | date : 'EEEE MMMM d, yyyy'}}
+        - <em ng-class="getStatus(tenderDetail.subDate)">
+         {{remainingDays(tenderDetail.subDate)}}
+        </em>  
+    </span>
+</div>
+
+<div class="row">  
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading bg-primary">Preferences & Details</div>
+            <div class="panel-body">    
+                <div class="row">
+                    <div class="col-sm-6">
+                        
+                        <label class="checkbox-inline tenderOption btn fbtn btn-lg btn-success margin5">
+                            <input type="checkbox" id="isWatching" ng-model="isWatching"><span>Watch this listing</span> 
+                        </label>
+                    </div>
+                    <div class="col-sm-6">
+                        <button class="btn fbtn btn-danger margin5" ng-show="isExpired(tenderDetail.subDate)" ng-click="bidInfo=true" ng-disabled="bidInfo"><span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter participation information</span></button>
+                    </div>
+                </div>
+                <div class="row margintop20" ng-show="bidInfo">
+                    <div class="col-sm-12">
+                        <form class="form-horizontal margin5">
+                            <fieldset>
+
+                            <!-- Form Name -->
+                            <legend>Bid Participation Information</legend>
+
+                            <!-- BOQ -->
+                            <div class="form-group">
+                            <label class="col-md-4 control-label" for="quotation">Quotation</label>
+                            <div class="col-md-5">
+                                
+                                    <input id="quotation" name="quotation" class="form-control" type="number" placeholder="Bid price" required>
+                                    <input type="checkbox" name="vat" id="-0" value="" checked="checked"> Vat Included
+    
+                            </div>
+                            </div>
+
+                            <!-- Discount-->
+                            <div class="form-group">
+                            <label class="col-md-4 control-label" for="discount">Discount</label>  
+                            <div class="col-md-5">
+                            <input id="discount" name="discount" type="text" placeholder="Discount offered" class="form-control input-md">
+                                
+                            </div>
+                            </div>
+                            
+                            <!-- Guarantee Amount-->
+                            <div class="form-group">
+                            <label class="col-md-4 control-label" for="bgAmount">Bid Security</label>  
+                            <div class="col-md-5">
+                            <input id="bgAmount" name="bgAmount" type="number" placeholder="Security amount" class="form-control input-md">
+                                
+                            </div>
+                            </div>
+                            
+                            <!-- Bid Validity-->
+                            <div class="form-group">
+                            <label class="col-md-4 control-label" for="bgValidity">Validity</label>  
+                            <div class="col-md-5">
+                            <input id="bgValidity" name="bgValidity" type="date" placeholder="Guarantee validity" class="form-control input-md">
+                                
+                            </div>
+                            </div>
+                            
+                            <!-- Bank Name-->
+                            <div class="form-group">
+                            <label class="col-md-4 control-label" for="bankName">Bank</label>  
+                            <div class="col-md-5">
+                            <input id="bankName" name="bankName" type="text" placeholder="Bank name" class="form-control input-md">
+                                
+                            </div>
+                            </div>
+
+                            <!-- Manufacturer-->
+                            <div class="form-group">
+                            <label class="col-md-4 control-label" for="manufacturer">Manufacturer</label>  
+                            <div class="col-md-5">
+                            <input id="manufacturer" name="manufacturer" type="text" placeholder="Manufacturer name" class="form-control input-md">
+                                
+                            </div>
+                            </div>
+
+                            <!-- Competitors -->
+                            <div class="form-group">
+                            <label class="col-md-4 control-label" for="competitors"></label>
+                            <div class="col-md-4">
+                                <button id="competitors" name="competitors" class="btn btn-warning">Add Competitors</button>
+                            </div>
+                            </div>
+
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">  
+        <div class="panel panel-default">
+            <div class="panel-heading">Tags</div>
+            <div class="panel-body">
+                <ul class="nav nav-pills" role="tablist">
+                    <li ng-repeat="category in tenderDetail.category" role="presentation" class="active margin5 fbtn"><a ui-sref="home" class="padding5" ng-click="searchTag(category)">{{category}}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button ng-click="goBack()" class="btn fbtn btn-lg btn-success marginright10" disabled="disabled"><i class="glyphicon glyphicon-save" aria-hidden="true"></i> Save</button>
+<button ng-click="goBack()" class="btn fbtn btn-lg btn-primary">Go Back</button>
