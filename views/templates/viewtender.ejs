@@ -16,14 +16,14 @@
             <div class="panel-heading bg-primary">Preferences & Details</div>
             <div class="panel-body">    
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         
-                        <label class="checkbox-inline tenderOption btn fbtn btn-lg btn-success margin5">
+                        <label class="checkbox-inline  btn fbtn btn-lg btn-success margin5">
                             <input type="checkbox" id="isWatching" ng-model="isWatching"><span>Watch this listing</span> 
                         </label>
-                    </div>
-                    <div class="col-sm-6">
+                        
                         <button class="btn fbtn btn-danger margin5" ng-show="isExpired(tenderDetail.subDate)" ng-click="bidInfo=true" ng-disabled="bidInfo"><span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter participation information</span></button>
+                        
                     </div>
                 </div>
                 <div class="row margintop20" ng-show="bidInfo">
@@ -65,11 +65,10 @@
                             
                             <!-- Bid Validity-->
                             <div class="form-group">
-                            <label class="col-md-4 control-label" for="bgValidity">Validity</label>  
-                            <div class="col-md-5">
-                            <input id="bgValidity" name="bgValidity" type="date" placeholder="Guarantee validity" class="form-control input-md">
-                                
-                            </div>
+                                <label class="col-md-4 control-label" for="bgValidity">Validity</label>  
+                                <div class="col-md-5">
+                                    <input id="bgValidity" name="bgValidity" type="date" placeholder="Guarantee validity" class="form-control input-md">
+                                </div>
                             </div>
                             
                             <!-- Bank Name-->
