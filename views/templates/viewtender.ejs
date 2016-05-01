@@ -3,10 +3,10 @@
 <div class="well">
     <span>Published in<a ui-sref="home" class="padding5 nounderline" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
     <span><text class="text-primary">Publication Date</text> : {{tenderDetail.pubDate | date : 'EEEE MMMM d, yyyy'}}</span><br>
-    <span><text class="text-primary">Submission Date</text> : {{tenderDetail.subDate | date : 'EEEE MMMM d, yyyy'}}
-        - <em ng-class="getStatus(tenderDetail.subDate)">
+    <span><text class="text-primary lead">Submission Date</text> : {{tenderDetail.subDate | date : 'EEEE MMMM d, yyyy'}}
+         <mark ng-class="getStatus(tenderDetail.subDate)">
          {{remainingDays(tenderDetail.subDate)}}
-        </em>  
+        </mark>  
     </span>
 </div>
 
