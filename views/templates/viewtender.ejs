@@ -18,9 +18,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         
-                        <label class="checkbox-inline  btn fbtn btn-lg btn-success margin5">
-                            <input type="checkbox" id="isWatching" ng-model="isWatching"><span>Watch this listing</span> 
-                        </label>
+                        <label class="checkbox-inline tenderOption btn fbtn btn-lg btn-success margin5"><input type="checkbox" id="isWatching" ng-model="isWatching"><span>Watch this listing</span></label>
                         
                         <button class="btn fbtn btn-danger margin5" ng-show="isExpired(tenderDetail.subDate)" ng-click="bidInfo=true" ng-disabled="bidInfo"><span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter participation information</span></button>
                         
@@ -28,7 +26,7 @@
                 </div>
                 <div class="row margintop20" ng-show="bidInfo">
                     <div class="col-sm-12">
-                        <form class="form-horizontal margin5">
+                        <form class="form-horizontal margin5" novalidate>
                             <fieldset>
 
                             <!-- Form Name -->
@@ -36,13 +34,23 @@
 
                             <!-- BOQ -->
                             <div class="form-group">
-                            <label class="col-md-4 control-label" for="quotation">Quotation</label>
-                            <div class="col-md-5">
-                                
-                                    <input id="quotation" name="quotation" class="form-control" type="number" placeholder="Bid price" required>
+                                <label class="col-md-4 control-label" for="quotation">Quotation</label>
+                                <div class="col-md-5">
+                                    <div class="input-group"> 
+                                        
+                                        <div class="input-group-btn ">
+                                            <select class="btn selectCurrency">
+                                                <option>NRs</option>
+                                                <option>US$</option>
+                                            </select>
+                                        </div>
+                                           
+                                        <input id="quotation" name="quotation" class="form-control" type="number" placeholder="Bid price" required>
+                                        
+                                        
+                                    </div>
                                     <input type="checkbox" name="vat" id="-0" value="" checked="checked"> Vat Included
-    
-                            </div>
+                                </div>
                             </div>
 
                             <!-- Discount-->
@@ -58,7 +66,7 @@
                             <div class="form-group">
                             <label class="col-md-4 control-label" for="bgAmount">Bid Security</label>  
                             <div class="col-md-5">
-                            <input id="bgAmount" name="bgAmount" type="number" placeholder="Security amount" class="form-control input-md">
+                            <input id="bgAmount" name="bgAmount" type="text" placeholder="Security amount" class="form-control input-md">
                                 
                             </div>
                             </div>
@@ -67,7 +75,11 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="bgValidity">Validity</label>  
                                 <div class="col-md-5">
-                                    <input id="bgValidity" name="bgValidity" type="date" placeholder="Guarantee validity" class="form-control input-md">
+                                    <div id="date" class="input-group input-append" datePopUp ng-model="dateNow">
+                                        <input id="bgValidity" name="bgValidity" type="text" placeholder="Guarantee validity" class="date form-control input-md">
+                                        <span class="input-group-addon add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+                                        
+                                    </div>
                                 </div>
                             </div>
                             
@@ -106,7 +118,12 @@
     </div>
     <div class="col-sm-6">  
         <div class="panel panel-default">
-            <div class="panel-heading">Tags</div>
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-6">Tags</div>
+                    <div class="col-xs-6 text-right"><a><i class="glyphicon glyphicon-plus"></i></a></div>
+                </div>
+            </div>
             <div class="panel-body">
                 <ul class="nav nav-pills" role="tablist">
                     <li ng-repeat="category in tenderDetail.category" role="presentation" class="active margin5 fbtn"><a ui-sref="home" class="padding5" ng-click="searchTag(category)">{{category}}</a></li>

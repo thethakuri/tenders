@@ -98,6 +98,24 @@ var tenderApp = angular
             }
         }
     })
+    .directive('datePopUp', function() {
+        return {
+            restrict: 'A',
+            require : 'ngModel',
+            link: function(scope, element, attrs, ngModelCtrl) {
+            element.datetimepicker({
+                dateFormat:'dd-MM-yyyy',
+                language: 'en',
+                pickTime: false,
+                startDate: '01-11-2013',      // set a minimum date
+                endDate: '01-11-2030'          // set a maximum date
+            }).on('changeDate', function(e) {
+                ngModelCtrl.$setViewValue(e.date);
+                scope.$apply();
+            });
+            }
+        };
+    })
     .factory('userSearchField', function () {  
         var searchTerm = '';
         return {
@@ -177,6 +195,8 @@ var tenderApp = angular
     .controller('TenderDetailCtrl', ['$scope', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', function ($scope, tenderFactory, $state, userSearchField, daysDifference, tenderText) {  
         $scope.$state = $state;
         $scope.tenderDetail = tenderFactory.get();
+        
+        $scope.dateNow = '07-12-2013';
         
         //Keep bid information form from displaying afer switching views 
         $scope.$watchCollection(

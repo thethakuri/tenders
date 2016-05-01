@@ -276,10 +276,14 @@ div.form-signup input[type="password"] {
 }
 
 .tenderOption input[type=checkbox]{
-    margin-left: 0;
+    margin: 3px 0;
 }
 .tenderOption > span {
-   margin-left: 20px;
+   margin-left: 20px; 
+}
+/*Height not aligning by 1px each top and bottom hack*/
+.selectCurrency{
+   padding: 7px; 
 }
 
 /*==================================================
@@ -315,6 +319,9 @@ div.form-signup input[type="password"] {
 .nopaddingleftright {
    padding-left: 0 !important;
    padding-right: 0 !important;
+}
+.nopadding{
+    padding : 0 !important;
 }
 .marginbottomnegative2{
     margin-bottom: -2px !important;

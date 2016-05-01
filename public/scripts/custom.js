@@ -1,9 +1,6 @@
 //Custom jQueries
 $(function (){
     
-    $('.input-md.date').datepicker({
-        format: 'dd/mm/yyyy'
-    })
     /*
     // Clear button for search field
     $(".clear").css("right", $("#viewSelect > button").width() + 50 +"px");
