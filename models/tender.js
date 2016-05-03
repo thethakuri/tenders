@@ -26,6 +26,12 @@ var tenderSchema = new Schema({
     },
     category: {
         type: [String]
+    },
+    img: {
+        type: String
+    },
+    link: {
+        type: String
     }
     
 }, {collection: 'listing'});
