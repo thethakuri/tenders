@@ -2,7 +2,7 @@
 <h4>{{tenderDetail.caller}}</h4>
 <div class="well">
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-6 form-group">
             <span>Published in<a ui-sref="home" class="padding5 nounderline" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
             <span><text class="text-primary">Publication Date</text> : {{tenderDetail.pubDate | date : 'EEEE MMMM d, yyyy'}}</span><br>
             <span><text class="text-primary lead">Submission Date</text> : {{tenderDetail.subDate | date : 'EEEE MMMM d, yyyy'}}
@@ -11,7 +11,7 @@
                 </mark>  
             </span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-6 form-group">
             <a href="">
                 <img ng-src="{{tenderDetail.img}}" class="img-thumbnail" alt="Tender Clipping" width="200">
             </a>
