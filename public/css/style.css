@@ -286,6 +286,15 @@ div.form-signup input[type="password"] {
    padding: 7px; 
 }
 
+.imgwrapper{
+    position: relative;
+}
+.imgwrapper .glyphicon {
+    position: absolute;
+    top: 20px;
+    left: 40px;
+}
+
 /*==================================================
 =            Helper Styles:         ;             =
 ==================================================*/
