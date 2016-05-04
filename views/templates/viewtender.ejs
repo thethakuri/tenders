@@ -1,9 +1,12 @@
 <h3 class="page-header">{{tenderDetail.item}} </h3>
-<h4>{{tenderDetail.caller}}</h4>
+<div class="tenderCaller">
+    <h4 class="paddingleft15"> {{tenderDetail.caller}}</h4>
+    <i class="glyphicon glyphicon-bullhorn"></i>
+</div>
 <div class="well">
     <div class="row">
         <div class="col-sm-6 form-group">
-            <span>Published in<a ui-sref="home" class="padding5 nounderline" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
+            <span>Published in<a ui-sref="home" class="padding5 nounderline lead" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
             <span><text class="text-primary">Publication Date</text> : {{tenderDetail.pubDate | date : 'EEEE MMMM d, yyyy'}}</span><br>
             <span><text class="text-primary lead">Submission Date</text> : {{tenderDetail.subDate | date : 'EEEE MMMM d, yyyy'}}
                 <mark ng-class="getStatus(tenderDetail.subDate)">
@@ -11,11 +14,32 @@
                 </mark>  
             </span>
         </div>
-        <div class="col-sm-6 form-group imgwrapper">
-            <a href="">
-                <img ng-src="{{tenderDetail.img}}" class="img-thumbnail" alt="Tender Clipping" width="200">
-                <span class="glyphicon glyphicon-zoom-in"></span>
-            </a>
+        <div class="col-sm-6 form-group">
+            <div ng-if="tenderDetail.img">
+                <a href="" class="imgwrapper" data-toggle="modal" data-target="#imgViewer">
+                    <img ng-src="{{tenderDetail.img}}" class="img-thumbnail" alt="Tender Clipping" width="200">
+                    <span class="glyphicon glyphicon-zoom-in"></span>
+                </a>
+                <!--Modal-->
+                <div class="modal fade" id="imgViewer" >
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header text-left">
+                                <span>Published in {{tenderDetail.pubDaily}}<br>Publication Date: {{tenderDetail.pubDate | date : 'dd/MM/yyyy'}}</span>
+                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <img ng-src="{{tenderDetail.img}}"  class="img-responsive" alt="Tender Clipping">
+                            </div>
+                            <div class="modal-footer">
+                                <a type="button" class="btn btn-default" ng-href="{{tenderDetail.img}}"><i class="glyphicon glyphicon-print"></i> Print View</a>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Modal-->
+            </div>
         </div>
     </div>
 </div>
@@ -23,7 +47,7 @@
 <div class="row">  
     <div class="col-sm-6">
         <div class="panel panel-default">
-            <div class="panel-heading bg-primary">Preferences & Details</div>
+            <div class="panel-heading bg-primary"><i class="glyphicon glyphicon-info-sign"></i> Preferences & Details</div>
             <div class="panel-body">    
                 <div class="row">
                     <div class="col-sm-12">
@@ -129,15 +153,25 @@
     <div class="col-sm-6">  
         <div class="panel panel-default">
             <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-6">Tags</div>
-                    <div class="col-xs-6 text-right"><a><i class="glyphicon glyphicon-plus"></i></a></div>
+                <div class="row tag-panel">
+                    <div class="col-xs-6"><i class="glyphicon glyphicon-tags"></i><span> Tags</span></div>
+                    <div class="col-xs-6 text-right"><a ng-click="tagInput = !tagInput"><i ng-class="{ 'glyphicon glyphicon-plus' : !tagInput, 'glyphicon glyphicon-remove' : tagInput }"></i></a></div>
+                    <div class="tag-container" ng-show="tagInput">
+                            <input type="text" placeholder="Type and hit enter" data-user-tag-input="" data-new-tag="addTag()" ng-model="tagText" ng-class="{'text-danger' : alertTag}">
+                    </div>
                 </div>
             </div>
             <div class="panel-body">
                 <ul class="nav nav-pills" role="tablist">
-                    <li ng-repeat="category in tenderDetail.category" role="presentation" class="active margin5 fbtn"><a ui-sref="home" class="padding5" ng-click="searchTag(category)">{{category}}</a></li>
+                    <li ng-repeat="category in tenderDetail.category.concat(userTags)" role="presentation" class="active margin5 fbtn">
+                        <button ui-sref="home" class="padding5 input-tag btn btn-primary" ng-click="searchTag(category)">{{category}}
+                            <a class="delete-tag" ng-if="checkTag(category)" data-ng-click="deleteTag($event, category)">&times;</a>
+                        </button>
+                    </li>
                 </ul>
+                
+                
+                
             </div>
         </div>
     </div>

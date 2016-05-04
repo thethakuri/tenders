@@ -6,7 +6,7 @@
 html {
   position: relative;
   min-height: 100%;
-  overflow-y: scroll; /* fix for scrollbar pageshift behavior*/
+  /*overflow-y: scroll; /* fix for scrollbar pageshift behavior*/
 }
 body {
   /* Margin bottom by footer height */
@@ -65,11 +65,8 @@ th > a:hover{
     text-decoration: none;
 }
 
-
 /**********************************
-Responsive navbar-brand image CSS
-- Remove navbar-brand padding for firefox bug workaround
-- add 100% height and width auto ... similar to how bootstrap img-responsive class works
+             NAVBAR
 ***********************************/
 
 .navbar-brand {
@@ -80,47 +77,15 @@ Responsive navbar-brand image CSS
     padding: 5px;
     width: auto;
 }
-
-/* EXAMPLE 3
-
-line height is 20px by default so add 30px top and bottom to equal the new .navbar-brand 80px height  */
-
-.example3 .navbar-brand {
-    height: 200px;
-}
-
-.example3 .nav >li >a {
-    padding-top: 30px;
-    padding-bottom: 30px;
-}
-.example3 .navbar-toggle {
-    padding: 10px;
-    margin: 25px 15px 25px 0;
-}
-
-/* CSS Transform Align Navbar Brand Text ... This could also be achieved with table / table-cells */
-.navbar-alignit .navbar-header {
-    -webkit-transform-style: preserve-3d;
-    -moz-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    height: 50px;
-}
-.navbar-alignit .navbar-brand {
-    top: 50%;
-    display: block;
-    position: relative;
-    height: auto;
-    transform: translate(0,-50%);
-    margin-right: 15px;
-    margin-left: 15px;
-}
-
 .navbar-nav>li>.dropdown-menu {
 	z-index: 9999;
 }
-
 .navbar {
     margin-bottom: 0 !important;
+}
+.nav_user{
+    padding: 15px;
+    color: white;
 }
 
 /*Angularjs:-Remove double curly brace notation from displaying momentarily before loading*/
@@ -132,11 +97,8 @@ line height is 20px by default so add 30px top and bottom to equal the new .navb
   cursor: pointer;
 }
 
-.nav_user{
-    padding: 15px;
-    color: white;
-}
-
+/**********************************************/
+/*              LOGIN - SIGNUP                */
 /**********************************************/
 
 .formError{
@@ -254,8 +216,6 @@ div.form-signup .btn {
     font-size: 16px;
     font-weight: 300;
     line-height: 50px;
-    
-    
 }
 
 div.form-signup input[type="text"], 
@@ -286,13 +246,97 @@ div.form-signup input[type="password"] {
    padding: 7px; 
 }
 
+.tenderCaller{
+    position: relative;
+}
+.tenderCaller .glyphicon {
+    position: absolute;
+    top: 0;
+    left: -10px;
+    font-size: large;
+}
+
+/************TAGS*************/
+.tag-panel{
+    position: relative;
+}
+
+.tag-container{
+    position: absolute;
+    top: -3px;
+    right: 40px;
+    border: 1px solid #ccc;
+    padding: 2px 3px;
+    display: inline-block;
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.tag-container input{
+    display: inline-block;
+    padding: 0;
+    line-height: 18px;
+    border: 0;
+    margin: 2px;
+}
+.tag-container input:focus{
+    outline: 0;
+}
+
+.delete-tag {
+    color: #ccc;
+    cursor: pointer;
+    padding: 0 2px;
+}
+.delete-tag:hover{
+    background-color: #96b4d2;
+    text-decoration: none;
+}
+
+/****** Paper Clippings ******/
+
+#imgViewer .modal-dialog{ /*fix dynamic modal width*/
+    position: relative;
+    display: table;
+    overflow-y: auto;    
+    overflow-x: auto;
+    width: auto;
+    min-width: 300px;  
+    text-align: center; 
+}
+
 .imgwrapper{
     position: relative;
 }
 .imgwrapper .glyphicon {
     position: absolute;
-    top: 20px;
-    left: 40px;
+    top: 50%;
+    margin-top: -10px; /* half icon's height */
+    left: 50%;
+    margin-left: -20px; /* half icon's width */
+    z-index: 9;
+    font-size: xx-large;
+    color: #f7f7f7;
+}
+.imgwrapper .img-thumbnail{
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+    padding: 6px;
+    min-height: 200px;
+}
+.imgwrapper:focus {
+   outline:0;
+}
+
+.imgwrapper:hover .glyphicon {
+    color: white;
+}
+.imgwrapper:hover .img-thumbnail{
+    -moz-box-shadow: 0 0 20px #ccc; 
+    -webkit-box-shadow: 0 0 20px #ccc; 
+    box-shadow: 0 0 20px #ccc;
+    opacity: 0.7;
 }
 
 /*==================================================

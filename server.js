@@ -56,7 +56,7 @@ app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
 
 // required for passport
-//app.use(session({ secret: (process.env.SECRET) ? process.env.SECRET : 'Hhkox50D' })); // session secret
+//app.use(session({ secret: (process.env.SECRET) ? process.env.SECRET : 'topsecret' })); // session secret
 app.use(session({ secret: process.env.SECRET })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions

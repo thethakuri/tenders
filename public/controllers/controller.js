@@ -116,6 +116,47 @@ var tenderApp = angular
             }
         };
     })
+    .directive('userTagInput', function(){
+        return{
+            restrict: 'A',
+            link: function (scope, element, attributes) {  
+                element.bind('keydown', function (e) {  
+                    if(e.which == 9){ //keycode for TAB
+                        e.preventDefault();
+                    }
+                });
+                element.bind('keyup', function (e) {  
+                    var key = e.which;
+                    if(key == 9 || key == 13){ //keycode for TAB , ENTER
+                        e.preventDefault();
+                        scope.$apply(attributes.newTag);
+                    }
+                });
+                // scope.$watch(attributes.ngModel, function (newValue, oldValue) {
+                //     if(newValue != oldValue)
+                //         element.css('color', '#000');
+                //         console.log('being watched oldValue:', oldValue, 'newValue:', newValue);
+                // })
+            }
+        }
+    })
+    // .directive('modalScroll', function(){ // fixes body shift to right when modal is on with {overflow-y : scroll} by default
+    //     return{
+    //         restrict: 'EA',
+    //         link: function(scope, element, attributes){
+    //             $(element).on('show.bs.modal', function(){
+    //                 angular.element(document).find("html").css("overflow", "hidden");
+    //                 angular.element(document).find("body").css("marginRight", "15px");
+                    
+                    
+    //             });
+    //             $(element).on('hidden.bs.modal', function () {  
+    //                 angular.element(document).find("html").css("overflowY", "scroll");
+    //                 angular.element(document).find("body").css("marginRight", "0");
+    //             }); 
+    //         }   
+    //     }
+    // })
     .factory('userSearchField', function () {  
         var searchTerm = '';
         return {
@@ -189,6 +230,9 @@ var tenderApp = angular
             getTenderView : getTenderView
         })
     })
+    .controller('topController', function ($location) {  
+        $location.path('/');
+    })
     .controller('FooterCtrl', function($scope) {
         $scope.currentYear = new Date().getFullYear();
     })
@@ -197,6 +241,35 @@ var tenderApp = angular
         $scope.tenderDetail = tenderFactory.get();
         
         $scope.dateNow = '07-12-2013';
+        
+        $scope.tagInput = false;
+        $scope.userTags = [];
+        $scope.alertTag = false;
+        
+        $scope.addTag = function () {  
+            if($scope.tagText.length){
+                if($scope.userTags.indexOf($scope.tagText) !== -1){
+                    $scope.alertTag = true;
+                    return;    
+                }
+                else{
+                    $scope.alertTag = false;
+                    $scope.userTags.push($scope.tagText);
+                    $scope.tagText = '';
+                }
+            }  
+        }
+        $scope.checkTag = function(tag) {
+            return $scope.tenderDetail.category.indexOf(tag) === -1;
+        }
+        $scope.deleteTag = function (event, tag) {
+            event.preventDefault(); // since our anchor is inside a button
+            event.stopPropagation(); // prevent event from bubbling up
+            var key = $scope.userTags.indexOf(tag);
+            if($scope.userTags.length && key !== -1){
+                $scope.userTags.splice(key, 1);
+            }
+        }
         
         //Keep bid information form from displaying afer switching views 
         $scope.$watchCollection(
@@ -225,7 +298,7 @@ var tenderApp = angular
         
         $scope.remainingDays = function (subDate) {  
             var diffDays = daysDifference.diffDays(subDate);
-            if(diffDays > 0) return diffDays + ' day(s) remaining';
+            if(diffDays > 0) return diffDays + (diffDays === 1 ? ' day':' days') + ' remaining';
             else return 'Expired'
         }
         $scope.getStatus = function(subDate){
