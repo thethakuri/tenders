@@ -322,6 +322,8 @@ div.form-signup input[type="password"] {
     color: #ccc;
     cursor: pointer;
     padding: 0 2px;
+    border: none;
+    background: none;
 }
 .delete-tag:hover{
     background-color: #96b4d2;

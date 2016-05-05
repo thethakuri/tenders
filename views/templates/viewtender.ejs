@@ -164,9 +164,9 @@
             <div class="panel-body">
                 <ul class="nav nav-pills" role="tablist">
                     <li ng-repeat="category in tenderDetail.category.concat(userTags)" role="presentation" class="active margin5 fbtn">
-                        <button ui-sref="home" class="padding5 input-tag btn btn-primary" ng-click="searchTag(category)">{{category}}
-                            <a class="delete-tag" ng-if="checkTag(category)" data-ng-click="deleteTag($event, category)">&times;</a>
-                        </button>
+                        <a ui-sref="home" class="padding5 input-tag btn btn-primary" ng-click="searchTag(category)">{{category}}
+                            <button class="delete-tag" ng-if="checkTag(category)" data-ng-click="deleteTag($event, category)">&times;</button>
+                        </a>
                     </li>
                 </ul>
                 

@@ -289,7 +289,7 @@ var tenderApp = angular
         
         $scope.$watch( 
             function () {  
-            return tenderFactory.get();
+                return tenderFactory.get();
             },
             function(newValue){
                 $scope.tenderDetail = newValue;
