@@ -155,7 +155,7 @@
             <div class="panel-heading">
                 <div class="row tag-panel">
                     <div class="col-xs-6"><i class="glyphicon glyphicon-tags"></i><span> Tags</span></div>
-                    <div class="col-xs-6 text-right"><a ng-click="tagInput = !tagInput"><i ng-class="{ 'glyphicon glyphicon-plus' : !tagInput, 'glyphicon glyphicon-remove' : tagInput }"></i></a></div>
+                    <div class="col-xs-6 text-right"><a ng-click="tagInput = !tagInput; tagText=''"><i ng-class="{ 'glyphicon glyphicon-plus' : !tagInput, 'glyphicon glyphicon-remove' : tagInput }"></i></a></div>
                     <div class="tag-container" ng-show="tagInput">
                             <input type="text" placeholder="Type and hit enter" data-user-tag-input="" data-new-tag="addTag()" ng-model="tagText" ng-class="{'text-danger' : alertTag}">
                     </div>

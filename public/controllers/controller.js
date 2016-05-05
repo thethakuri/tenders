@@ -243,9 +243,7 @@ var tenderApp = angular
         
         //Watch for changes in tag input especially after rectifying duplicate error
         $scope.$watch(
-            function(){
-                return $scope.tagText;
-            },
+            "tagText",
             function(newValue){
                 if($scope.alertTag) $scope.alertTag = false;
         });
@@ -283,7 +281,10 @@ var tenderApp = angular
             },
             function(newValue){
                 $scope.bidInfo = false; //Keep bid information form from displaying afer switching views 
+                //reset tag values
                 $scope.userTags = [];
+                $scope.tagText = '';
+                $scope.tagInput = false;
             }   
         );
         
