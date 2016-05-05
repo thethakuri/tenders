@@ -1,6 +1,6 @@
 //$scope is the glue between application controller and the view
 var tenderApp = angular
-    .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar', 'ui.router'])
+    .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar', 'ui.router', 'angularjs-datetime-picker'])
     .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {  
         $urlRouterProvider.otherwise('/');
         

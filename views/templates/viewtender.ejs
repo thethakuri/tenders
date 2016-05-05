@@ -82,20 +82,41 @@
                     <div class="panel-body">    
                         <div class="row">
                             <div class="col-sm-12">
+                                <!--Preferences Forms-->
+                                <form class="form-inline nomarginbottom ">
+                                    <div class="input-group  col-xs-4 margin10">
+                                        <label class="checkbox-inline tenderOption btn fbtn btn-lg btn-success ">
+                                            <input type="checkbox" id="isWatching" ng-model="isWatching" ><span>Watch this listing</span>
+                                        </label>
+                                        <div class="input-group-btn ">
+                                            <button type="button" class="btn btn-default notifyMenu dropdown-toggle" data-toggle="dropdown" ng-disabled="!isWatching"><span class="glyphicon glyphicon-cog"></span> <span class="caret"></span></button>
+                                            <ul class="dropdown-menu padding10" role="menu">
+                                                <li>Select alert frequecy</li>
+                                                <li class="divider"></li>
+                                                <li><a href="" data-value="option1" tabIndex="-1"><input type="checkbox"/>&nbsp;1 day prior</a></li>
+                                                <li><a href="" data-value="option2" tabIndex="-1"><input type="checkbox"/>&nbsp;3 days proir</a></li>
+                                                <li><a href="" data-value="option3" tabIndex="-1"><input type="checkbox"/>&nbsp;5 days prior</a></li>
+                                                <li><a href="" data-value="option4" tabIndex="-1"><input type="checkbox"/>&nbsp;7 days prior</a></li>
+                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                   
                                 
-                                <label class="checkbox-inline tenderOption btn fbtn btn-lg btn-success margin5"><input type="checkbox" id="isWatching" ng-model="isWatching"><span>Watch this listing</span></label>
-                                
-                                <a class="btn fbtn btn-danger margin5" ng-click="bidPart(tenderDetail.subDate)" ng-disabled="bidInfo || !isExpired(tenderDetail.subDate)" data-toggle='tooltip' data-original-title="{{isExpired(tenderDetail.subDate) ? '' : 'This listing is still active. Enter after submission date.'}}" initialize-tooltip>
-                                    <span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter participation information</span>
-                                </a>
-                                
+                                    <div class="form-group margin10">
+                                        <a class="btn fbtn btn-danger " ng-click="bidPart(tenderDetail.subDate)" ng-disabled="bidInfo || !isExpired(tenderDetail.subDate)" data-toggle='tooltip' data-original-title="{{isExpired(tenderDetail.subDate) ? '' : 'This listing is still active. Enter after submission date.'}}" initialize-tooltip>
+                                            <span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter participation information</span>
+                                        </a>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <div class="row margintop20" ng-show="bidInfo">
-                            <div class="col-sm-12">
+                        <!--Bid Participation Information-->
+                        <div class="row margintop20 " ng-show="bidInfo">
+                            <div class="col-md-12">
                                 <form class="form-horizontal margin5" novalidate>
                                     <fieldset>
-
                                     <!-- Form Name -->
                                     <legend>Bid Participation Information</legend>
 
@@ -143,7 +164,7 @@
                                         <label class="col-md-4 control-label" for="bgValidity">Validity</label>  
                                         <div class="col-md-5">
                                             <div id="date" class="input-group input-append" datePopUp ng-model="dateNow">
-                                                <input id="bgValidity" name="bgValidity" type="text" placeholder="Guarantee validity" class="date form-control input-md">
+                                                <input datetime-picker ng-model="bgValidity" date-format="dd-MM-yyyy" date-only id="bgValidity" name="bgValidity" type="text" placeholder="Guarantee validity" class="date form-control input-md">
                                                 <span class="input-group-addon add-on"><i class="glyphicon glyphicon-calendar"></i></span>
                                                 
                                             </div>

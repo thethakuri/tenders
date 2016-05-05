@@ -276,6 +276,11 @@ div.form-signup input[type="password"] {
 .tenderOption > span {
    margin-left: 20px; 
 }
+.tenderOption{
+    
+    border-bottom-right-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
 /*Height not aligning by 1px each top and bottom hack*/
 .selectCurrency{
    padding: 7px; 
@@ -291,6 +296,17 @@ div.form-signup input[type="password"] {
     font-size: large;
 }
 
+.angularjs-datetime-picker{
+    z-index: 99;
+}
+
+.notifyMenu{
+    padding: 8px;
+    margin-right: 20px;
+    
+    border-bottom-left-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+}
 /************TAGS*************/
 .tag-panel{
     position: relative;
@@ -403,6 +419,9 @@ div.form-signup input[type="password"] {
 .marginright10{
     margin-right: 10px;
 }
+.marginbottom10{
+    margin-bottom: 10px;
+}
 .paddingbottom20{
     padding-bottom: 20px;
 }
@@ -418,8 +437,14 @@ div.form-signup input[type="password"] {
 .padding5{
     padding: 5px !important;
 }
+.padding10{
+    padding: 10px !important;
+}
 .margin5{
     margin: 5px !important;
+}
+.margin10{
+    margin: 10px !important;
 }
 .nopaddingleftright {
    padding-left: 0 !important;
@@ -430,6 +455,9 @@ div.form-signup input[type="password"] {
 }
 .marginbottomnegative2{
     margin-bottom: -2px !important;
+}
+.nomarginbottom{
+    margin-bottom: 0 !important;
 }
 .nounderline:hover { text-decoration: none; }
 .lineheight24{
