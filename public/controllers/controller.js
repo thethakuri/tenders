@@ -178,9 +178,10 @@ var tenderApp = angular
     .factory('daysDifference', function(){
         function diffDays(subDate) {  
             var now = new Date();//Today
+            now.setHours(0,0,0,0);
             subDate = new Date(subDate);
             var timeDiff = subDate.getTime() - now.getTime();
-            return Math.ceil(timeDiff / (1000 * 3600 * 24));
+            return Math.round(timeDiff / (1000 * 3600 * 24));
         }
         return ({
             diffDays : diffDays
@@ -275,6 +276,7 @@ var tenderApp = angular
         }
         
         /***************WATCH FOR CHANGE OF VIEWS************/
+        /*eg. page back button is hit*/
         $scope.$watchCollection(
             function () {  
                 return $state.current.name;
@@ -285,6 +287,8 @@ var tenderApp = angular
                 $scope.userTags = [];
                 $scope.tagText = '';
                 $scope.tagInput = false;
+                
+                angular.element(document.querySelector('.modal')).modal('hide'); //hide modal
             }   
         );
         
@@ -306,19 +310,27 @@ var tenderApp = angular
         $scope.remainingDays = function (subDate) {  
             var diffDays = daysDifference.diffDays(subDate);
             if(diffDays > 0) return diffDays + (diffDays === 1 ? ' day':' days') + ' remaining';
-            else return 'Expired'
+            else return diffDays === 0 ? 'Expiring today' : 'Expired'; 
         }
         $scope.getStatus = function(subDate){
             return tenderText.getStatus(subDate)
         };
+        
         $scope.isExpired = function (subDate) {  
             return daysDifference.diffDays(subDate) <= 0;
         };
+        
+        $scope.bidPart = function(subDate){
+            if($scope.isExpired(subDate)) $scope.bidInfo = true;
+            return;
+        }
+        
+      
     }])
     .controller('TenderAppCtrl', ['$scope', 'tenderService', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', function($scope, tenderService, tenderFactory, $state, userSearchField, daysDifference, tenderText) {
         
         $scope.$state = $state;
-        
+        $scope.loadingData = true;
         //userSearch field
         $scope.$watch(
             function () {  
@@ -362,17 +374,21 @@ var tenderApp = angular
         $scope.currentView = "Active"; //default
         $scope.fetch = function(givenView) {
             if ($scope.currentView != givenView) {
+                $scope.loadingData = true;
                 $scope.currentView = givenView;
                 tenderService.getTenderView('/'+ givenView).then(function(tenders) {
                     $scope.tenderlist = tenders;
+                    $scope.loadingData = false;
                 });
             }
         };
         
          //Load Tender data
         function loadTenderData(url) {
+            $scope.loadingData = true;
             tenderService.getTenderView(url).then(function (tenders) {  
                  $scope.tenderlist = tenders;
+                 $scope.loadingData = false;
             })
         };
         
@@ -388,13 +404,10 @@ var tenderApp = angular
             else return daysRemaining;
         };
 
-        
-
         $scope.getMinimum = function(a, b) {
             return Math.min(a, b);
         };
         
-       
     }])
     .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
         cfpLoadingBarProvider.includeSpinner = false;

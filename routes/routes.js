@@ -114,6 +114,7 @@ module.exports = function (app, passport) {
     // Get only active tenders
     app.get('/Active', isLoggedIn, function(req, res){
         var now = new Date();
+        now.setHours(0,0,0,0);
         console.log('GET Request: ' + now);
         
         Tender.find({subDate : {$gte : now}}, function(err, docs){
@@ -124,6 +125,7 @@ module.exports = function (app, passport) {
     // Get tenders published within last one week
     app.get('/Recent', isLoggedIn, function(req, res){
         var now = new Date();
+        now.setHours(0,0,0,0);
         //60*60*24*7 would be the number of seconds in a week. Convert to miliseconds by * 1000
         var lastWeek = new Date(now.getTime()-1000*60*60*24*7);
         

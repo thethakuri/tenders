@@ -330,6 +330,21 @@ div.form-signup input[type="password"] {
     text-decoration: none;
 }
 
+.firstChar{
+    background: #337ab7;
+    color: #fff;
+    font-size: 26px;
+    font-weight: 400 !important;
+    margin: 0 2px 0 0;
+    padding: 0 4px;
+    text-transform: uppercase;
+    border-radius: 2px;
+}
+
+.oh-well{
+    padding: 20px 20px 20px 35px;
+    margin-bottom: 20px;
+}
 /****** Paper Clippings ******/
 
 #imgViewer .modal-dialog{ /*fix dynamic modal width*/
@@ -419,6 +434,9 @@ div.form-signup input[type="password"] {
 .nounderline:hover { text-decoration: none; }
 .lineheight24{
     line-height:24px !important;
+}
+.nobordertopleft{
+    border-top-left-radius: 0 !important;
 }
 /*==================================================
 =            Bootstrap 3 Media Queries             =

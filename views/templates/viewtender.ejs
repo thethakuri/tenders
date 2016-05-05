@@ -1,181 +1,200 @@
-<h3 class="page-header">{{tenderDetail.item}} </h3>
+<h3 class="page-header"><span class='firstChar'>{{tenderDetail.item.charAt(0)}}</span>{{tenderDetail.item.slice(1)}}</h3>
 <div class="tenderCaller">
     <h4 class="paddingleft15"> {{tenderDetail.caller}}</h4>
     <i class="glyphicon glyphicon-bullhorn"></i>
 </div>
-<div class="well">
-    <div class="row">
-        <div class="col-sm-6 form-group">
-            <span>Published in<a ui-sref="home" class="padding5 nounderline lead" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
-            <span><text class="text-primary">Publication Date</text> : {{tenderDetail.pubDate | date : 'EEEE MMMM d, yyyy'}}</span><br>
-            <span><text class="text-primary lead">Submission Date</text> : {{tenderDetail.subDate | date : 'EEEE MMMM d, yyyy'}}
-                <mark ng-class="getStatus(tenderDetail.subDate)">
-                {{remainingDays(tenderDetail.subDate)}}
-                </mark>  
-            </span>
+<div class="row">
+    <div class="col-sm-6 form-group oh-well">
+        <div class="row paddingbottom20">
+            <div class="col-xs-12">
+                <span>Published in<a ui-sref="home" class="padding5 nounderline lead" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
+                <span><text class="text-primary">Publication Date</text> : {{tenderDetail.pubDate | date : 'EEEE MMMM d, yyyy'}}</span><br>
+                <span><text class="text-primary lead">Submission Date</text> : {{tenderDetail.subDate | date : 'EEEE MMMM d, yyyy'}}
+                    <mark ng-class="getStatus(tenderDetail.subDate)">
+                    {{remainingDays(tenderDetail.subDate)}}
+                    </mark>  
+                </span>
+            </div>
         </div>
-        <div class="col-sm-6 form-group">
-            <div ng-if="tenderDetail.img">
-                <a href="" class="imgwrapper" data-toggle="modal" data-target="#imgViewer">
-                    <img ng-src="{{tenderDetail.img}}" class="img-thumbnail" alt="Tender Clipping" width="200">
-                    <span class="glyphicon glyphicon-zoom-in"></span>
-                </a>
-                <!--Modal-->
-                <div class="modal fade" id="imgViewer" >
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header text-left">
-                                <span>Published in {{tenderDetail.pubDaily}}<br>Publication Date: {{tenderDetail.pubDate | date : 'dd/MM/yyyy'}}</span>
-                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+        <div class="row">
+            <div class="col-xs-12">
+                <div ng-if="tenderDetail.img">
+                    <a href="" class="imgwrapper" data-toggle="modal" data-target="#imgViewer">
+                        <img ng-src="{{tenderDetail.img}}" class="img-thumbnail" alt="Tender Clipping" width="200">
+                        <span class="glyphicon glyphicon-zoom-in"></span>
+                    </a>
+                    <!--Modal-->
+                    <div class="modal fade" id="imgViewer" >
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header text-left">
+                                    <span>Published in {{tenderDetail.pubDaily}}<br>Publication Date: {{tenderDetail.pubDate | date : 'dd/MM/yyyy'}}</span>
+                                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img ng-src="{{tenderDetail.img}}"  class="img-responsive" alt="Tender Clipping">
+                                </div>
+                                <div class="modal-footer">
+                                    <a type="button" class="btn btn-default" ng-href="{{tenderDetail.img}}"><i class="glyphicon glyphicon-print"></i> Print View</a>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
                             </div>
-                            <div class="modal-body">
-                                <img ng-src="{{tenderDetail.img}}"  class="img-responsive" alt="Tender Clipping">
+                        </div>
+                    </div>
+                    <!--Modal-->
+                </div>
+            </div>
+        </div>
+    </div><!--End of left column-->
+    
+    <div class="col-sm-6 form-group">
+        
+        <div class="row paddingtop20">
+            <div class="col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row tag-panel">
+                            <div class="col-xs-6"><i class="glyphicon glyphicon-tags"></i><span> Tags</span></div>
+                            <div class="col-xs-6 text-right"><a ng-click="tagInput = !tagInput; tagText=''"><i ng-class="{ 'glyphicon glyphicon-plus' : !tagInput, 'glyphicon glyphicon-remove' : tagInput }"></i></a></div>
+                            <div class="tag-container" ng-show="tagInput">
+                                    <input type="text" placeholder="Type and hit enter" data-user-tag-input="" data-new-tag="addTag()" ng-model="tagText" ng-class="{'text-danger' : alertTag}">
                             </div>
-                            <div class="modal-footer">
-                                <a type="button" class="btn btn-default" ng-href="{{tenderDetail.img}}"><i class="glyphicon glyphicon-print"></i> Print View</a>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="nav nav-pills" role="tablist">
+                            <li ng-repeat="category in tenderDetail.category.concat(userTags)" role="presentation" class="active margin5 fbtn">
+                                <a ui-sref="home" class="padding5 input-tag btn btn-primary" ng-click="searchTag(category)">{{category}}
+                                    <button class="delete-tag" ng-if="checkTag(category)" data-ng-click="deleteTag($event, category)">&times;</button>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="row paddingtop20">
+            <div class="col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading bg-primary"><i class="glyphicon glyphicon-info-sign"></i> Preferences</div>
+                    <div class="panel-body">    
+                        <div class="row">
+                            <div class="col-sm-12">
+                                
+                                <label class="checkbox-inline tenderOption btn fbtn btn-lg btn-success margin5"><input type="checkbox" id="isWatching" ng-model="isWatching"><span>Watch this listing</span></label>
+                                
+                                <a class="btn fbtn btn-danger margin5" ng-click="bidPart(tenderDetail.subDate)" ng-disabled="bidInfo || !isExpired(tenderDetail.subDate)" data-toggle='tooltip' data-original-title="{{isExpired(tenderDetail.subDate) ? '' : 'This listing is still active. Enter after submission date.'}}" initialize-tooltip>
+                                    <span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter participation information</span>
+                                </a>
+                                
+                            </div>
+                        </div>
+                        <div class="row margintop20" ng-show="bidInfo">
+                            <div class="col-sm-12">
+                                <form class="form-horizontal margin5" novalidate>
+                                    <fieldset>
+
+                                    <!-- Form Name -->
+                                    <legend>Bid Participation Information</legend>
+
+                                    <!-- BOQ -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="quotation">Quotation</label>
+                                        <div class="col-md-5">
+                                            <div class="input-group"> 
+                                                
+                                                <div class="input-group-btn ">
+                                                    <select class="btn selectCurrency">
+                                                        <option>NRs</option>
+                                                        <option>US$</option>
+                                                    </select>
+                                                </div>
+                                                
+                                                <input id="quotation" name="quotation" class="form-control" type="number" placeholder="Bid price" required>
+                                                
+                                                
+                                            </div>
+                                            <input type="checkbox" name="vat" id="-0" value="" checked="checked"> Vat Included
+                                        </div>
+                                    </div>
+
+                                    <!-- Discount-->
+                                    <div class="form-group">
+                                    <label class="col-md-4 control-label" for="discount">Discount</label>  
+                                    <div class="col-md-5">
+                                    <input id="discount" name="discount" type="text" placeholder="Discount offered" class="form-control input-md">
+                                        
+                                    </div>
+                                    </div>
+                                    
+                                    <!-- Guarantee Amount-->
+                                    <div class="form-group">
+                                    <label class="col-md-4 control-label" for="bgAmount">Bid Security</label>  
+                                    <div class="col-md-5">
+                                    <input id="bgAmount" name="bgAmount" type="text" placeholder="Security amount" class="form-control input-md">
+                                        
+                                    </div>
+                                    </div>
+                                    
+                                    <!-- Bid Validity-->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="bgValidity">Validity</label>  
+                                        <div class="col-md-5">
+                                            <div id="date" class="input-group input-append" datePopUp ng-model="dateNow">
+                                                <input id="bgValidity" name="bgValidity" type="text" placeholder="Guarantee validity" class="date form-control input-md">
+                                                <span class="input-group-addon add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Bank Name-->
+                                    <div class="form-group">
+                                    <label class="col-md-4 control-label" for="bankName">Bank</label>  
+                                    <div class="col-md-5">
+                                    <input id="bankName" name="bankName" type="text" placeholder="Bank name" class="form-control input-md">
+                                        
+                                    </div>
+                                    </div>
+
+                                    <!-- Manufacturer-->
+                                    <div class="form-group">
+                                    <label class="col-md-4 control-label" for="manufacturer">Manufacturer</label>  
+                                    <div class="col-md-5">
+                                    <input id="manufacturer" name="manufacturer" type="text" placeholder="Manufacturer name" class="form-control input-md">
+                                        
+                                    </div>
+                                    </div>
+
+                                    <!-- Competitors -->
+                                    <div class="form-group">
+                                    <label class="col-md-4 control-label" for="competitors"></label>
+                                    <div class="col-md-4">
+                                        <button id="competitors" name="competitors" class="btn btn-warning">Add Competitors</button>
+                                    </div>
+                                    </div>
+
+                                    </fieldset>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--Modal-->
             </div>
         </div>
-    </div>
+        
+        <div class="row text-right paddingtop20">
+            <div class="col-xs-12">
+                <button ng-click="goBack()" class="btn fbtn btn-lg btn-success marginright10" disabled="disabled">
+                    <i class="glyphicon glyphicon-save" aria-hidden="true"></i> Save
+                </button>
+                <button ng-click="goBack()" class="btn fbtn btn-lg btn-primary">Go Back</button>
+            </div>
+        </div>
+        
+    </div> <!--End of image/modal-->
+    
 </div>
 
-<div class="row">  
-    <div class="col-sm-6">
-        <div class="panel panel-default">
-            <div class="panel-heading bg-primary"><i class="glyphicon glyphicon-info-sign"></i> Preferences & Details</div>
-            <div class="panel-body">    
-                <div class="row">
-                    <div class="col-sm-12">
-                        
-                        <label class="checkbox-inline tenderOption btn fbtn btn-lg btn-success margin5"><input type="checkbox" id="isWatching" ng-model="isWatching"><span>Watch this listing</span></label>
-                        
-                        <button class="btn fbtn btn-danger margin5" ng-show="isExpired(tenderDetail.subDate)" ng-click="bidInfo=true" ng-disabled="bidInfo"><span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter participation information</span></button>
-                        
-                    </div>
-                </div>
-                <div class="row margintop20" ng-show="bidInfo">
-                    <div class="col-sm-12">
-                        <form class="form-horizontal margin5" novalidate>
-                            <fieldset>
-
-                            <!-- Form Name -->
-                            <legend>Bid Participation Information</legend>
-
-                            <!-- BOQ -->
-                            <div class="form-group">
-                                <label class="col-md-4 control-label" for="quotation">Quotation</label>
-                                <div class="col-md-5">
-                                    <div class="input-group"> 
-                                        
-                                        <div class="input-group-btn ">
-                                            <select class="btn selectCurrency">
-                                                <option>NRs</option>
-                                                <option>US$</option>
-                                            </select>
-                                        </div>
-                                           
-                                        <input id="quotation" name="quotation" class="form-control" type="number" placeholder="Bid price" required>
-                                        
-                                        
-                                    </div>
-                                    <input type="checkbox" name="vat" id="-0" value="" checked="checked"> Vat Included
-                                </div>
-                            </div>
-
-                            <!-- Discount-->
-                            <div class="form-group">
-                            <label class="col-md-4 control-label" for="discount">Discount</label>  
-                            <div class="col-md-5">
-                            <input id="discount" name="discount" type="text" placeholder="Discount offered" class="form-control input-md">
-                                
-                            </div>
-                            </div>
-                            
-                            <!-- Guarantee Amount-->
-                            <div class="form-group">
-                            <label class="col-md-4 control-label" for="bgAmount">Bid Security</label>  
-                            <div class="col-md-5">
-                            <input id="bgAmount" name="bgAmount" type="text" placeholder="Security amount" class="form-control input-md">
-                                
-                            </div>
-                            </div>
-                            
-                            <!-- Bid Validity-->
-                            <div class="form-group">
-                                <label class="col-md-4 control-label" for="bgValidity">Validity</label>  
-                                <div class="col-md-5">
-                                    <div id="date" class="input-group input-append" datePopUp ng-model="dateNow">
-                                        <input id="bgValidity" name="bgValidity" type="text" placeholder="Guarantee validity" class="date form-control input-md">
-                                        <span class="input-group-addon add-on"><i class="glyphicon glyphicon-calendar"></i></span>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Bank Name-->
-                            <div class="form-group">
-                            <label class="col-md-4 control-label" for="bankName">Bank</label>  
-                            <div class="col-md-5">
-                            <input id="bankName" name="bankName" type="text" placeholder="Bank name" class="form-control input-md">
-                                
-                            </div>
-                            </div>
-
-                            <!-- Manufacturer-->
-                            <div class="form-group">
-                            <label class="col-md-4 control-label" for="manufacturer">Manufacturer</label>  
-                            <div class="col-md-5">
-                            <input id="manufacturer" name="manufacturer" type="text" placeholder="Manufacturer name" class="form-control input-md">
-                                
-                            </div>
-                            </div>
-
-                            <!-- Competitors -->
-                            <div class="form-group">
-                            <label class="col-md-4 control-label" for="competitors"></label>
-                            <div class="col-md-4">
-                                <button id="competitors" name="competitors" class="btn btn-warning">Add Competitors</button>
-                            </div>
-                            </div>
-
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6">  
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row tag-panel">
-                    <div class="col-xs-6"><i class="glyphicon glyphicon-tags"></i><span> Tags</span></div>
-                    <div class="col-xs-6 text-right"><a ng-click="tagInput = !tagInput; tagText=''"><i ng-class="{ 'glyphicon glyphicon-plus' : !tagInput, 'glyphicon glyphicon-remove' : tagInput }"></i></a></div>
-                    <div class="tag-container" ng-show="tagInput">
-                            <input type="text" placeholder="Type and hit enter" data-user-tag-input="" data-new-tag="addTag()" ng-model="tagText" ng-class="{'text-danger' : alertTag}">
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body">
-                <ul class="nav nav-pills" role="tablist">
-                    <li ng-repeat="category in tenderDetail.category.concat(userTags)" role="presentation" class="active margin5 fbtn">
-                        <a ui-sref="home" class="padding5 input-tag btn btn-primary" ng-click="searchTag(category)">{{category}}
-                            <button class="delete-tag" ng-if="checkTag(category)" data-ng-click="deleteTag($event, category)">&times;</button>
-                        </a>
-                    </li>
-                </ul>
-                
-                
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<button ng-click="goBack()" class="btn fbtn btn-lg btn-success marginright10" disabled="disabled"><i class="glyphicon glyphicon-save" aria-hidden="true"></i> Save</button>
-<button ng-click="goBack()" class="btn fbtn btn-lg btn-primary">Go Back</button>
