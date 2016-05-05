@@ -132,11 +132,6 @@ var tenderApp = angular
                         scope.$apply(attributes.newTag);
                     }
                 });
-                // scope.$watch(attributes.ngModel, function (newValue, oldValue) {
-                //     if(newValue != oldValue)
-                //         element.css('color', '#000');
-                //         console.log('being watched oldValue:', oldValue, 'newValue:', newValue);
-                // })
             }
         }
     })
@@ -246,15 +241,24 @@ var tenderApp = angular
         $scope.userTags = [];
         $scope.alertTag = false;
         
+        $scope.$watch(
+            function(){
+                return $scope.tagText;
+            },
+            function(newValue){
+                if($scope.alertTag) $scope.alertTag = false;
+        });
+        
         $scope.addTag = function () {  
-            if($scope.tagText.length){
-                if($scope.userTags.indexOf($scope.tagText) !== -1){
+            var newTag = $scope.tagText.toLowerCase();
+            if(newTag.length){
+                if($scope.userTags.indexOf(newTag) !== -1 || $scope.tenderDetail.category.indexOf(newTag) !== -1){
                     $scope.alertTag = true;
-                    return;    
+                    return;  
                 }
                 else{
                     $scope.alertTag = false;
-                    $scope.userTags.push($scope.tagText);
+                    $scope.userTags.push(newTag);
                     $scope.tagText = '';
                 }
             }  
