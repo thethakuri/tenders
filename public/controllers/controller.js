@@ -241,6 +241,7 @@ var tenderApp = angular
         $scope.userTags = [];
         $scope.alertTag = false;
         
+        //Watch for changes in tag input especially after rectifying duplicate error
         $scope.$watch(
             function(){
                 return $scope.tagText;
@@ -275,13 +276,14 @@ var tenderApp = angular
             }
         }
         
-        //Keep bid information form from displaying afer switching views 
+        /***************WATCH FOR CHANGE OF VIEWS************/
         $scope.$watchCollection(
             function () {  
                 return $state.current.name;
             },
             function(newValue){
-                $scope.bidInfo = false;
+                $scope.bidInfo = false; //Keep bid information form from displaying afer switching views 
+                $scope.userTags = [];
             }   
         );
         
