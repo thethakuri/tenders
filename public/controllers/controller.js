@@ -79,12 +79,10 @@ var tenderApp = angular
             link: function(scope, element) {
                 scope.$watch(
                     function() {
-                        return angular.element(document.getElementById('searchViewButton')).prop('offsetWidth');
+                        return angular.element(element.parent()[0].querySelector('#searchViewButton')).prop('offsetWidth');
                     },
-                    function(newValue, oldValue) {
-                        if (newValue) {
-                            element.css('right', newValue + 25 + 'px');
-                        }
+                    function(newValue) {
+                        element.css('right', newValue + 25 + 'px');
                     }
                 );
             }
@@ -98,23 +96,29 @@ var tenderApp = angular
             }
         }
     })
-    .directive('datePopUp', function() {
+    .directive('multipleSelect', function(){
+        var options = [];
         return {
-            restrict: 'A',
-            require : 'ngModel',
-            link: function(scope, element, attrs, ngModelCtrl) {
-            element.datetimepicker({
-                dateFormat:'dd-MM-yyyy',
-                language: 'en',
-                pickTime: false,
-                startDate: '01-11-2013',      // set a minimum date
-                endDate: '01-11-2030'          // set a maximum date
-            }).on('changeDate', function(e) {
-                ngModelCtrl.$setViewValue(e.date);
-                scope.$apply();
-            });
+            restrict : 'A',
+            link : function (scope, element, attributes) {  
+                var targetElement = angular.element(element[0].querySelectorAll('a'));
+                targetElement.on('click', function(event){
+                    var target = $(this),
+                    val = target.attr('data-value'),
+                    inp = target.find('input'),
+                    idx;
+                if(( idx = options.indexOf(val)) > -1){
+                    options.splice(idx, 1);
+                    setTimeout( function() { inp.prop( 'checked', false ) }, 0); //wait for all events to finish to avoid conflict between <a> and <checkbox>
+                } else {
+                    options.push(val);
+                    setTimeout( function() { inp.prop( 'checked', true ) }, 0);
+                }
+                target.blur();
+                return false;
+                })  
             }
-        };
+        }
     })
     .directive('userTagInput', function(){
         return{
@@ -134,6 +138,16 @@ var tenderApp = angular
                 });
             }
         }
+    })
+    .directive('showFocus', function($timeout) {
+        return function(scope, element, attrs) {
+            scope.$watch(attrs.showFocus, 
+            function (newValue) { 
+                $timeout(function() {
+                    newValue && element.focus();
+                });
+            });
+        };    
     })
     // .directive('modalScroll', function(){ // fixes body shift to right when modal is on with {overflow-y : scroll} by default
     //     return{

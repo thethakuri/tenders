@@ -1,8 +1,7 @@
-* {
+/** {
     font-size: 14px;
-}
+}*/
 
-/* Footer*/
 html {
   position: relative;
   min-height: 100%;
@@ -12,6 +11,14 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 100px;
 }
+
+/*.jumbotron{
+
+    background-color: #0ac2d2;
+    color: white;
+}*/
+
+/* Footer*/
 .footer {
   position: absolute;
   bottom: 0;
@@ -29,6 +36,8 @@ body {
 .foottext{
     margin-top: 20px;
 }
+
+
 /*********************/
 
 .highlighted{
@@ -271,7 +280,7 @@ div.form-signup input[type="password"] {
 }
 
 .tenderOption input[type=checkbox]{
-    margin: 3px 0;
+    margin: 6px 0;
 }
 .tenderOption > span {
    margin-left: 20px; 
@@ -301,12 +310,35 @@ div.form-signup input[type="password"] {
 }
 
 .notifyMenu{
-    padding: 8px;
-    margin-right: 20px;
+    padding: 7px;
     
     border-bottom-left-radius: 0 !important;
     border-top-left-radius: 0 !important;
 }
+.notifyDropdown span {
+    padding: 3px 10px !important;
+}
+.notifyDropdown a {
+    padding: 3px 15px !important;
+}
+.notifyDropdown{
+    min-width: 145px !important;
+}
+.notifyDropdown .divider{
+    margin: 5px 0 !important;
+}
+
+/***********Notes************/
+.notesInput{
+    border: none;
+    overflow: auto;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
 /************TAGS*************/
 .tag-panel{
     position: relative;
@@ -407,11 +439,21 @@ div.form-signup input[type="password"] {
     opacity: 0.7;
 }
 
+#newCompetitor{
+    outline: 0;
+}
+
 /*==================================================
 =            Helper Styles:         ;             =
 ==================================================*/
 .marginbottom20{
     margin-bottom: 20px;
+}
+.margin5{
+    margin: 5px !important;
+}
+.margin10{
+    margin: 10px !important;
 }
 .margintop20{
     margin-top: 20px !important;
@@ -439,12 +481,6 @@ div.form-signup input[type="password"] {
 }
 .padding10{
     padding: 10px !important;
-}
-.margin5{
-    margin: 5px !important;
-}
-.margin10{
-    margin: 10px !important;
 }
 .nopaddingleftright {
    padding-left: 0 !important;
@@ -508,7 +544,7 @@ div.form-signup input[type="password"] {
 
     /* Large Devices, Wide Screens */
     @media only screen and (max-width : 1200px) {
-
+        
     }
 
     /* Medium Devices, Desktops */
@@ -518,7 +554,9 @@ div.form-signup input[type="password"] {
 
     /* Small Devices, Tablets */
     @media only screen and (max-width : 768px) {
-
+        .bidPartButton{
+            margin-top: 20px !important;
+        }
     }
 
     /* Extra Small Devices, Phones */ 

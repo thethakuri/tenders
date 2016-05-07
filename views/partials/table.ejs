@@ -11,7 +11,7 @@
             <!---Main Search Box-->
             <input class="form-control hasclear " ng-model="userSearch" type="text" placeholder="Search">
             <div id="viewSelect" class="input-group-btn  ">
-                <button type="button" id="searchViewButton" ng-model="searchViewButton" class="btn btn-default dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span ng-bind="currentView"></span><span class="caret"></span></button>
+                <button type="button" id="searchViewButton" ng-model="searchViewButton" class="btn btn-default dropdown-toggle " data-toggle="dropdown"><span ng-bind="currentView"></span><span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li ng-click="fetch('Active')"><a href="#/">Active Postings</a></li>
                     <li ng-click="fetch('Recent')"><a href="#/">Recent Postings</a></li>
@@ -46,7 +46,7 @@
         <table class="table table-condensed table-hover">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="hidden-xs">#</th>
                     <th ng-click="sortTable.sortKey='item'; sortTable.reverse = !sortTable.reverse">
                         <a href="#/" data-toggle='tooltip' title="Sort by item" initialize-tooltip>
                             Title
@@ -95,7 +95,7 @@
                 <!--Using dir-paginate directive instead of ng-repeat for pagination support -->
                 <tr dir-paginate="tender in filtered = (tenderlist | multipleFilter : userSearch) | orderBy : sortTable.sortKey : sortTable.reverse | itemsPerPage : pagination.pageSize"
                 current-page="pagination.currentPage" ng-class="getStatus(tender.subDate)" ng-click="loadTender(tender)" ng-cloak>
-                    <td>{{ ($index + 1) + (pagination.currentPage - 1) * pagination.pageSize}}</td>
+                    <td class="hidden-xs">{{ ($index + 1) + (pagination.currentPage - 1) * pagination.pageSize}}</td>
                     <td>{{tender.item}}</td>
                     <td>{{tender.caller}}</td>
                     <td class="hidden-xs">{{tender.pubDate | date : 'dd/MM/yyyy'}}</td>
