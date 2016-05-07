@@ -139,6 +139,7 @@ var tenderApp = angular
             }
         }
     })
+    // Set input focus on ng-show
     .directive('showFocus', function($timeout) {
         return function(scope, element, attrs) {
             scope.$watch(attrs.showFocus, 
