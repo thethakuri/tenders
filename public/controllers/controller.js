@@ -73,21 +73,23 @@ var tenderApp = angular
         }
     })
     // Add  offset to clear button dynamically
-    .directive('searchClear', function() {
+    .directive('searchClear', ['userSearchField', function(userSearchField) {
         return {
             restrict: 'A',
             link: function(scope, element) {
-                scope.$watch(
+                scope.$watchCollection(
                     function() {
                         return angular.element(element.parent()[0].querySelector('#searchViewButton')).prop('offsetWidth');
                     },
                     function(newValue) {
-                        element.css('right', newValue + 25 + 'px');
+                        //newValue is set to 0 when show hide home view
+                        var offsetValue = (newValue === 0 ? userSearchField.fieldWidth.get() : newValue+25);
+                        element.css('right', offsetValue + 'px');
                     }
                 );
             }
         }
-    })
+    }])
     .directive('initializeTooltip', function() {
         return {
             restrict: 'A',
@@ -168,15 +170,40 @@ var tenderApp = angular
     //     }
     // })
     .factory('userSearchField', function () {  
-        var searchTerm = '';
+        
+        var searchField = {
+            searchTerm : '',
+            fieldWidth : 0
+        };
+        
         return {
-            get : function () {  
-                return searchTerm;
+            searchTerm : {
+                get : function(){
+                    return searchField.searchTerm;
+                },
+                set : function(newTerm){
+                    searchField.searchTerm = newTerm;
+                }
             },
-            set : function (newTerm) {  
-                searchTerm = newTerm;
+            fieldWidth : {
+                get : function (){
+                    return searchField.fieldWidth;
+                },
+                set : function (newWidth) {  
+                    searchField.fieldWidth = newWidth;
+                }
             }
-        } 
+        };
+        
+        // var searchTerm = '';
+        // return {
+        //     get : function () {  
+        //         return searchTerm;
+        //     },
+        //     set : function (newTerm) {  
+        //         searchTerm = newTerm;
+        //     }
+        // } 
     })
     .factory('tenderFactory', function(){
         var tenderInstance = {};
@@ -319,7 +346,7 @@ var tenderApp = angular
             $state.go('home');
         }
         $scope.searchTag = function (searchTerm) {  
-            userSearchField.set(searchTerm);
+            userSearchField.searchTerm.set(searchTerm);
         }
         
         $scope.remainingDays = function (subDate) {  
@@ -349,13 +376,30 @@ var tenderApp = angular
         //userSearch field
         $scope.$watch(
             function () {  
-                return userSearchField.get();
+                return userSearchField.searchTerm.get();
             }
             ,
             function (newValue) {  
                 $scope.userSearch = newValue;
             }
         );
+        
+        /***************WATCH FOR CHANGE OF VIEWS FROM TenderAppCtrl************/
+        /*eg. page back button is hit*/
+        $scope.$watchCollection(
+            function () {  
+                return $state.current.name;
+            },
+            function(newValue){    
+                // retain searchBar offsetwidth while show hide views
+                // user for search clear icon positioning
+                if(newValue==='home.detail'){
+                    var offsetW = angular.element(document.querySelector('#searchViewButton')).prop('offsetWidth');
+                    userSearchField.fieldWidth.set(offsetW + 25);
+                }
+            }   
+        );
+        
         
         $scope.loadTender = function (tender) {
             tenderFactory.set(tender);
