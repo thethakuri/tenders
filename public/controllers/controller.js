@@ -275,10 +275,9 @@ var tenderApp = angular
         $scope.currentYear = new Date().getFullYear();
     })
     .controller('TenderDetailCtrl', ['$scope', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', function ($scope, tenderFactory, $state, userSearchField, daysDifference, tenderText) {  
+        
         $scope.$state = $state;
         $scope.tenderDetail = tenderFactory.get();
-        
-        $scope.dateNow = '07-12-2013';
         
         $scope.tagInput = false;
         $scope.userTags = [];
@@ -345,6 +344,7 @@ var tenderApp = angular
         $scope.goBack = function () {  
             $state.go('home');
         }
+        
         $scope.searchTag = function (searchTerm) {  
             userSearchField.searchTerm.set(searchTerm);
         }
@@ -369,7 +369,9 @@ var tenderApp = angular
         
       
     }])
-    .controller('TenderAppCtrl', ['$scope', 'tenderService', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', function($scope, tenderService, tenderFactory, $state, userSearchField, daysDifference, tenderText) {
+    .controller('TenderAppCtrl', ['$scope', 'tenderService', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', '$window', function($scope, tenderService, tenderFactory, $state, userSearchField, daysDifference, tenderText, $window) {
+        
+        
         
         $scope.$state = $state;
         $scope.loadingData = true;
@@ -397,6 +399,7 @@ var tenderApp = angular
                     var offsetW = angular.element(document.querySelector('#searchViewButton')).prop('offsetWidth');
                     userSearchField.fieldWidth.set(offsetW + 25);
                 }
+               
             }   
         );
         
@@ -404,6 +407,7 @@ var tenderApp = angular
         $scope.loadTender = function (tender) {
             tenderFactory.set(tender);
             $state.transitionTo('home.detail', {id: tender._id}, {notify: false});
+            $window.scrollTo(0, 0);
         }
         
         //Decalre session user
