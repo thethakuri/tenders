@@ -1,6 +1,6 @@
 //$scope is the glue between application controller and the view
 var tenderApp = angular
-    .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar', 'ui.router', 'angularjs-datetime-picker'])
+    .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar', 'ui.router', 'angularjs-datetime-picker', 'ngSanitize', 'MassAutoComplete'])
     .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {  
         $urlRouterProvider.otherwise('/');
         
@@ -10,7 +10,7 @@ var tenderApp = angular
                 views : {
                     '' : {
                         templateUrl : 'partials/default.ejs',
-                        controller : 'TenderAppCtrl'                
+                        controller : 'DefaultCtrl'          
                     },
                     'defaultView@home' : {
                         templateUrl : 'partials/table.ejs',
@@ -68,7 +68,6 @@ var tenderApp = angular
     */
     .directive('navBar', function() {
         return {
-            controller: 'TenderAppCtrl',
             templateUrl: 'partials/navbar.ejs'
         }
     })
@@ -94,33 +93,57 @@ var tenderApp = angular
         return {
             restrict: 'A',
             link: function(scope, element) {
-                element.tooltip();
+                element.tooltip({
+                    trigger : 'hover'
+                });
             }
         }
     })
-    .directive('multipleSelect', function(){
-        var options = [];
+    .directive('preventBackspace', function(){ // prevent pressing backspace key from navigating to previous page 
+        var rx = /INPUT|SELECT|TEXTAREA/i;
+
         return {
             restrict : 'A',
-            link : function (scope, element, attributes) {  
-                var targetElement = angular.element(element[0].querySelectorAll('a'));
-                targetElement.on('click', function(event){
-                    var target = $(this),
-                    val = target.attr('data-value'),
-                    inp = target.find('input'),
-                    idx;
-                if(( idx = options.indexOf(val)) > -1){
-                    options.splice(idx, 1);
-                    setTimeout( function() { inp.prop( 'checked', false ) }, 0); //wait for all events to finish to avoid conflict between <a> and <checkbox>
-                } else {
-                    options.push(val);
-                    setTimeout( function() { inp.prop( 'checked', true ) }, 0);
-                }
-                target.blur();
-                return false;
-                })  
+            link : function(scope, element, attributes) {
+                element.bind('keydown', function (e){
+
+                    if(e.which == 8 ){ //keycode for Backspace
+                        
+                        if(!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly ){
+                            e.preventDefault();
+                            element.modal('hide');
+                            
+                        }
+                    }
+                })
             }
         }
+    })
+    .directive('preventDoubleclick', function ($timeout) {
+    var delay = 500;   // min milliseconds between clicks
+
+        return {
+            restrict: 'A',
+            priority: -1,   // cause out postLink function to execute before native `ngClick`'s
+                            // ensuring that we can stop the propagation of the 'click' event
+                            // before it reaches `ngClick`'s listener
+            link: function (scope, elem) {
+                var disabled = false;
+
+                function onClick(evt) {
+                    if (disabled) {
+                        evt.preventDefault();
+                        evt.stopImmediatePropagation();
+                    } else {
+                        disabled = true;
+                        $timeout(function () { disabled = false; }, delay, false);
+                    }
+                }
+
+                scope.$on('$destroy', function () { elem.off('click', onClick); });
+                elem.on('click', onClick);
+            }
+        };
     })
     .directive('userTagInput', function(){
         return{
@@ -152,23 +175,17 @@ var tenderApp = angular
             });
         };    
     })
-    // .directive('modalScroll', function(){ // fixes body shift to right when modal is on with {overflow-y : scroll} by default
-    //     return{
-    //         restrict: 'EA',
-    //         link: function(scope, element, attributes){
-    //             $(element).on('show.bs.modal', function(){
-    //                 angular.element(document).find("html").css("overflow", "hidden");
-    //                 angular.element(document).find("body").css("marginRight", "15px");
-                    
-                    
-    //             });
-    //             $(element).on('hidden.bs.modal', function () {  
-    //                 angular.element(document).find("html").css("overflowY", "scroll");
-    //                 angular.element(document).find("body").css("marginRight", "0");
-    //             }); 
-    //         }   
-    //     }
-    // })
+    .factory('userDataFactory', function(){
+        var userDataObj = {};
+        return {
+            get : function () {  
+                return userDataObj;
+            },
+            set : function (newUserObj) {
+                userDataObj = newUserObj;
+            }
+        }
+    })
     .factory('userSearchField', function () {  
         
         var searchField = {
@@ -245,11 +262,25 @@ var tenderApp = angular
           getStatus : getStatus
       }) 
     }])
-    .service('tenderService', function ($http, $q) {  
-        function getTenderView(url){
+    .service('validDate', function(){
+        var date_regex = /^20[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
+        this.check = function(dateString){
+            return date_regex.test(dateString);  
+        }
+    })
+    .service('httpService', function ($http, $q) {  
+        function getData(url){
             var request = $http({
                 method : 'get',
                 url : url
+            });
+            return (request.then(handleSuccess, handleError));
+        }
+        function putData(url, data){
+            var request = $http({
+                method : 'put',
+                url : url,
+                data : data
             });
             return (request.then(handleSuccess, handleError));
         }
@@ -265,23 +296,103 @@ var tenderApp = angular
         }
         
         return({
-            getTenderView : getTenderView
+            getData : getData,
+            putData : putData
         })
     })
-    .controller('topController', function ($location) {  
-        $location.path('/');
+    .service('userTenderData', function () { 
+        
+        this.get = function (tenderId, tenderArrays){
+                
+                //console.log('TenderId %s', tenderId);
+                var result = null;
+                var foundTender = false; //hack to break out of forEach
+                angular.forEach(tenderArrays, function(tender){
+                    if(!foundTender){
+                        if(angular.equals(tenderId, tender._id)){
+                            //console.log('Match: Tender id %s', tender._id);
+                            result = tender;
+                            foundTender = true;
+                        }
+                    }   
+                });
+                return result;
+        }
     })
+    .service('userCompetitorInfo', function(){
+        this.get = function (competitorID, competitorArray){
+            var result;
+            angular.forEach(competitorArray, function(competitor){
+                if(angular.equals(competitorID, competitor._id)){
+                    result = competitor;
+                }
+            });
+            return result;
+        }
+    })
+    .controller('topController', ['$scope', '$location', 'httpService', 'userDataFactory', function ($scope, $location, httpService, userDataFactory) {  
+        $location.path('/');
+        
+        // User Tender Data
+        loadUserData('/User');
+        //Load User data
+        function loadUserData(url) {
+            httpService.getData(url).then(function (userData) {
+                userDataFactory.set(userData);
+            })
+        };
+
+        // update watchlist, paticipated and tags count badges on navbar
+        $scope.$watch(
+            function(){
+                return userDataFactory.get();
+            },
+            function(userData){
+                if(!angular.equals({}, userData)){
+                    $scope.myTenderCount = function(){
+                        var tags = 0;
+                        var partCount = 0;
+                        angular.forEach(userData.tenders, function(tender){
+                            tags += tender.userTags.length;
+                            if(tender.participationInfo.quotation) partCount++;
+                        })
+                        return {
+                            watching : userData.tenders.length,
+                            tags : tags,
+                            participated : partCount
+                        }
+                    }
+                }
+            }
+        );
+
+        
+    }])
     .controller('FooterCtrl', function($scope) {
         $scope.currentYear = new Date().getFullYear();
     })
-    .controller('TenderDetailCtrl', ['$scope', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', function ($scope, tenderFactory, $state, userSearchField, daysDifference, tenderText) {  
+    .controller('TenderDetailCtrl', ['$scope', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', 'userDataFactory', 'httpService', 'userTenderData', 'validDate', 'userCompetitorInfo', '$filter', function ($scope, tenderFactory, $state, userSearchField, daysDifference, tenderText, userDataFactory, httpService, userTenderData, validDate, userCompetitorInfo, $filter) {  
         
         $scope.$state = $state;
-        $scope.tenderDetail = tenderFactory.get();
         
-        $scope.tagInput = false;
-        $scope.userTags = [];
-        $scope.alertTag = false;
+        //$scope.userData = userDataFactory.get();
+        //$scope.tenderDetail = tenderFactory.get();
+        
+        //$scope.tagInput = false;
+        //$scope.alertTag = false;
+        
+        /* Form save events */
+        //$scope.enableSave = false;
+        // $scope.$watch("userTags.length", function(newValue){
+        //     if(newValue){
+        //         $scope.enableSave = true;
+        //     }
+        // })
+        // $scope.$watch("notify", function(newValue, oldValue){
+        //     if(newValue != oldValue){
+        //         $scope.enableSave = true;
+        //     }
+        // })
         
         //Watch for changes in tag input especially after rectifying duplicate error
         $scope.$watch(
@@ -291,6 +402,7 @@ var tenderApp = angular
         });
         
         $scope.addTag = function () {  
+            $scope.enableSave = true;
             var newTag = $scope.tagText.toLowerCase();
             if(newTag.length){
                 if($scope.userTags.indexOf(newTag) !== -1 || $scope.tenderDetail.category.indexOf(newTag) !== -1){
@@ -308,6 +420,7 @@ var tenderApp = angular
             return $scope.tenderDetail.category.indexOf(tag) === -1;
         }
         $scope.deleteTag = function (event, tag) {
+            $scope.enableSave = true;
             event.preventDefault(); // since our anchor is inside a button
             event.stopPropagation(); // prevent event from bubbling up
             var key = $scope.userTags.indexOf(tag);
@@ -323,23 +436,367 @@ var tenderApp = angular
                 return $state.current.name;
             },
             function(newValue){
-                $scope.bidInfo = false; //Keep bid information form from displaying afer switching views 
-                //reset tag values
-                $scope.userTags = [];
-                $scope.tagText = '';
-                $scope.tagInput = false;
+                
+                $scope.bidInfoForm = false; //Keep bid information form from displaying afer switching views
+                $scope.enableSave = false;
+                
+                if(newValue === 'home.detail'){
+                    
+                    $scope.enableSave = false;
+                    $scope.tagText = null;
+                    $scope.tagInput = false;
+                    $scope.alertTag = false;
+
+                    //Initialize bid participation form elements
+                    $scope.competitor = {};
+                    $scope.editCompFormInfo = {}; // update competitor's information
+                    $scope.vat = true;
+                    $scope.userCurrency = 'NRs';
+                    $scope.competitor.vat = true;
+                    $scope.competitor.currency = 'NRs'; //ng-init is not working when ng-model is object notation
+                    $scope.competitorsBid = []; // holds competitor's bid for current listing
+                    $scope.toggleMore = false; //toggle competitor's panel accordion
+                    $scope.editCompFormInfo.disable = false;  
+                    $scope.hasPartInfo = false; //does the current listing has user's participation information
+                    
+                    $scope.userData = userDataFactory.get();
+                    $scope.tenderDetail = tenderFactory.get();
+
+                    $scope.competitorsList = $scope.userData.competitors; //get the list of pre defined competitors
+                    
+                    var tender = userTenderData.get($scope.tenderDetail._id, $scope.userData.tenders);
+                    // If corresponding tender data info is found
+                    if(tender){
+                        
+                        populateUserTenderInfo(tender);
+                    }
+                    else{
+                        // reset values
+                        $scope.notes = 'Type your notes here !'
+                        $scope.userTags = [];
+                        $scope.notify = false;
+                        for (var key in $scope.notifyOptions){
+                            $scope.notifyOptions[key] = false;
+                        }
+
+                        $scope.resetBidPartForm();
+                    }
+                }
+                
                 
                 angular.element(document.querySelector('.modal')).modal('hide'); //hide modal
+                angular.element(document.querySelector('#competitors')).modal('hide'); //hide modal
             }   
         );
         
-        $scope.$watch( 
+        // populate using existing user's tender information
+        function populateUserTenderInfo(tender){
+            $scope.notes = tender.notes;
+            $scope.userTags = angular.copy(tender.userTags); //pass by value or else modifies source as well
+            $scope.notify = tender.preferences.notify;
+            $scope.notifyOptions = angular.copy(tender.preferences.notifyFrequency);
+
+            if(tender.hasOwnProperty('participationInfo')) {
+                if(tender.participationInfo.quotation){
+                    $scope.hasPartInfo = true;
+                    $scope.partInfo = tender.participationInfo;
+                    if($scope.partInfo.competitorsBid.length){
+                        $scope.competitorsBid = angular.copy($scope.partInfo.competitorsBid);
+                    }
+                }
+                else $scope.hasPartInfo = false;
+            }
+        }
+        
+        function suggestCompetitor(term){
+            var q = term.toLowerCase().trim(), results = [];
+
+            for (var i = 0; i < $scope.competitorsList.length; i++) {
+                var compList = $scope.competitorsList[i];
+                if (compList.name.toLowerCase().indexOf(q) !== -1)
+                
+                    results.push({ label: compList.name, value: compList.name, obj: compList});
+
+            }
+            return results;
+        };
+        $scope.autocomplete_options = {
+            suggest : suggestCompetitor,
+            on_select : function(selected){
+                $scope.selectCompetitor = selected.obj;
+                $scope.populateComp(); 
+            }
+        };
+
+        // Watch for changes in competitor's name input
+        $scope.updateComp = function(){
+            if($scope.selectCompetitor){
+                $scope.selectCompetitor = undefined;
+                $scope.populateComp();
+            }           
+        }
+
+        $scope.populateComp = function(){
+            if($scope.selectCompetitor){
+                $scope.competitor.name = $scope.selectCompetitor.name;
+                $scope.competitor.address = $scope.selectCompetitor.address;
+                $scope.competitor.person = $scope.selectCompetitor.contactPerson;
+                $scope.competitor.phone = $scope.selectCompetitor.phone;
+                   
+            }
+            else{
+                $scope.competitor.address = null;
+                $scope.competitor.person = null;
+                $scope.competitor.phone = null;
+            }
+        }
+
+        $scope.compExists = function(compName){
+            var exists = false;
+
+            $scope.competitorsBid.forEach(function(competitor){
+                if(compName === competitor.name) exists = true;
+            })
+
+            return exists;
+        }
+
+
+        // Competitor's bid form action
+        
+        $scope.saveCompForm = function(url){
+
+            if($scope.editCompFormInfo.disable){ //We just want to update competitor's bid information
+                var index = $scope.editCompFormInfo.index;
+                $scope.competitorsBid[index].quotation = $scope.competitor.quotation;
+                $scope.competitorsBid[index].currency = $scope.competitor.currency;
+                $scope.competitorsBid[index].vat = $scope.competitor.vat;
+                $scope.competitorsBid[index].security = $scope.competitor.bgAmount ? $scope.competitor.bgAmount : undefined;
+                $scope.competitorsBid[index].validity = $scope.competitor.bgValidity ? $scope.competitor.bgValidity : undefined;
+                $scope.competitorsBid[index].issuer = $scope.competitor.bankName ? $scope.competitor.bankName : undefined;
+                $scope.competitorsBid[index].manufacturer = $scope.competitor.manufacturer ? $scope.competitor.manufacturer : undefined;
+                $scope.competitorsBid[index].remarks = $scope.competitor.remarks ? $scope.competitor.remarks : undefined;
+
+                $scope.resetCompForm();
+            }
+
+            else if($scope.selectCompetitor){
+                addCompetitorBid($scope.selectCompetitor._id);
+            }
+
+            else { //if new competitor's information is provided insert it into database first
+                    var data = {
+                    'name' : $scope.competitor.name
+                    , 'address' : $scope.competitor.address ? $scope.competitor.address : undefined
+                    , 'contactPerson' : $scope.competitor.person ? $scope.competitor.person : undefined
+                    , 'phone' : $scope.competitor.phone ? $scope.competitor.phone : undefined
+                };
+
+                httpService.putData('/Update/User/Competitor', data).then(function (userData) {
+                    
+                    addCompetitorBid(userData.competitors[userData.competitors.length-1]._id);
+                    userDataFactory.set(userData);
+
+                });
+            }
+            angular.element(document.querySelector('#competitors')).modal('hide'); //hide modal
+
+            function addCompetitorBid(competitorID){
+                $scope.competitorsBid.push({
+                    '_id' : competitorID
+                    , 'name' : $scope.competitor.name
+                    , 'quotation' : $scope.competitor.quotation
+                    , 'currency' : $scope.competitor.currency
+                    , 'vat' : $scope.competitor.vat
+                    , 'security' : $scope.competitor.bgAmount ? $scope.competitor.bgAmount : undefined
+                    , 'validity' : $scope.competitor.bgValidity ? $scope.competitor.bgValidity : undefined
+                    , 'issuer' : $scope.competitor.bankName ? $scope.competitor.bankName : undefined
+                    , 'manufacturer' : $scope.competitor.manufacturer ? $scope.competitor.manufacturer : undefined
+                    , 'remarks' : $scope.competitor.remarks ? $scope.competitor.remarks : undefined
+                });
+                $scope.resetCompForm(); //need to wait for http call to return before resetting
+            }
+        };
+
+        $scope.saveUserForm = function(url){
+            //alert(JSON.stringify($scope.notifyOptions));
+            var data = {
+                '_id' : $scope.tenderDetail._id,
+                'preferences' : {
+                    'notify' : $scope.notify,
+                    'notifyFrequency' : $scope.notifyOptions
+                },
+                'userTags' : $scope.userTags,
+                'notes'  : $scope.notes,
+            };
+
+            if($scope.bidInfoForm){
+                data.participationInfo = {
+                    'quotation' : $scope.quotation
+                    , 'currency' : $scope.userCurrency
+                    , 'vat' : $scope.vat
+                    , 'security' : $scope.bgAmount ? $scope.bgAmount : undefined
+                    , 'validity' : $scope.bgValidity ? $scope.bgValidity : undefined
+                    , 'issuer' : $scope.bankName ? $scope.bankName : undefined
+                    , 'manufacturer' : $scope.manufacturer ? $scope.manufacturer : undefined
+                    , 'remarks' : $scope.remarks ? $scope.remarks : undefined
+                    , 'competitorsBid' : $scope.competitorsBid.length ? $scope.competitorsBid : []
+                };
+            }
+            else if($scope.hasPartInfo){
+                data.participationInfo = angular.copy($scope.partInfo);
+            }
+
+            
+            // if($scope.competitorsBid){
+            //     console.log('Competitor: ' + JSON.stringify($scope.competitorsBid));
+            //     data.$scope.competitorsBid.push($scope.competitorsBid);
+            //     $scope.competitorsBid = undefined;
+            // }
+            
+            httpService.putData(url, data).then(function (userData) {  
+                
+                userDataFactory.set(userData);
+
+                $scope.enableSave = false;
+                $scope.resetBidPartForm();
+                populateUserTenderInfo(data);
+            });
+        };
+
+        // Populate user's bid information form with previous data 
+        $scope.populateBidInfo = function(){
+            $scope.userCurrency = $scope.partInfo.currency;
+            $scope.quotation = $scope.partInfo.quotation;
+            $scope.vat = $scope.partInfo.vat;
+            $scope.bgAmount = $scope.partInfo.security;
+            $scope.bgValidity = $filter('date')($scope.partInfo.validity, 'yyyy-MM-dd');
+            $scope.bankName = $scope.partInfo.issuer;
+            $scope.manufacturer = $scope.partInfo.manufacturer;
+            $scope.remarks = $scope.partInfo.remarks;
+        }
+
+        //Reset bid information form
+        $scope.resetBidPartForm = function(){
+            
+            $scope.userCurrency =  'NRs';
+            $scope.quotation =  null;
+            $scope.vat =  true;
+            $scope.bgAmount =  null;
+            $scope.bgValidity =  null;
+            $scope.bankName =  null;
+            $scope.manufacturer =  null;
+            $scope.remarks =  null;
+
+            if($scope.hasPartInfo){
+                if($scope.partInfo.competitorsBid.length){
+                    $scope.competitorsBid = angular.copy($scope.partInfo.competitorsBid);
+                }
+            }
+            else $scope.competitorsBid = [];
+
+            $scope.userBidPartForm.$setPristine();
+            $scope.userBidPartForm.quotation.$setPristine();
+            
+        };
+
+        //Reset competitor's form
+        $scope.resetCompForm = function(){
+
+            $scope.editCompFormInfo.disable = false;
+            $scope.selectCompetitor = undefined;
+            
+            $scope.competitor.name = null;
+            $scope.competitor.address = null;
+            $scope.competitor.person = null;
+            $scope.competitor.phone = null;
+
+            $scope.competitor.quotation = null;
+            $scope.competitor.currency = 'NRs';
+            $scope.competitor.vat = true;
+            $scope.competitor.bgAmount = null;
+            $scope.competitor.bgValidity = null;
+            $scope.competitor.bankName = null;
+            $scope.competitor.manufacturer = null;
+            $scope.competitor.remarks = null;
+
+            $scope.compBidPartForm.$setPristine();
+            $scope.compBidPartForm.compQuotation.$setPristine();
+            $scope.compBidPartForm.compName.$setPristine();
+        }
+
+        $scope.editCompForm = function(index){
+            var competitor = $scope.competitorsBid[index];
+            var competitorInfo = userCompetitorInfo.get(competitor._id, $scope.competitorsList);
+            $scope.editCompFormInfo.disable = true;
+            $scope.editCompFormInfo.index = index;
+            
+            $scope.competitor.name = competitorInfo.name;
+            $scope.competitor.address = competitorInfo.address;
+            $scope.competitor.person = competitorInfo.contactPerson;
+            $scope.competitor.phone = competitorInfo.phone;
+
+            $scope.competitor.quotation = competitor.quotation;
+            $scope.competitor.currency = competitor.currency;
+            $scope.competitor.vat = competitor.vat;
+            $scope.competitor.bgAmount = competitor.security;
+            $scope.competitor.bgValidity = $filter('date')(competitor.validity, 'yyyy-MM-dd');
+            $scope.competitor.bankName = competitor.issuer;
+            $scope.competitor.manufacturer = competitor.manufacturer;
+            $scope.competitor.remarks = competitor.remarks;
+        }
+        
+        // Watch for changes in information and update respectively
+        $scope.$watchCollection( 
             function () {  
                 return tenderFactory.get();
             },
             function(newValue){
                 $scope.tenderDetail = newValue;
         });
+        $scope.$watchCollection(
+            function(){
+                return userDataFactory.get();
+            },
+            function(newValue){
+                $scope.userData = newValue;
+                $scope.competitorsList = $scope.userData.competitors; //update competitors list
+            }
+        );
+
+
+        /* Functions */
+        $scope.disableCompSave = function(isName, isQuote){
+
+            if(isName && isQuote){
+                if($scope.competitor.bgValidity){
+                    return !validDate.check($scope.competitor.bgValidity);
+                }
+                if($scope.selectCompetitor){
+                    return $scope.compExists($scope.selectCompetitor.name); //check if competitor already exists
+                }
+                return false;
+            }
+            return true;
+        }
+
+
+        $scope.disableSave = function(isQuote){
+            if ($scope.enableSave || $scope.bidInfoForm){
+                if ($scope.bidInfoForm&&!isQuote) {
+                    return true;
+                }
+                if($scope.bidInfoForm&&isQuote&&$scope.bgValidity){
+                    return !validDate.check($scope.bgValidity);
+                }
+                return false;
+            };
+            return true;
+        }
+
+        $scope.checkDate = function (dateString){
+            return validDate.check(dateString);
+        }
 
         $scope.goBack = function () {  
             $state.go('home');
@@ -362,21 +819,34 @@ var tenderApp = angular
             return daysDifference.diffDays(subDate) <= 0;
         };
         
-        $scope.bidPart = function(subDate){
-            if($scope.isExpired(subDate)) $scope.bidInfo = true;
-            return;
+        // notification option dropdown list validity check
+        $scope.notifyOptionsValid = function (subDate, notifyDate) {
+            return daysDifference.diffDays(subDate) > notifyDate;
         }
         
+        $scope.bidPart = function(subDate){
+            if($scope.isExpired(subDate)) $scope.bidInfoForm = true;
+            return;
+        }
+
+        // Remove an item with given index from array 
+        $scope.removeFromArray = function(index, array){
+            array.splice(index, 1);
+        }
       
     }])
-    .controller('TenderAppCtrl', ['$scope', 'tenderService', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', '$window', function($scope, tenderService, tenderFactory, $state, userSearchField, daysDifference, tenderText, $window) {
+    .controller('DefaultCtrl', function($scope, $state){
+        $scope.$state = $state;
+    })
+    .controller('TenderAppCtrl', ['$scope', 'httpService', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', '$window', 'userDataFactory', function($scope, httpService, tenderFactory, $state, userSearchField, daysDifference, tenderText, $window, userDataFactory) {
         
         
         
         $scope.$state = $state;
         $scope.loadingData = true;
+        
         //userSearch field
-        $scope.$watch(
+        $scope.$watchCollection(
             function () {  
                 return userSearchField.searchTerm.get();
             }
@@ -385,6 +855,11 @@ var tenderApp = angular
                 $scope.userSearch = newValue;
             }
         );
+        
+        $scope.clearSearch = function(){
+            $scope.userSearch = '';
+            userSearchField.searchTerm.set('');
+        }
         
         /***************WATCH FOR CHANGE OF VIEWS FROM TenderAppCtrl************/
         /*eg. page back button is hit*/
@@ -413,8 +888,19 @@ var tenderApp = angular
         //Decalre session user
         $scope.user;
         
+        
         // Default view
         loadTenderData('/Active');
+        //Load Tender data
+        function loadTenderData(url) {
+            $scope.loadingData = true;
+            httpService.getData(url).then(function (tenders) {  
+                 $scope.tenderlist = tenders;
+                 $scope.loadingData = false;
+            })
+        };
+        
+        
         
         //default sort table headers
         $scope.sortTable = {
@@ -439,20 +925,11 @@ var tenderApp = angular
             if ($scope.currentView != givenView) {
                 $scope.loadingData = true;
                 $scope.currentView = givenView;
-                tenderService.getTenderView('/'+ givenView).then(function(tenders) {
+                httpService.getData('/'+ givenView).then(function(tenders) {
                     $scope.tenderlist = tenders;
                     $scope.loadingData = false;
                 });
             }
-        };
-        
-         //Load Tender data
-        function loadTenderData(url) {
-            $scope.loadingData = true;
-            tenderService.getTenderView(url).then(function (tenders) {  
-                 $scope.tenderlist = tenders;
-                 $scope.loadingData = false;
-            })
         };
         
         //Row color

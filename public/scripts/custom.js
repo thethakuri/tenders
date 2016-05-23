@@ -1,6 +1,16 @@
 //Custom jQueries
-$(function (){
+
+$(function(){
     
+    $('.modal').on('show.bs.modal', function(){
+        alert('Hello');
+        $('.footerbar').css('margin-right', '15px');
+        
+    });
+    $('.modal').on('hide.bs.modal', function () {
+        $('.footerbar').css('margin-right', 0);
+    });
+
     /*
     // Clear button for search field
     $(".clear").css("right", $("#viewSelect > button").width() + 50 +"px");

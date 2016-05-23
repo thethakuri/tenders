@@ -3,7 +3,7 @@
 var Tender = require('../models/tender');
 var Users = require('../models/users');
 var nodemailer = require('nodemailer');
-var reCAPTCHA=require('recaptcha2')
+var reCAPTCHA=require('recaptcha2');
  
 recaptcha = new reCAPTCHA({
     siteKey: process.env.RECAPTCHA_SITEKEY,
@@ -115,7 +115,7 @@ module.exports = function (app, passport) {
     app.get('/Active', isLoggedIn, function(req, res){
         var now = new Date();
         now.setHours(0,0,0,0);
-        console.log('GET Request: ' + now);
+        //console.log('GET Request: ' + now);
         
         Tender.find({subDate : {$gte : now}}, function(err, docs){
             res.json(docs);
@@ -143,12 +143,89 @@ module.exports = function (app, passport) {
         
     });
     
+    app.get('/User', isLoggedIn, function(req, res){
+        
+        Users
+            .findById(req.user._id)
+            .select('admin createdAt email groups messages tenders competitors updatedAt')
+            // .populate([
+            //     {
+            //         path : 'tenders',
+            //         populate : {
+            //             path : '_id',
+            //             model : 'Tender'
+            //         }
+            //     },
+            //     {
+            //         path : 'groups',
+            //         populate :{
+            //             path : 'admin',
+            //             model : 'User'
+            //         },
+            //         populate : {
+            //             path : 'members',
+            //             model : 'User'
+            //         },
+            //         populate : {
+            //             path : 'requests',
+            //             model : 'User'
+            //         }
+            //     }
+            // ])
+            //.lean()
+            .exec(function(err, doc){
+                res.json(doc);
+            })
+    });
+    
+    app.put('/Update/User/TenderData', isLoggedIn, function (req, res) {  
+        Users
+            .findOne({'_id' : req.user._id }, '-password -authToken -isAuthenticated', function(err, doc){
+                if (err){
+                    console.log(err);
+                    res.status(500).send();
+                }
+                
+                doc.tenders.pull(req.body._id);
+                doc.tenders.push(req.body);
+                doc.save(function (err) {
+                    if(err) {
+                        console.log(err);
+                        res.status(500).send();
+                    }
+                    return res.json(doc);
+                }); 
+            });
+    });
+    
+    app.put('/Update/User/Competitor', isLoggedIn, function (req, res) {  
+        Users
+            .findOne({'_id' : req.user._id}, '-password -authToken -isAuthenticated', function (err, doc) {  
+                
+                if (err){
+                    console.log(err);
+                    res.status(500).send();
+                }
+                doc.competitors.push(req.body);
+                doc.save(function (err, doc){
+                    if(err){
+                        console.log(err);
+                        res.status(500).send();
+                    }
+                    
+                    //return res.json(doc.competitors[doc.competitors.length-1]._id);
+                    return res.json(doc);
+                });
+            });
+    });
+    
     // Get specific tender detail
-    app.get('/:id', isLoggedIn, function (req, res) {
-        Tender.findById(req.params.id, function (err, doc) {
-            res.json(doc);
-        })
-    })
+    // app.get('/:id', isLoggedIn, function (req, res) {
+        
+    //     Tender.findById(req.params.id, function (err, doc) {
+    //         res.json(doc);
+    //     });
+    // });
     
     // process the signup form
     app.post('/signup', captchaVerify, passport.authenticate('local-signup', {

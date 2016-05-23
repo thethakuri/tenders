@@ -1,7 +1,6 @@
 /** {
     font-size: 14px;
 }*/
-
 html {
   position: relative;
   min-height: 100%;
@@ -39,6 +38,12 @@ body {
 
 
 /*********************/
+
+.required{
+    font-size: large;
+    color: red;
+    top: -5px;
+}
 
 .highlighted{
             color: red;
@@ -301,7 +306,7 @@ div.form-signup input[type="password"] {
 .tenderCaller .glyphicon {
     position: absolute;
     top: 0;
-    left: -10px;
+    left: 5px;
     font-size: large;
 }
 
@@ -320,6 +325,7 @@ div.form-signup input[type="password"] {
 }
 .notifyDropdown a {
     padding: 3px 15px !important;
+    outline: none;
 }
 .notifyDropdown{
     min-width: 145px !important;
@@ -329,14 +335,24 @@ div.form-signup input[type="password"] {
 }
 
 /***********Notes************/
+#notes{
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
 .notesInput{
     border: none;
     overflow: auto;
     outline: none;
-
+    
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+}
+.notesInput:focus{
+     /*outline: 0 none;
+    -webkit-appearance:none;*/
+    box-shadow: none;
+    /*border-color: none;*/
 }
 
 /************TAGS*************/
@@ -367,14 +383,15 @@ div.form-signup input[type="password"] {
 }
 
 .delete-tag {
-    color: #ccc;
+    color: #ddd;
     cursor: pointer;
     padding: 0 2px;
     border: none;
     background: none;
 }
 .delete-tag:hover{
-    background-color: #96b4d2;
+    background-color: #e6e6e6;
+    color: #bbb;
     text-decoration: none;
 }
 
@@ -439,13 +456,105 @@ div.form-signup input[type="password"] {
     opacity: 0.7;
 }
 
+
+/*****Bid Participation****/
+
+.bidInfoList{
+    margin-left: 15px;
+    font-size: 15px;
+}
+.bidInfoList dt {
+    color: #67655D;
+}
+.bidInfoTable{
+    
+}
+.bidInfoTable tbody tr td{
+    border : none;
+}
+.bidInfoTable tbody tr td.title{
+    color: #67655D;
+    font-weight: 700;
+}
+.bidInfoTable tbody tr{
+    border-bottom:1px dotted #ddd;
+}
+.bidInfoTable tbody tr:last-child{
+    border-bottom : none;
+}
+#compInfo span.title{
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
 #newCompetitor{
     outline: 0;
+}
+
+.comp-card{
+    background-color: rgb(221, 221, 221);
+    border-color: rgb(211, 211, 211);
+    color: #67655D;
+    margin: 0 !important;
+    position: relative;
+}
+.comp-card span{
+    font-weight: 600;
+    margin: 0 !important;
+    
+}
+
+.comp-card .comp-edit{
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    z-index: 9;
+    outline: none;
+}
+
+
+.comp-card .togglemore{
+    padding: 0;
+    color: #67655D;
+}
+.comp-card .togglemore:hover{
+    color: #111;
+    text-decoration: none;
+}
+.comp-card .panel-heading {
+    border-bottom: none;
+}
+.comp-card .panel-body {
+    border-top : rgb(203, 203, 203) 1px solid;
+}
+
+.bidInfoFieldset{
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    
+}
+.bidInfoLegend{
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.form-control{
+    border-radius:0px !important; 
+    -webkit-border-radius:0px !important;
+    -moz-border-radius:0px !important;
 }
 
 /*==================================================
 =            Helper Styles:         ;             =
 ==================================================*/
+.linkDisabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    color: grey;
+}
 .marginbottom20{
     margin-bottom: 20px;
 }
@@ -455,14 +564,36 @@ div.form-signup input[type="password"] {
 .margin10{
     margin: 10px !important;
 }
+.margin20{
+    margin: 20px !important;
+}
+.margintop10{
+    margin-top: 10px;
+}
+.margintop15{
+    margin-top: 15px;
+}
 .margintop20{
     margin-top: 20px !important;
 }
 .marginright10{
     margin-right: 10px;
 }
+.marginright5{
+    margin-right: 5px;
+}
+.marginbottom5{
+    margin-bottom: 5px;
+}
 .marginbottom10{
     margin-bottom: 10px;
+}
+.marginbottom15{
+    margin-bottom: 15px !important;
+}
+.marginleftright15{
+    margin-left: 15px;
+    margin-right: 15px;   
 }
 .paddingbottom20{
     padding-bottom: 20px;
@@ -486,14 +617,26 @@ div.form-signup input[type="password"] {
    padding-left: 0 !important;
    padding-right: 0 !important;
 }
+.nopaddingright {
+   padding-right: 0 !important;
+}
 .nopadding{
     padding : 0 !important;
+}
+.nomargin{
+    margin: 0 !important;
 }
 .marginbottomnegative2{
     margin-bottom: -2px !important;
 }
 .nomarginbottom{
     margin-bottom: 0 !important;
+}
+.nomargintop{
+    margin-top: 0 !important;
+}
+.nomarginleft{
+    margin-left: 0 !important;
 }
 .nounderline:hover { text-decoration: none; }
 .lineheight24{
@@ -502,6 +645,35 @@ div.form-signup input[type="password"] {
 .nobordertopleft{
     border-top-left-radius: 0 !important;
 }
+
+.noradiusborder{
+    border-radius:0px !important; 
+    -webkit-border-radius:0px !important;
+    -moz-border-radius:0px !important;
+}
+
+/*Round button*/
+.btn-round {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.btn-round.btn-lg {
+    width: 48px;
+    height: 48px;
+}
+
+.btn-round.btn-sm {
+    width: 34px;
+    height: 34px;
+}
+
+.btn-round.btn-xs {
+    width: 24px;
+    height: 24px;
+}
+
 /*==================================================
 =            Bootstrap 3 Media Queries             =
 ==================================================*/
@@ -554,8 +726,8 @@ div.form-signup input[type="password"] {
 
     /* Small Devices, Tablets */
     @media only screen and (max-width : 768px) {
-        .bidPartButton{
-            margin-top: 20px !important;
+        .tenderCaller{
+            margin-bottom: 20px !important;
         }
     }
 

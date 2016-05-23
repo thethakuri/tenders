@@ -1,16 +1,16 @@
 
 <div class="row marginbottom20 margintop20">
     <h3 class="marginbottomnegative2 paddingbottom5 paddingleft15"><span class="label label-success">{{currentView}} postings</span></h3> 
-    <div class="col-sm-8 col-xs-10">
+    <div class="col-sm-8 col-xs-12">
         
-        <i class="glyphicon glyphicon-remove clear" ng-click="userSearch = null" ng-show="userSearch.length > 0" search-clear></i>
+        <i class="glyphicon glyphicon-remove clear" ng-click="clearSearch()" ng-show="userSearch.length" search-clear></i>
         <div class="input-group input-group-lg">
             <div class="input-group-addon nobordertopleft">
                 <i class="glyphicon glyphicon-search"></i>
             </div>
             <!---Main Search Box-->
             <input class="form-control hasclear " ng-model="userSearch" type="text" placeholder="Search">
-            <div id="viewSelect" class="input-group-btn  ">
+            <div id="viewSelect" class="input-group-btn">
                 <button type="button" id="searchViewButton" ng-model="searchViewButton" class="btn btn-default dropdown-toggle " data-toggle="dropdown"><span ng-bind="currentView"></span><span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li ng-click="fetch('Active')"><a href="#/">Active Postings</a></li>
@@ -25,8 +25,8 @@
 
     <div class="col-sm-1 hidden-xs"></div>
 
-    <div class="col-sm-3 col-xs-2 text-right">
-        <label class="hidden-xs">Per page:</label>
+    <div class="col-sm-3 hidden-xs text-right">
+        <label>Per page:</label>
         <select ng-model="pagination.perPage" ng-options="i for i in pagination.recordsPerPage" ng-change="pagination.updateRecordsPerPage()">
         </select>
     </div>
@@ -114,3 +114,5 @@
         </dir-pagination-controls>
     </div>
 </div>
+
+

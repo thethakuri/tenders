@@ -1,6 +1,120 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt   = require('bcrypt-nodejs');
+//var Tender = require('tender');
+
+var Group = new Schema({
+    name : {
+        type : String,
+        required : true
+    },
+    admin : {
+        type : Schema.ObjectId,
+        ref : 'User',
+        required : true 
+    },
+    members : [{
+        type : Schema.ObjectId,
+        ref : 'User'
+    }],
+    requests : [{
+        type : Schema.ObjectId,
+        ref : 'User'
+    }]
+});
+
+var Competitor = new Schema({
+    name : {
+        type : String,
+        required : true
+    },
+    address : String,
+    contactPerson : String,
+    phone : String
+});
+
+var UserTender = new Schema({
+    _id : {
+        type : Schema.ObjectId,
+        ref : 'Tender',
+        required : true    
+    },
+    preferences : {
+        notify : {
+            type : Boolean,
+            default : false
+        },
+        notifyFrequency : {
+            oneday : {
+                type : Boolean,
+                default : false
+            },
+            threedays : {
+                type : Boolean,
+                default : false
+            },
+            fivedays : {
+                type : Boolean,
+                default : false
+            },
+            sevendays : {
+                type : Boolean,
+                default : false
+            }
+        }
+    },
+    userTags : [String],
+    notes : {
+        type : String,
+        default : 'Type your notes here !'
+    }, 
+    participationInfo : {
+        quotation : {
+            type: Number
+            //,required : true
+        },
+        currency : {
+            type : String,
+            default : 'NRs'
+        },
+        vat : {
+            type : Boolean,
+            default : true
+        },
+        security : Number,
+        validity : Date,
+        issuer : String,
+        manufacturer : String,
+        remarks : String,
+        competitorsBid : [
+            {
+                _id : {
+                    type : Schema.ObjectId,
+                    ref : 'Competitor'
+                    //, required : true    
+                },
+                name : String,
+                quotation : {
+                    type: Number
+                    //,required : true
+                },
+                currency : {
+                    type : String,
+                    default : 'NRs'
+                },
+                vat : {
+                    type : Boolean,
+                    default : true
+                },
+                security : Number,
+                validity : Date,
+                issuer : String,
+                manufacturer : String,
+                remarks : String
+            }
+        ]
+    }
+});
 
 var userSchema = new Schema({
     email : {
@@ -14,6 +128,10 @@ var userSchema = new Schema({
         type : String,
         required : true
     },
+    admin : {
+        type : Boolean,
+        default : false
+    },
     authToken : {
         type : String,
         required : true
@@ -21,7 +139,12 @@ var userSchema = new Schema({
     isAuthenticated : { 
         type : Boolean, 
         required : true 
-    }
+    },
+    messages : [String],
+    tenders : [UserTender],
+    competitors : [Competitor],
+    groups : [Group]
+    
 }, { timestamps : true }, {collection: 'users'});
 
 // methods ======================

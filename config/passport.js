@@ -49,62 +49,62 @@ module.exports = function(passport) {
 
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ 'email' :  email }, function(err, user) {
-            // if there are any errors, return the error
-            if (err)
-                return done(err);
+            User.findOne({ 'email' :  email }, function(err, user) {
+                // if there are any errors, return the error
+                if (err)
+                    return done(err);
 
-            // check to see if theres already a user with that email
-            if (user) {
-                // if the user is already authenticated
-                if (user.isAuthenticated){
-                    console.log("user is authenticated : " + user.email);
-                    return done(null, false, req.flash('signupMessage', 'User already exists'));
+                // check to see if theres already a user with that email
+                if (user) {
+                    // if the user is already authenticated
+                    if (user.isAuthenticated){
+                        console.log("user is authenticated : " + user.email);
+                        return done(null, false, req.flash('signupMessage', 'User already exists'));
+                    }
+                    // if user exists but not authenticated update password & token to send new verification email
+                    else {
+                        //generate authentication token
+                        var seed = crypto.randomBytes(20);
+                        var authToken = crypto.createHash('sha1').update(seed + email + '@rudra.com.np').digest('hex');
+
+                        // update the user's local credentials
+                        user.password = user.generateHash(password);
+                        user.authToken = authToken;
+                        
+                        // save the user
+                        user.save(function(err) {
+                            if (err)
+                                throw err;
+                            return done(null, user);
+                        });
+                    }
                 }
-                // if user exists but not authenticated update password & token to send new verification email
-                else {
+                // if the user does not exists
+                else{
                     //generate authentication token
                     var seed = crypto.randomBytes(20);
                     var authToken = crypto.createHash('sha1').update(seed + email + '@rudra.com.np').digest('hex');
 
-                    // update the user's local credentials
-                    user.password = user.generateHash(password);
-                    user.authToken = authToken;
+                    // if there is no user with that email
+                    // create the user
+                    var newUser = new User();
+                    
+                    // set the user's local credentials
+                    newUser.email    = email;
+                    newUser.password = newUser.generateHash(password);
+                    newUser.authToken = authToken;
+                    newUser.isAuthenticated = false;
                     
                     // save the user
-                    user.save(function(err) {
+                    newUser.save(function(err) {
                         if (err)
                             throw err;
-                        return done(null, user);
+                        return done(null, newUser);
                     });
+                    
                 }
-            }
-            // if the user does not exists
-            else{
-                //generate authentication token
-                var seed = crypto.randomBytes(20);
-                var authToken = crypto.createHash('sha1').update(seed + email + '@rudra.com.np').digest('hex');
 
-                // if there is no user with that email
-                // create the user
-                var newUser = new User();
-                
-                // set the user's local credentials
-                newUser.email    = email;
-                newUser.password = newUser.generateHash(password);
-                newUser.authToken = authToken;
-                newUser.isAuthenticated = false;
-                
-                // save the user
-                newUser.save(function(err) {
-                    if (err)
-                        throw err;
-                    return done(null, newUser);
-                });
-                
-            }
-
-        });    
+            });    
 
         });
 

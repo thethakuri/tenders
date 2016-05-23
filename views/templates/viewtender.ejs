@@ -1,10 +1,59 @@
 <h3 class="page-header"><span class='firstChar'>{{tenderDetail.item.charAt(0)}}</span>{{tenderDetail.item.slice(1)}}</h3>
-<div class="tenderCaller">
-    <h4 class="paddingleft15"> {{tenderDetail.caller}}</h4>
-    <i class="glyphicon glyphicon-bullhorn"></i>
-</div>
 <div class="row">
-    <div class="col-sm-6 form-group oh-well">
+    <div class="col-sm-8 tenderCaller">
+        <h4 class="paddingleft15 nomargin"> {{tenderDetail.caller}}</h4>
+        <i class="glyphicon glyphicon-bullhorn"></i>
+    </div>
+    <div class="col-sm-4 ">
+        <div class="input-group col-xs-2 pull-right"> <!--col hack to prevent input-addon from running away-->
+            <label class="checkbox-inline tenderOption btn fbtn  btn-success " data-toggle='tooltip' data-original-title="{{notifyOptionsValid(tenderDetail.subDate, 1) ? 'Select to get email notification' : 'This listing does not qualify for notification window'}}" initialize-tooltip ng-disabled="!notifyOptionsValid(tenderDetail.subDate, 1)">
+                <input type="checkbox" id="notify" ng-model="notify" ng-disabled="!notifyOptionsValid(tenderDetail.subDate, 1)"><span class="lineheight24">Receive notification</span>
+            </label>
+            <!--Notification frequency dropdown-->
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default notifyMenu dropdown-toggle" data-toggle="dropdown" ng-disabled="!notify || isExpired(tenderDetail.subDate)" rel="tooltip" data-placement="top" data-original-title="Frequency" initialize-tooltip>
+                    <span class="glyphicon glyphicon-envelope"></span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu notifyDropdown pull-right" role="menu" ng-init="notifyOptions={}" ng-click="$event.stopPropagation()">
+                    <li><span>Select alert frequency</span></li>
+                    <li class="divider"></li>
+                    <li>
+                        <a data-value="oneday" tabIndex="-1" ng-model="notifyOptions.oneday" ng-click="notifyOptions.oneday = !notifyOptions.oneday; enableSave = true">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" ng-checked="notifyOptions.oneday"/>1 day prior
+                            </label>
+                        </a>
+                        
+                    </li>
+                    <li ng-show="notifyOptionsValid(tenderDetail.subDate, 3)">
+                        <a data-value="threedays" tabIndex="-1" ng-model="notifyOptions.threedays" ng-click="notifyOptions.threedays = !notifyOptions.threedays; enableSave = true">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" ng-checked="notifyOptions.threedays"/>3 days prior
+                            </label>
+                        </a>
+                    </li>
+                    <li ng-show="notifyOptionsValid(tenderDetail.subDate, 5)">
+                        <a data-value="fivedays" tabIndex="-1" ng-model="notifyOptions.fivedays" ng-click="notifyOptions.fivedays = !notifyOptions.fivedays; enableSave = true">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" ng-checked="notifyOptions.fivedays"/>5 days prior
+                            </label>
+                        </a>
+                    </li>
+                    <li ng-show="notifyOptionsValid(tenderDetail.subDate, 7)">
+                        <a data-value="sevendays" tabIndex="-1" ng-model="notifyOptions.sevendays" ng-click="notifyOptions.sevendays = !notifyOptions.sevendays; enableSave = true">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" ng-checked="notifyOptions.sevendays"/>7 days prior
+                            </label>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5 form-group oh-well">
         <div class="row paddingbottom20">
             <div class="col-xs-12">
                 <span>Published in<a ui-sref="home" class="padding5 nounderline lead" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
@@ -23,8 +72,9 @@
                         <img ng-src="{{tenderDetail.img}}" class="img-thumbnail" alt="Tender Clipping" width="200">
                         <span class="glyphicon glyphicon-zoom-in"></span>
                     </a>
-                    <!--Modal-->
-                    <div class="modal fade" id="imgViewer" >
+                    
+                    <!--Modal Image Viewer-->
+                    <div class="modal fade" id="imgViewer" tabindex="-1" role="dialog" prevent-backspace>
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header text-left">
@@ -42,36 +92,39 @@
                         </div>
                     </div>
                     <!--Modal-->
+                    
                 </div>
             </div>
         </div>
     </div><!--End of left column-->
     
-    <div class="col-sm-6 form-group">
+    <!--Right column-->
+    <div class="col-md-7 form-group">
         
         <!--NOTES-->
         <div class="row paddingtop20">
             <div class="col-xs-12">
-                <div class="panel panel-default">
+                <div class="panel panel-default noradiusborder">
                     <div class="panel-heading">
                         <i class="glyphicon glyphicon-pencil"></i> Notes
                     </div>
                     <div class="panel-body">
                         <form class="nomarginbottom">
-                            <textarea class="form-control notesInput" id="notes" name="notes" rows="4">Your notes here !</textarea>
+                            <textarea class="form-control notesInput" id="notes" name="notes" rows="4" ng-keyup="enableSave = true" ng-model="notes"></textarea>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+        
         <!--TAGS-->
         <div class="row paddingtop20">
             <div class="col-xs-12">
-                <div class="panel panel-default">
+                <div class="panel panel-default noradiusborder">
                     <div class="panel-heading">
                         <div class="row tag-panel">
                             <div class="col-xs-6"><i class="glyphicon glyphicon-tags"></i><span> Tags</span></div>
-                            <div class="col-xs-6 text-right"><a ng-click="tagInput = !tagInput; tagText=''" ><i ng-class="{ 'glyphicon glyphicon-plus' : !tagInput, 'glyphicon glyphicon-remove' : tagInput }"></i></a></div>
+                            <div class="col-xs-6 text-right"><a ng-click="tagInput = !tagInput; tagText=''" data-toggle='tooltip' data-original-title="Add tag for this listing" initialize-tooltip><i ng-class="{ 'glyphicon glyphicon-plus' : !tagInput, 'glyphicon glyphicon-remove' : tagInput }"></i></a></div>
                             <div class="tag-container" ng-show="tagInput">
                                     <input show-focus="tagInput" type="text" placeholder="Type and hit enter" data-user-tag-input="" data-new-tag="addTag()" ng-model="tagText" ng-class="{'text-danger' : alertTag}">
                             </div>
@@ -80,7 +133,8 @@
                     <div class="panel-body">
                         <ul class="nav nav-pills" role="tablist">
                             <li ng-repeat="category in tenderDetail.category.concat(userTags)" role="presentation" class="active margin5 fbtn">
-                                <a ui-sref="home" class="padding5 input-tag btn btn-primary btn-md" ng-click="searchTag(category)">{{category}}
+                                <a ui-sref="home" ng-style="checkTag(category) && {'background-color':'#adadad',
+    'border-color': '#adadad'}" class="padding5 input-tag btn btn-md" ng-click="searchTag(category)">{{category}}
                                     <button class="delete-tag" ng-if="checkTag(category)" data-ng-click="deleteTag($event, category)">&times;</button>
                                 </a>
                             </li>
@@ -89,117 +143,102 @@
                 </div>
             </div>
         </div>
-        <!--PREFERENCES-->
+         <!-- PARTICIPATION INFORMATION -->
         <div class="row paddingtop20">
             <div class="col-xs-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> Preferences</div>
+                <div class="panel panel-default noradiusborder">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-info-sign"></i> Participation Information
+                    </div>
                     <div class="panel-body">    
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <!--Preferences Forms-->
-                                <form class="form-inline nomarginbottom ">
-                                    <div class="input-group  col-xs-2 margin10"> <!--col hack to prevent input-addon from running away-->
-                                        <label class="checkbox-inline tenderOption btn fbtn  btn-success ">
-                                            <input type="checkbox" id="isWatching" ng-model="isWatching" ><span class="lineheight24">Watch this listing</span>
-                                        </label>
-                                        <!--Notification frequency dropdown-->
-                                        <div class="input-group-btn ">
-                                            <button type="button" class="btn btn-default notifyMenu dropdown-toggle" data-toggle="dropdown" ng-disabled="!isWatching || isExpired(tenderDetail.subDate)" rel="tooltip" data-placement="top" data-original-title="Notification" initialize-tooltip>
-                                                <span class="glyphicon glyphicon-envelope"></span> <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu notifyDropdown" role="menu" multiple-select ng-init="options={};options.oneday=true">
-                                                <li><span>Select alert frequency</span></li>
-                                                <li class="divider"></li>
-                                                <li>
-                                                    <a href="#" data-value="oneday" tabIndex="-1" ng-model="options.oneday" ng-click="options.oneday = !options.oneday">
-                                                        <input type="checkbox" ng-checked="options.oneday"/>&nbsp;&nbsp;1 day prior
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" data-value="threedays" tabIndex="-1" ng-model="options.threedays" ng-click="options.threedays = !options.threedays">
-                                                        <input type="checkbox" ng-checked="options.threedays"/>&nbsp;&nbsp;3 days proir
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" data-value="fivedays" tabIndex="-1" ng-model="options.fivedays" ng-click="options.fivedays = !options.fivedays">
-                                                        <input type="checkbox" ng-checked="options.fivedays"/>&nbsp;&nbsp;5 days prior
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" data-value="sevendays" tabIndex="-1" ng-model="options.sevendays" ng-click="options.sevendays = !options.sevendays">
-                                                        <input type="checkbox" ng-checked="options.sevendays"/>&nbsp;&nbsp;7 days prior
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                   
-                                
-                                    <div class="form-group margin10 bidPartButton">
-                                        <a class="btn fbtn btn-danger" ng-click="bidPart(tenderDetail.subDate)" ng-disabled="bidInfo || !isExpired(tenderDetail.subDate)" data-toggle='tooltip' data-original-title="{{isExpired(tenderDetail.subDate) ? '' : 'This listing is still active. Enter after submission date.'}}" initialize-tooltip>
-                                            <span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter participation information</span>
-                                        </a>
-                                    </div>
-                                </form>
+                        
+                        <!-- Form Show Button -->
+                        <div class="row" ng-hide="bidInfoForm || hasPartInfo">
+                            <div class="col-sm-12 text-center">
+                                <!--Add Bid Information Button-->
+                                <div class="margin20">
+                                    <!-- Enter participation information(removed) 
+                                    ng-disabled="bidInfoForm || !isExpired(tenderDetail.subDate)" 
+                                    ng-click="bidPart(tenderDetail.subDate)"
+                                    data-original-title="{{isExpired(tenderDetail.subDate) ? '' : 'This listing is still active. Enter after submission date.'}}"
+                                    -->
+                                    <a class="btn fbtn btn-danger" ng-click="bidInfoForm=true" data-toggle='tooltip' data-original-title="Provide your and your competitor's bid submission details for this listing" initialize-tooltip>
+                                        <span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter participation information</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         
-                        <!--Bid Participation Information-->
-                        <div class="row margintop20 " ng-show="bidInfo">
+                        <!--Bid Participation Information (Form)-->
+                        <div class="row margintop15" ng-show="bidInfoForm">
                             <div class="col-md-12">
-                                <form class="form-horizontal margin5" novalidate>
+                                <form class="form-horizontal margin5" name="userBidPartForm" novalidate > 
                                     <fieldset>
-                                    <!-- Form Name -->
-                                    <legend>Bid Participation Information</legend>
 
                                     <!-- BOQ -->
-                                    <div class="form-group">
-                                        <label class="col-md-4 control-label" for="quotation">Quotation</label>
-                                        <div class="col-md-6">
+                                    <div class="form-group" ng-class="{ 'has-error' : userBidPartForm.quotation.$invalid && !userBidPartForm.quotation.$pristine }">
+                                        <label class="col-md-4 control-label" for="quotation">Quotation<sup class="required">*</sup></label>
+                                        <div class="col-md-7">
                                             <div class="input-group"> 
                                                 
                                                 <div class="input-group-btn ">
-                                                    <select class="btn selectCurrency">
+                                                    <select class="btn selectCurrency noradiusborder" ng-model="userCurrency">
                                                         <option>NRs</option>
                                                         <option>US$</option>
                                                     </select>
                                                 </div>
                                                 
-                                                <input id="quotation" name="quotation" class="form-control" type="number" placeholder="Bid price" required>
+                                                <input id="quotation" name="quotation" class="form-control" type="number" placeholder="Bid price" required ng-model="quotation">
                                                 
                                                 
                                             </div>
-                                            <input type="checkbox" name="vat" id="-0" value="" checked="checked"> Vat Included
+                                            <input type="checkbox" name="vat" id="vat" ng-model="vat"> Vat Included
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-8">
+                                            <p ng-show="userBidPartForm.quotation.$invalid && !userBidPartForm.quotation.$pristine" class="formError text-danger" ng-cloak>
+                                                <i class="glyphicon glyphicon-exclamation-sign"></i> Please input quoted price for this bid
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
                                     
                                     <!-- Guarantee Amount-->
                                     <div class="form-group">
                                     <label class="col-md-4 control-label" for="bgAmount">Bid Security</label>  
-                                    <div class="col-md-6">
-                                    <input id="bgAmount" name="bgAmount" type="text" placeholder="Security amount" class="form-control input-md">
+                                    <div class="col-md-7">
+                                    <input id="bgAmount" name="bgAmount" type="number" placeholder="Security amount" class="form-control input-md" ng-model="bgAmount">
                                         
                                     </div>
                                     </div>
                                     
                                     <!-- Bid Validity-->
-                                    <div class="form-group">
-                                        <label class="col-md-4 control-label" for="bgValidity">Validity</label>  
-                                        <div class="col-md-6">
+                                    <div class="form-group" ng-class="{ 'has-error' : !checkDate(bgValidity) && !userBidPartForm.bgValidity.$pristine && bgValidity != ''}">
+                                        <label class="col-md-4 control-label" for="bgValidity">Guarantee Validity</label>  
+                                        <div class="col-md-7">
                                             <div id="date" class="input-group input-append" datePopUp ng-model="dateNow">
-                                                <input datetime-picker ng-model="bgValidity" date-format="dd-MM-yyyy" date-only id="bgValidity" name="bgValidity" type="text" placeholder="Guarantee validity" class="date form-control input-md">
-                                                <span class="input-group-addon add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                <input datetime-picker ng-model="bgValidity" date-format="yyyy-MM-dd" date-only id="bgValidity" name="bgValidity" type="text" placeholder="eg. 2015-07-28" class="date form-control input-md">
+                                                <span class="input-group-addon add-on noradiusborder"><i class="glyphicon glyphicon-calendar"></i></span>
                                                 
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-8">
+                                            <p ng-show="!checkDate(bgValidity) && !userBidPartForm.bgValidity.$pristine && bgValidity != ''" class="formError text-danger" ng-cloak>
+                                                <i class="glyphicon glyphicon-exclamation-sign"></i> Date format: yyyy-MM-dd eg. 2015-07-28
+                                            </p>
                                         </div>
                                     </div>
                                     
                                     <!-- Bank Name-->
                                     <div class="form-group">
                                     <label class="col-md-4 control-label" for="bankName">Guarantee Issuer</label>  
-                                    <div class="col-md-6">
-                                    <input id="bankName" name="bankName" type="text" placeholder="Bank name" class="form-control input-md">
+                                    <div class="col-md-7">
+                                    <input id="bankName" name="bankName" type="text" placeholder="Bank name" class="form-control input-md" ng-model="bankName">
                                         
                                     </div>
                                     </div>
@@ -207,8 +246,8 @@
                                     <!-- Manufacturer-->
                                     <div class="form-group">
                                     <label class="col-md-4 control-label" for="manufacturer">Manufacturer</label>  
-                                    <div class="col-md-6">
-                                    <input id="manufacturer" name="manufacturer" type="text" placeholder="Manufacturer name" class="form-control input-md">
+                                    <div class="col-md-7">
+                                    <input id="manufacturer" name="manufacturer" type="text" placeholder="Manufacturer name" class="form-control input-md" ng-model="manufacturer">
                                         
                                     </div>
                                     </div>
@@ -217,168 +256,369 @@
                                     <!-- Remarks-->
                                     <div class="form-group">
                                     <label class="col-md-4 control-label" for="remarks">Remarks</label>
-                                    <div class="col-md-6">                     
-                                        <textarea class="form-control" id="remarks" name="remarks"></textarea>
-                                    </div>
-                                    </div>
-
-                                    <!-- Competitors -->
-                                    <div class="form-group">
-                                    <label class="col-md-4 control-label" for="competitors"></label>
-                                    <div class="col-md-5">
-                                        <button id="newCompetitor" name="newCompetitor" class="btn btn-warning" data-toggle="modal" data-target="#competitors">Add Competitors</button>
+                                    <div class="col-md-7">                     
+                                        <textarea class="form-control" id="remarks" name="remarks" ng-model="remarks"></textarea>
                                     </div>
                                     </div>
                                     
-                                    <!-- Competitors Modal -->
-                                    <div class="modal fade" id="competitors" tabindex="-1" role="dialog">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">
-                                                <span>&times;</span>
-                                            </button>
-                                            <h4 class="modal-title" id="competitorsLabel">Enter competitor's information</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            
-                                            <!-- Competitor's Information Form -->
-                                            <form class="form-horizontal">
-                                                <fieldset>
-
-                                                <!-- Select from existing competitors -->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="selectCompetitor">Existing competitors</label>
-                                                    <div class="col-md-6">
-                                                        <select id="selectCompetitor" name="selectCompetitor" class="form-control">
-                                                        <option value="1">Select from existing competitors</option>
-                                                        <option value="2">Option two</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Competitor's name-->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="compName">Name</label>  
-                                                    <div class="col-md-6">
-                                                    <input id="compName" name="compName" type="text" placeholder="Competiting firm's name" class="form-control input-md" required="">
-                                                    </div>
-                                                </div>
-
-                                                <!-- Competitor's address -->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="compAddress">Address</label>  
-                                                    <div class="col-md-6">
-                                                    <input id="compAddress" name="compAddress" type="text" placeholder="" class="form-control input-md">
-                                                    </div>
-                                                </div>
-
-                                                <!-- Competitor's contact person-->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="compPerson">Contact Person</label>  
-                                                    <div class="col-md-6">
-                                                    <input id="compPerson" name="compPerson" type="text" placeholder="" class="form-control input-md">
-                                                    </div>
-                                                </div>
-
-                                                <!-- Competitor's phone -->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="compPhone">Phone</label>  
-                                                    <div class="col-md-6">
-                                                    <input id="compPhone" name="compPhone" type="text" placeholder="" class="form-control input-md">
-                                                </div>
-                                                </div>
+                                    <!-- Competitors-->
+                                    <div class="form-group" ng-show="competitorsBid.length">
+                                        <label class="col-md-4 control-label" for="remarks">Competitors</label>
+                                        <div class="col-md-7">
+                                            <!-- Competitors Cards-->
+                                            <div class="row panel comp-card marginbottom15" ng-repeat="competitorBid in competitorsBid">
                                                 
-                                                <!-- Competitor's BOQ -->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="compQuotation">Quotation</label>
-                                                    <div class="col-md-6">
-                                                        <div class="input-group"> 
-                                                            <div class="input-group-btn ">
-                                                                <select class="btn selectCurrency">
-                                                                    <option>NRs</option>
-                                                                    <option>US$</option>
-                                                                </select>
-                                                            </div>
-                                                            <input id="compQuotation" name="comQuotation" class="form-control" type="number" placeholder="Bid price" required>
+                                                <button type="button" class="btn btn-primary btn-xs btn-round comp-edit" ng-click="editCompForm($index)" data-toggle="modal" data-target="#competitors" data-original-title='Edit' initialize-tooltip><span class="glyphicon glyphicon-edit"></span></button>
+                                                
+                                                
+                                                
+                                                <div class=" col-xs-12">
+                                                    <div class="panel-heading row">
+                                                        <div class="col-xs-11 nopadding">
+                                                            <span>{{competitorBid.name}}</span>
                                                         </div>
-                                                        <input type="checkbox" name="compVat" id="compVat" value="" checked="checked"> Vat Included
+                                                        <div class="col xs-1 text-right">
+                                                            <span class="glyphicon btn btn-xs btn-link togglemore" data-toggle="collapse" data-target="{{'#comptg-'+$index}}" ng-class="toggleMore ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom'" ng-click="toggleMore = !toggleMore" prevent-doubleclick></span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                
-                                                <!-- Competitor's Guarantee Amount-->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="compBgAmount">Bid Security</label>  
-                                                    <div class="col-md-6">
-                                                        <input id="compBgAmount" name="compBgAmount" type="text" placeholder="Security amount" class="form-control input-md">
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Competitor's Bid Validity-->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="compBgValidity">Validity</label>  
-                                                    <div class="col-md-6">
-                                                        <div id="date" class="input-group input-append" datePopUp ng-model="compDateNow">
-                                                            <input datetime-picker ng-model="compBgValidity" date-format="dd-MM-yyyy" date-only id="compBgValidity" name="bgValidity" type="text" placeholder="Guarantee validity" class="date form-control input-md">
-                                                            <span class="input-group-addon add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                    
+                                                    <div class="row collapse" id="{{'comptg-'+$index}}">
+                                                        <div class="col-xs-12">
+                                                            <div class="panel-body row padding10">
+                                                                
+                                                                <div class="col-xs-12 margin5 nomargintop nomarginleft nopaddingright">
+                                                                    <span>Quotation:</span> {{competitorBid.currency}} {{competitorBid.quotation | currency:''}} (<em>{{competitorBid.vat ? 'with VAT' : 'without VAT'}}</em>)
+                                                                </div>
+                                                                <div class="col-xs-12 margin5 nomargintop nomarginleft nopaddingright" ng-show="competitorBid.security">
+                                                                    <span>Bid Security:</span> {{competitorBid.security | currency:''}}
+                                                                </div>
+                                                                <div class="col-xs-12 margin5 nomargintop nomarginleft nopaddingright" ng-show="competitorBid.validity">
+                                                                    <span>Validity:</span> {{competitorBid.validity | date : 'yyyy-MM-dd'}}
+                                                                </div>
+                                                                <div class="col-xs-12 margin5 nomargintop nomarginleft nopaddingright" ng-show="competitorBid.issuer">
+                                                                    <span>Bank:</span> {{competitorBid.issuer}}
+                                                                </div>
+                                                                <div class="col-xs-12 margin5 nomargintop nomarginleft nopaddingright" ng-show="competitorBid.manufacturer">
+                                                                    <span>Manufacturer:</span> {{competitorBid.manufacturer}}
+                                                                </div>
+                                                                <div class="col-xs-12 margin5 nomargintop nomarginleft nopaddingright" ng-show="competitorBid.remarks">
+                                                                    <span>Remarks:</span> {{competitorBid.remarks}}
+                                                                </div>
+                                                                
+                                                                <div class="col-xs-12 text-right nopadding margintop10">
+                                                                    <span class="glyphicon glyphicon-remove btn btn-xs btn-danger marginright5"  data-original-title='Delete competitor' initialize-tooltip ng-click="removeFromArray($index, competitorsBid)" data-toggle="tooltip" ></span>
+                                                                    
+                                                                </div>
+                                                                
+                                                            </div>
                                                             
                                                         </div>
                                                     </div>
                                                 </div>
                                                 
-                                                <!-- Competitor's Bank Name-->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="compBankName">Guarantee Issuer</label>  
-                                                    <div class="col-md-6">
-                                                        <input id="compBankName" name="compBankName" type="text" placeholder="Bank name" class="form-control input-md">
-                                                    </div>
-                                                </div>
-
-                                                <!-- Competitor's Manufacturer-->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="compManufacturer">Manufacturer</label>  
-                                                    <div class="col-md-6">
-                                                        <input id="compManufacturer" name="compManufacturer" type="text" placeholder="Manufacturer name" class="form-control input-md">
-                                                    </div>
-                                                </div>
-                                                
-                                                
-                                                <!-- Competitor's Remarks-->
-                                                <div class="form-group">
-                                                    <label class="col-md-4 control-label" for="compRemarks">Remarks</label>
-                                                    <div class="col-md-6">                     
-                                                        <textarea class="form-control" id="compRemarks" name="compRemarks"></textarea>
-                                                    </div>
-                                                </div>
-                                                
-
-                                                </fieldset>
-                                            </form>
-
+                                            </div>
                                             
-                                            
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                            <button type="button" class="btn btn-primary">Submit</button>
-                                        </div>
                                         </div>
                                     </div>
-                                    </div> <!--End of Competitors Modal-->
+
+                                    <!-- Competitors Add / Cancel -->
+                                    <div class="form-group">
+                                    <label class="col-md-4 control-label" for="competitors"></label>
+                                    <div class="col-md-8">
+                                        <button id="newCompetitor" name="newCompetitor" class="btn btn-warning marginright10" data-toggle="modal" data-target="#competitors" data-placement="top" data-original-title="Add competitor's information" initialize-tooltip><i class="glyphicon glyphicon-plus-sign"></i> Competitors</button>
+                                        <button id="cancelCompetitor" name="cancelCompetitor" class="btn btn-danger" ng-click="bidInfoForm = false; resetBidPartForm()">Cancel</button>
+                                    </div>
+                                    </div>
 
                                     </fieldset>
                                 </form>
                             </div>
                         </div>
+                        
+                        <!--Bid Participation Information-->
+                        <div class="row marginleftright15" ng-show="hasPartInfo&&!bidInfoForm">
+                            <div class="row paddingbottom20">
+                                <div class="col-xs-12 nopaddingleftright text-right">
+                                    <button class="btn btn-primary btn-sm marginright5" ng-click="populateBidInfo();bidInfoForm = true" >Edit</button>
+                                    <button class="btn btn-danger btn-sm" >Delete</button>
+                                </div>
+                            </div>
+                            <fieldset class="bidInfoFieldset ">
+                                <legend class="bidInfoLegend">My submission detail</legend>
+                                <table class="table table-condensed table-hover bidInfoTable">
+                                    <tr>
+                                        <td class="title">
+                                            Quotation
+                                        </td>
+                                        <td>
+                                            {{partInfo.currency}} {{partInfo.quotation | currency:''}} (<em>{{partInfo.vat ? 'with VAT' : 'without VAT'}}</em>)
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="partInfo.security">
+                                        <td class="title">
+                                            Bid Security
+                                        </td>
+                                        <td>
+                                            {{partInfo.security | currency:''}}
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="partInfo.validity">
+                                        <td class="title">
+                                            Guarantee Validity
+                                        </td>
+                                        <td>
+                                            {{partInfo.validity | date : 'yyyy-MM-dd'}}
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="partInfo.issuer">
+                                        <td class="title">
+                                            Guarantee Issuer
+                                        </td>
+                                        <td>
+                                            {{partInfo.issuer}}
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="partInfo.manufacturer">
+                                        <td class="title">
+                                            Manufacturer
+                                        </td>
+                                        <td>
+                                            {{partInfo.manufacturer}}
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="partInfo.remarks">
+                                        <td class="title">
+                                            Remarks
+                                        </td>
+                                        <td>
+                                            {{partInfo.remarks}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                                
+                            
+                            <div id="compInfo" class="paddingtop20" ng-if="competitorsBid.length">
+                                
+                                    <legend >Competitors</legend>
+                                    <div class="marginleftright15" ng-repeat="competitorBid in competitorsBid">
+                                        <span class="glyphicon glyphicon-chevron-right" ></span>
+                                        <span class="title">{{competitorBid.name}}</span>
+                                        <dl class="dl-horizontal bidInfoList" >
+                                            <dt></dt>
+                                            <dt>Quotation</dt>
+                                            <dd>{{competitorBid.currency}} {{competitorBid.quotation | currency:''}} (<em>{{competitorBid.vat ? 'with VAT' : 'without VAT'}}</em>)</dd>
+                                            
+                                            <dt ng-if="competitorBid.security">Bid Security</dt>
+                                            <dd ng-if="competitorBid.security">{{competitorBid.security | currency:''}}</dd>
+                                            
+                                            <dt ng-if="competitorBid.validity">Guarantee Validity</dt>
+                                            <dd ng-if="competitorBid.validity">{{competitorBid.validity | date : 'yyyy-MM-dd'}}</dd>
+                                            
+                                            <dt ng-if="competitorBid.issuer">Guarantee Issuer</dt>
+                                            <dd ng-if="competitorBid.issuer">{{competitorBid.issuer}}</dd>
+                                            
+                                            <dt ng-if="competitorBid.manufacturer">Manufacturer</dt>
+                                            <dd ng-if="competitorBid.manufacturer">{{competitorBid.manufacturer}}</dd>
+                                            
+                                            <dt ng-if="competitorBid.remarks">Remarks</dt>
+                                            <dd ng-if="competitorBid.remarks">{{competitorBid.remarks}}</dd>
+                                        </dl>
+                                    </div>
+                            </div>
+                            
+                            
+                        </div>
+                        
+                        
                     </div>
                 </div>
             </div>
         </div>
         
+        
+        <!-- Competitors Modal -->
+        <div class="modal fade" id="competitors" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" prevent-backspace>
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="resetCompForm()">
+                        <span>&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="competitorsLabel">{{editCompFormInfo.disable ? 'Update' : 'Enter'}} competitor's information</h4>
+                </div>
+                <div class="modal-body">
+                    
+                    <!-- Competitor's Information Form -->
+                    <form class="form-horizontal nomarginbottom" name="compBidPartForm" novalidate>
+                        
+                        <fieldset>
+
+                         <!--Select from existing competitors 
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="selectCompetitor">Select competitor</label>
+                            <div class="col-md-6">
+                                <select id="selectCompetitor" name="selectCompetitor" class="form-control" ng-model="selectCompetitor" ng-options="competitor.name for competitor in competitorsList" ng-change="populateComp()">
+                                <option value="" selected >Enter new competitor</option>
+                                </select>
+                            </div>
+                        </div>-->
+
+                        <!-- Competitor's name-->
+                        <div class="form-group" ng-class="{ 'has-error' : compBidPartForm.compName.$invalid && !compBidPartForm.compName.$pristine || selectCompetitor && compExists(selectCompetitor.name)}" >
+                            <label class="col-md-4 control-label" for="compName">Name<sup class="required">*</sup></label>  
+                            <div class="col-md-6" mass-autocomplete>
+                                <input id="compName" name="compName" type="text" placeholder="Competing firm's name" class="form-control input-md" required ng-model="competitor.name" mass-autocomplete-item="autocomplete_options" ng-change="updateComp()" ng-disabled="editCompFormInfo.disable">
+                            <!--<datalist id="competitorsDataList">
+                                <option ng-repeat="competitor in competitorsList">{{competitor.name}}</option>
+                            </datalist>-->
+                            
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <p ng-show="compBidPartForm.compName.$invalid && !compBidPartForm.compName.$pristine" class="formError text-danger" ng-cloak>
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Please provide competitor's name
+                                </p>
+                                <p ng-show="selectCompetitor && compExists(selectCompetitor.name)" class="formError text-danger" ng-cloak>
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i> {{selectCompetitor.name}} already exists for this listing
+                                </p>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+
+                        <!-- Competitor's address -->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="compAddress">Address</label>  
+                            <div class="col-md-6">
+                            <input id="compAddress" name="compAddress" type="text" placeholder="" class="form-control input-md" ng-model="competitor.address" ng-disabled="selectCompetitor||editCompFormInfo.disable">
+                            </div>
+                        </div>
+
+                        <!-- Competitor's contact person-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="compPerson">Contact Person</label>  
+                            <div class="col-md-6">
+                            <input id="compPerson" name="compPerson" type="text" placeholder="" class="form-control input-md" ng-model="competitor.person" ng-disabled="selectCompetitor||editCompFormInfo.disable">
+                            </div>
+                        </div>
+
+                        <!-- Competitor's phone -->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="compPhone">Phone</label>  
+                            <div class="col-md-6">
+                            <input id="compPhone" name="compPhone" type="text" placeholder="" class="form-control input-md" ng-model="competitor.phone" ng-disabled="selectCompetitor||editCompFormInfo.disable">
+                        </div>
+                        </div>
+                        
+                        <!-- Competitor's BOQ -->
+                        <div class="form-group" ng-class="{ 'has-error' : compBidPartForm.compQuotation.$invalid && !compBidPartForm.compQuotation.$pristine }">
+                            <label class="col-md-4 control-label" for="compQuotation">Quotation<sup class="required">*</sup></label>
+                            <div class="col-md-6">
+                                <div class="input-group"> 
+                                    <div class="input-group-btn ">
+                                        <select class="btn selectCurrency noradiusborder" ng-model="competitor.currency">
+                                            <option>NRs</option>
+                                            <option>US$</option>
+                                        </select>
+                                    </div>
+                                    <input id="compQuotation" name="compQuotation" class="form-control" type="number" placeholder="Bid amount" required ng-model="competitor.quotation">
+                                </div>
+                                <input type="checkbox" name="compVat" id="compVat" ng-checked="true" ng-model="competitor.vat"> Vat Included
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-8">
+                                <p ng-show="compBidPartForm.compQuotation.$invalid && !compBidPartForm.compQuotation.$pristine" class="formError text-danger" ng-cloak>
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Please provide competitor's bid
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Competitor's Guarantee Amount-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="compBgAmount">Bid Security</label>  
+                            <div class="col-md-6">
+                                <input id="compBgAmount" name="compBgAmount" type="number" placeholder="Security amount" class="form-control input-md" ng-model="competitor.bgAmount">
+                            </div>
+                        </div>
+                        
+                        <!-- Competitor's Bid Validity-->
+                        <div class="form-group" ng-class="{ 'has-error' : !checkDate(competitor.bgValidity) && !compBidPartForm.compBgValidity.$pristine && competitor.bgValidity != ''}">
+                            <label class="col-md-4 control-label" for="compBgValidity">Validity</label>  
+                            <div class="col-md-6">
+                                <div id="date" class="input-group input-append" datePopUp ng-model="compDateNow">
+                                    <input datetime-picker ng-model="competitor.bgValidity" date-format="yyyy-MM-dd" date-only id="compBgValidity" name="compBgValidity" type="text" placeholder="eg. 2015-07-28" class="date form-control input-md">
+                                    <span class="input-group-addon add-on noradiusborder"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-8">
+                                <p ng-show="!checkDate(competitor.bgValidity) && !compBidPartForm.compBgValidity.$pristine && competitor.bgValidity != ''" class="formError text-danger" ng-cloak>
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Date format: yyyy-MM-dd eg. 2015-07-28
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Competitor's Bank Name-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="compBankName">Guarantee Issuer</label>  
+                            <div class="col-md-6">
+                                <input id="compBankName" name="compBankName" type="text" placeholder="Bank name" class="form-control input-md" ng-model="competitor.bankName">
+                            </div>
+                        </div>
+
+                        <!-- Competitor's Manufacturer-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="compManufacturer">Manufacturer</label>  
+                            <div class="col-md-6">
+                                <input id="compManufacturer" name="compManufacturer" type="text" placeholder="Manufacturer name" class="form-control input-md" ng-model="competitor.manufacturer">
+                            </div>
+                        </div>
+                        
+                        
+                        <!-- Competitor's Remarks-->
+                        <div class="form-group nomarginbottom">
+                            <label class="col-md-4 control-label" for="compRemarks">Remarks</label>
+                            <div class="col-md-6">                     
+                                <textarea class="form-control" id="compRemarks" name="compRemarks" ng-model="competitor.remarks"></textarea>
+                            </div>
+                        </div>
+                        
+                        </fieldset>
+                    </form>
+                    
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                       
+                        <div class="col-xs-4 text-left">
+                            <sup class="required">*</sup>Required
+                        </div>
+                        <div class="col-xs-8">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="resetCompForm()">Cancel</button>
+                            <button ng-click="saveCompForm('/Update/User/Competitor')" type="button" class="btn btn-primary" ng-disabled="disableCompSave(compBidPartForm.compName.$valid, compBidPartForm.compQuotation.$valid)">Submit</button>
+                        </div>
+                        
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div> <!--End of Competitors Modal-->
+        
+        
+        
+        
+        
         <div class="row text-right paddingtop20">
             <div class="col-xs-12">
-                <button ng-click="goBack()" class="btn fbtn btn-lg btn-success marginright10" disabled="disabled">
-                    <i class="glyphicon glyphicon-save" aria-hidden="true"></i> Save changes
+                <button ng-click="saveUserForm('/Update/User/TenderData');bidInfoForm = false" class="btn fbtn btn-lg btn-success marginright10" ng-disabled="disableSave(userBidPartForm.quotation.$valid)">
+                    <i class="glyphicon glyphicon-save"></i> Save changes
                 </button>
                 <button ng-click="goBack()" class="btn fbtn btn-lg btn-primary">Go back</button>
             </div>
