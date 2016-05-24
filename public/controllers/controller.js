@@ -654,7 +654,7 @@ var tenderApp = angular
                     
                     ngToast.create({
                         className : 'info',
-                        content : 'New competitor ' + data.name + ' is created',
+                        content : 'New competitor <strong>' + data.name + '</strong> is created',
                         timeout : 6000,
                         dismissButton : true
                     });
@@ -923,9 +923,13 @@ var tenderApp = angular
 
         $scope.goBack = function () {  
             if ($scope.enableSave || $scope.bidInfoForm) {
-                bootbox.confirm("Discard changes ?", function(result){
-                    if(result) $state.go('home');
-                })
+                bootbox.confirm({
+                    size : 'small',
+                    message : 'Discard changes ?',
+                    callback :  function(result){
+                                    if(result) $state.go('home');
+                                }
+                })           
             }
             else $state.go('home');
         }
@@ -960,12 +964,16 @@ var tenderApp = angular
         // Remove an item with given index from array 
         $scope.removeFromArray = function(index, array){
 
-            bootbox.confirm("Delete the entry from the list ?", function(result){
-                if(result) {
-                    $scope.$apply(function (){
-                        array.splice(index, 1);
-                    });
-                }
+            bootbox.confirm({
+                size : 'small',
+                message : 'Delete from the list ?',
+                callback : function(result){
+                                if(result) {
+                                    $scope.$apply(function (){
+                                        array.splice(index, 1);
+                                    });
+                                }
+                            }
             })  
         }
       

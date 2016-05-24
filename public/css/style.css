@@ -314,6 +314,10 @@ div.form-signup input[type="password"] {
     z-index: 99;
 }
 
+.days-remaining{
+    font-size: 105%;
+}
+
 .notifyMenu{
     padding: 7px;
     

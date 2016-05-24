@@ -15,7 +15,7 @@
             </label>
             <!--Notification frequency dropdown-->
             <div class="input-group-btn">
-                <button type="button" class="btn btn-default notifyMenu dropdown-toggle" data-toggle="dropdown" ng-disabled="!notify || isExpired(tenderDetail.subDate)" rel="tooltip" data-placement="top" data-original-title="Frequency" initialize-tooltip>
+                <button type="button" class="btn btn-primary notifyMenu dropdown-toggle" data-toggle="dropdown" ng-disabled="!notify || isExpired(tenderDetail.subDate)" rel="tooltip" data-placement="top" data-original-title="Frequency" initialize-tooltip>
                     <span class="glyphicon glyphicon-envelope"></span> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu notifyDropdown pull-right" role="menu" ng-init="notifyOptions={}" ng-click="$event.stopPropagation()">
@@ -63,9 +63,9 @@
                 <span>Published in<a ui-sref="home" class="padding5 nounderline lead" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
                 <span><text class="text-primary">Publication Date</text> : {{tenderDetail.pubDate | date : 'EEEE MMMM d, yyyy'}}</span><br>
                 <span><text class="text-primary lead">Submission Date</text> : {{tenderDetail.subDate | date : 'EEEE MMMM d, yyyy'}}
-                    <mark ng-class="getStatus(tenderDetail.subDate)">
+                    <code class="days-remaining" ng-class="getStatus(tenderDetail.subDate)">
                     {{remainingDays(tenderDetail.subDate)}}
-                    </mark>  
+                    </code>  
                 </span>
             </div>
         </div>
@@ -223,7 +223,7 @@
                                     <div class="form-group" ng-class="{ 'has-error' : !checkDate(bgValidity) && !userBidPartForm.bgValidity.$pristine && bgValidity != ''}">
                                         <label class="col-md-4 control-label" for="bgValidity">Guarantee Validity</label>  
                                         <div class="col-md-7">
-                                            <div id="date" class="input-group input-append" datePopUp ng-model="dateNow">
+                                            <div id="date" class="input-group input-append" ng-model="dateNow">
                                                 <input datetime-picker ng-model="bgValidity" date-format="yyyy-MM-dd" date-only id="bgValidity" name="bgValidity" type="text" placeholder="eg. 2015-07-28" class="date form-control input-md">
                                                 <span class="input-group-addon add-on noradiusborder"><i class="glyphicon glyphicon-calendar"></i></span>
                                                 
@@ -557,7 +557,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : !checkDate(competitor.bgValidity) && !compBidPartForm.compBgValidity.$pristine && competitor.bgValidity != ''}">
                                 <label class="col-md-4 control-label" for="compBgValidity">Validity</label>  
                                 <div class="col-md-6">
-                                    <div id="date" class="input-group input-append" datePopUp ng-model="compDateNow">
+                                    <div id="date" class="input-group input-append" ng-model="compDateNow">
                                         <input datetime-picker ng-model="competitor.bgValidity" date-format="yyyy-MM-dd" date-only id="compBgValidity" name="compBgValidity" type="text" placeholder="eg. 2015-07-28" class="date form-control input-md">
                                         <span class="input-group-addon add-on noradiusborder"><i class="glyphicon glyphicon-calendar"></i></span>
                                         
