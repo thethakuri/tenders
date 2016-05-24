@@ -47,7 +47,7 @@ var UserTender = new Schema({
         notifyFrequency : {
             oneday : {
                 type : Boolean,
-                default : false
+                default : true
             },
             threedays : {
                 type : Boolean,

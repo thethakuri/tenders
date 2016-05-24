@@ -11,8 +11,8 @@ angular.module('MassAutoComplete', [])
       '<div class="ac-container" ng-show="show_autocomplete && results.length > 0" style="position:absolute;">' +
         '<ul class="ac-menu">' +
           '<li ng-repeat="result in results" ng-if="$index > 0" ' +
-            'class="ac-menu-item" ng-class="$index == selected_index ? \'ac-state-focus\': \'\'">' +
-            '<a href ng-click="apply_selection($index)" ng-bind-html="result.label"></a>' +
+            'class="ac-menu-item" ng-click="apply_selection($index)" ng-class="$index == selected_index ? \'ac-state-focus\': \'\'">' +
+            '<span ng-bind-html="result.label"></span>' +
           '</li>' +
         '</ul>' +
       '</div>',

@@ -197,6 +197,27 @@ module.exports = function (app, passport) {
                 }); 
             });
     });
+
+    app.put('/Delete/User/TenderData', isLoggedIn, function (req, res){
+        Users
+            .findOne({'_id' : req.user._id }, '-password -authToken -isAuthenticated', function(err, doc){
+                if (err){
+                    console.log(err);
+                    res.status(500).send();
+                }
+                
+                doc.tenders.pull(req.body._id);
+                
+                doc.save(function (err) {
+                    if(err) {
+                        console.log(err);
+                        res.status(500).send();
+                    }
+                    return res.json(doc);
+                }); 
+            });
+
+    });
     
     app.put('/Update/User/Competitor', isLoggedIn, function (req, res) {  
         Users

@@ -1,6 +1,6 @@
 //$scope is the glue between application controller and the view
 var tenderApp = angular
-    .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar', 'ui.router', 'angularjs-datetime-picker', 'ngSanitize', 'MassAutoComplete'])
+    .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar', 'ui.router', 'angularjs-datetime-picker', 'ngSanitize', 'MassAutoComplete', 'ngToast'])
     .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {  
         $urlRouterProvider.otherwise('/');
         
@@ -66,6 +66,13 @@ var tenderApp = angular
             //$locationProvider.html5Mode(true);
     })
     */
+    .config(['ngToastProvider', function(ngToast) {
+        ngToast.configure({
+          
+          horizontalPosition: 'center'
+          
+        });
+    }])
     .directive('navBar', function() {
         return {
             templateUrl: 'partials/navbar.ejs'
@@ -89,6 +96,16 @@ var tenderApp = angular
             }
         }
     }])
+    .directive('myBlur', function() {
+        return {
+            restrict : 'A',
+            link : function(scope, element, attributes){
+                element.bind('blur', function(){
+                    scope.$apply(attributes.myBlur);
+                });
+            }
+        };
+    })
     .directive('initializeTooltip', function() {
         return {
             restrict: 'A',
@@ -330,6 +347,26 @@ var tenderApp = angular
             return result;
         }
     })
+    .service('toast', function(){
+        "use strict";
+
+        var elem,
+            hideHandler,
+            that = {};
+
+        that.init = function(options) {
+            elem = $(options.selector);
+        };
+
+        that.show = function(text) {
+            clearTimeout(hideHandler);
+
+            elem.find("span").html(text);
+            elem.delay(200).fadeIn().delay(4000).fadeOut();
+        };
+
+        return that;
+    })
     .controller('topController', ['$scope', '$location', 'httpService', 'userDataFactory', function ($scope, $location, httpService, userDataFactory) {  
         $location.path('/');
         
@@ -371,7 +408,7 @@ var tenderApp = angular
     .controller('FooterCtrl', function($scope) {
         $scope.currentYear = new Date().getFullYear();
     })
-    .controller('TenderDetailCtrl', ['$scope', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', 'userDataFactory', 'httpService', 'userTenderData', 'validDate', 'userCompetitorInfo', '$filter', function ($scope, tenderFactory, $state, userSearchField, daysDifference, tenderText, userDataFactory, httpService, userTenderData, validDate, userCompetitorInfo, $filter) {  
+    .controller('TenderDetailCtrl', ['$scope', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', 'userDataFactory', 'httpService', 'userTenderData', 'validDate', 'userCompetitorInfo', '$filter', 'ngToast', function ($scope, tenderFactory, $state, userSearchField, daysDifference, tenderText, userDataFactory, httpService, userTenderData, validDate, userCompetitorInfo, $filter, ngToast) {  
         
         $scope.$state = $state;
         
@@ -437,28 +474,28 @@ var tenderApp = angular
             },
             function(newValue){
                 
-                $scope.bidInfoForm = false; //Keep bid information form from displaying afer switching views
-                $scope.enableSave = false;
-                
                 if(newValue === 'home.detail'){
-                    
+
+                    $scope.deleteAllPart = false; // delete all paticipation information
+                    $scope.bidInfoForm = false; //Keep bid information form from displaying afer switching views
                     $scope.enableSave = false;
                     $scope.tagText = null;
                     $scope.tagInput = false;
                     $scope.alertTag = false;
+                    $scope.hasTenderInfo = false; //does user has information for this tender previously saved
+                    $scope.hasPartInfo = false; //does the current listing has user's participation information
 
                     //Initialize bid participation form elements
                     $scope.competitor = {};
                     $scope.editCompFormInfo = {}; // update competitor's information
-                    $scope.vat = true;
-                    $scope.userCurrency = 'NRs';
-                    $scope.competitor.vat = true;
-                    $scope.competitor.currency = 'NRs'; //ng-init is not working when ng-model is object notation
-                    $scope.competitorsBid = []; // holds competitor's bid for current listing
-                    $scope.toggleMore = false; //toggle competitor's panel accordion
-                    $scope.editCompFormInfo.disable = false;  
-                    $scope.hasPartInfo = false; //does the current listing has user's participation information
+
+                    //clean up user bid information form
+                    $scope.resetBidPartForm();
+                    $scope.resetCompForm();
                     
+                    $scope.toggleMore = false; //toggle competitor's panel accordion 
+                    
+                    // Get data
                     $scope.userData = userDataFactory.get();
                     $scope.tenderDetail = tenderFactory.get();
 
@@ -467,27 +504,30 @@ var tenderApp = angular
                     var tender = userTenderData.get($scope.tenderDetail._id, $scope.userData.tenders);
                     // If corresponding tender data info is found
                     if(tender){
-                        
+                        $scope.hasTenderInfo = true;
                         populateUserTenderInfo(tender);
                     }
                     else{
                         // reset values
-                        $scope.notes = 'Type your notes here !'
-                        $scope.userTags = [];
-                        $scope.notify = false;
-                        for (var key in $scope.notifyOptions){
-                            $scope.notifyOptions[key] = false;
-                        }
-
-                        $scope.resetBidPartForm();
+                        resetTagsNotesNotification();
                     }
                 }
-                
                 
                 angular.element(document.querySelector('.modal')).modal('hide'); //hide modal
                 angular.element(document.querySelector('#competitors')).modal('hide'); //hide modal
             }   
         );
+
+        function resetTagsNotesNotification(){
+            $scope.notes = 'Type your notes here !'
+            $scope.userTags = [];
+
+            $scope.notify = false;
+            $scope.notifyOptions["oneday"] = true;
+            $scope.notifyOptions["threedays"] = false;
+            $scope.notifyOptions["fivedays"] = false;
+            $scope.notifyOptions["sevendays"] = false;
+        }
         
         // populate using existing user's tender information
         function populateUserTenderInfo(tender){
@@ -497,7 +537,8 @@ var tenderApp = angular
             $scope.notifyOptions = angular.copy(tender.preferences.notifyFrequency);
 
             if(tender.hasOwnProperty('participationInfo')) {
-                if(tender.participationInfo.quotation){
+                
+                if(tender.participationInfo.hasOwnProperty('quotation')){
                     $scope.hasPartInfo = true;
                     $scope.partInfo = tender.participationInfo;
                     if($scope.partInfo.competitorsBid.length){
@@ -508,6 +549,7 @@ var tenderApp = angular
             }
         }
         
+        // Dropdown suggest 
         function suggestCompetitor(term){
             var q = term.toLowerCase().trim(), results = [];
 
@@ -535,7 +577,22 @@ var tenderApp = angular
                 $scope.populateComp();
             }           
         }
+        // If competitor already exists and user doesn't select, coerse
+        $scope.forceSelectComp = function (term){
+            if(term){
+                var q = term.toLowerCase().trim();
+                for (var i = 0; i < $scope.competitorsList.length; i++) {
+                    var compList = $scope.competitorsList[i];
+                    if (compList.name.toLowerCase().indexOf(q) !== -1){
+                        $scope.selectCompetitor = compList;
+                        $scope.populateComp();
+                        break;
+                    }
+                }
+            }
+        }
 
+        // Populate competitor's information using suggest or reset 
         $scope.populateComp = function(){
             if($scope.selectCompetitor){
                 $scope.competitor.name = $scope.selectCompetitor.name;
@@ -551,6 +608,7 @@ var tenderApp = angular
             }
         }
 
+        // Check to see if competitor bidding information already exists for the listing
         $scope.compExists = function(compName){
             var exists = false;
 
@@ -594,6 +652,12 @@ var tenderApp = angular
 
                 httpService.putData('/Update/User/Competitor', data).then(function (userData) {
                     
+                    ngToast.create({
+                        className : 'info',
+                        content : 'New competitor ' + data.name + ' is created',
+                        timeout : 6000,
+                        dismissButton : true
+                    });
                     addCompetitorBid(userData.competitors[userData.competitors.length-1]._id);
                     userDataFactory.set(userData);
 
@@ -618,8 +682,12 @@ var tenderApp = angular
             }
         };
 
-        $scope.saveUserForm = function(url){
+        
+
+        // Main SAVE action of the tenderview page
+        $scope.saveUserForm = function(){
             //alert(JSON.stringify($scope.notifyOptions));
+            var url = '/Update/User/TenderData';
             var data = {
                 '_id' : $scope.tenderDetail._id,
                 'preferences' : {
@@ -646,6 +714,9 @@ var tenderApp = angular
             else if($scope.hasPartInfo){
                 data.participationInfo = angular.copy($scope.partInfo);
             }
+            else if($scope.deleteAllPart){
+                data.participationInfo = {};
+            }
 
             
             // if($scope.competitorsBid){
@@ -656,8 +727,14 @@ var tenderApp = angular
             
             httpService.putData(url, data).then(function (userData) {  
                 
+                ngToast.create({
+                    content : 'Your information for this listing has been updated',
+                    timeout : 6000,
+                    dismissButton : true
+                });
                 userDataFactory.set(userData);
 
+                $scope.hasTenderInfo = true;
                 $scope.enableSave = false;
                 $scope.resetBidPartForm();
                 populateUserTenderInfo(data);
@@ -693,7 +770,7 @@ var tenderApp = angular
                     $scope.competitorsBid = angular.copy($scope.partInfo.competitorsBid);
                 }
             }
-            else $scope.competitorsBid = [];
+            else $scope.competitorsBid = []; // holds competitor's bid for current listing
 
             $scope.userBidPartForm.$setPristine();
             $scope.userBidPartForm.quotation.$setPristine();
@@ -712,7 +789,7 @@ var tenderApp = angular
             $scope.competitor.phone = null;
 
             $scope.competitor.quotation = null;
-            $scope.competitor.currency = 'NRs';
+            $scope.competitor.currency = 'NRs'; //ng-init is not working when ng-model is object notation
             $scope.competitor.vat = true;
             $scope.competitor.bgAmount = null;
             $scope.competitor.bgValidity = null;
@@ -725,6 +802,8 @@ var tenderApp = angular
             $scope.compBidPartForm.compName.$setPristine();
         }
 
+
+        // Edit competitor's bidding information
         $scope.editCompForm = function(index){
             var competitor = $scope.competitorsBid[index];
             var competitorInfo = userCompetitorInfo.get(competitor._id, $scope.competitorsList);
@@ -780,7 +859,6 @@ var tenderApp = angular
             return true;
         }
 
-
         $scope.disableSave = function(isQuote){
             if ($scope.enableSave || $scope.bidInfoForm){
                 if ($scope.bidInfoForm&&!isQuote) {
@@ -794,12 +872,62 @@ var tenderApp = angular
             return true;
         }
 
+        //Delete all information for participation
+        $scope.deleteAllPartInfo = function(){
+
+            bootbox.confirm("Delete your participation information for this listing ? <br>(<em>This cannot be undone</em>)", function(result){
+                if(result){
+                    $scope.hasPartInfo=false;
+                    $scope.deleteAllPart=true;
+                    $scope.saveUserForm();
+                }
+            })      
+        }
+
+        // Unwatch listing
+        $scope.deleteAllTenderInfo = function(){
+
+            bootbox.confirm("Remove from watchlist ? <br>(<em>All your information for this listing will be permanently deleted</em>)", function(result){
+                if (result){
+                    var url = '/Delete/User/TenderData';
+                    var data = {
+                        _id : $scope.tenderDetail._id
+                    }
+
+                    httpService.putData(url, data).then(function (userData) {  
+                        
+                        ngToast.create({
+                            className : 'danger',
+                            content : 'Listing removed from your watchlist',
+                            timeout : 6000,
+                            dismissButton : true
+                        });
+
+                        userDataFactory.set(userData);
+                        resetTagsNotesNotification();
+                        
+                        $scope.hasTenderInfo = false;
+                        $scope.hasPartInfo = false;
+                        $scope.enableSave = false;
+
+                        $scope.resetBidPartForm();
+                        
+                    });
+                }
+            })          
+        }
+
         $scope.checkDate = function (dateString){
             return validDate.check(dateString);
         }
 
         $scope.goBack = function () {  
-            $state.go('home');
+            if ($scope.enableSave || $scope.bidInfoForm) {
+                bootbox.confirm("Discard changes ?", function(result){
+                    if(result) $state.go('home');
+                })
+            }
+            else $state.go('home');
         }
         
         $scope.searchTag = function (searchTerm) {  
@@ -831,7 +959,14 @@ var tenderApp = angular
 
         // Remove an item with given index from array 
         $scope.removeFromArray = function(index, array){
-            array.splice(index, 1);
+
+            bootbox.confirm("Delete the entry from the list ?", function(result){
+                if(result) {
+                    $scope.$apply(function (){
+                        array.splice(index, 1);
+                    });
+                }
+            })  
         }
       
     }])
