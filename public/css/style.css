@@ -71,6 +71,9 @@ body {
     color: #ccc;
     z-index: 9;
 }
+.clear:hover{
+    color: #67655D;
+}
 th {
 	cursor:pointer;
     color: steelblue;
@@ -315,7 +318,7 @@ div.form-signup input[type="password"] {
 }
 
 .days-remaining{
-    font-size: 105%;
+    font-size: 115%;
 }
 
 .notifyMenu{

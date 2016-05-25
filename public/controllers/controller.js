@@ -192,7 +192,7 @@ var tenderApp = angular
             });
         };    
     })
-    .factory('userDataFactory', function(){
+    .factory('userDataFactory', function() {
         var userDataObj = {};
         return {
             get : function () {  
@@ -202,6 +202,58 @@ var tenderApp = angular
                 userDataObj = newUserObj;
             }
         }
+    })
+    .factory('userTenders', function() { //holds users watching tenders information
+        
+        function createUserTenderObj(){
+            return {
+                tags : {
+                            list : [],
+                            count : 0
+                        },
+                participated : {
+                            list : [],
+                            count : 0
+                        },
+                watching : {
+                            list : [],
+                            count : 0
+                        }
+            };
+        }
+
+        var userTenderObj = createUserTenderObj();
+
+        return {
+            get : function () {
+                return userTenderObj;
+            },
+            set : function (userData) {
+
+                userTenderObj = createUserTenderObj();
+
+                angular.forEach(userData.tenders, function(tender){
+
+                    angular.forEach(tender.userTags, function(userTag){
+                        if(userTenderObj.tags.list.indexOf(userTag)==-1){//check if tag already exists for user
+                            userTenderObj.tags.list.push(userTag);
+                            userTenderObj.tags.count++ ; 
+                        } 
+                    });
+                    
+                    if(tender.participationInfo.quotation) {
+                        userTenderObj.participated.list.push(tender);  
+                        userTenderObj.participated.count++;
+                    } 
+
+                });
+
+                userTenderObj.watching.list = userData.tenders;
+                userTenderObj.watching.count = userData.tenders.length;
+
+            }
+        }
+
     })
     .factory('userSearchField', function () {  
         
@@ -239,7 +291,26 @@ var tenderApp = angular
         //     }
         // } 
     })
-    .factory('tenderFactory', function(){
+    .factory('myTenderList', function(){ //user current tenders list eg.active, watching
+        var tenderList = [];
+        var currentView = ''; //eg. Active, Watchlist
+
+        return {
+            get : function () {
+                return tenderList;
+            },
+            set : function (tenderArray){
+                tenderList = tenderArray;
+            },
+            getView : function () {
+                return currentView;
+            },
+            setView : function (view){
+                currentView = view;
+            } 
+        }
+    })
+    .factory('tenderFactory', function(){ //return tender instance for tenderView
         var tenderInstance = {};
        
         return {
@@ -347,27 +418,7 @@ var tenderApp = angular
             return result;
         }
     })
-    .service('toast', function(){
-        "use strict";
-
-        var elem,
-            hideHandler,
-            that = {};
-
-        that.init = function(options) {
-            elem = $(options.selector);
-        };
-
-        that.show = function(text) {
-            clearTimeout(hideHandler);
-
-            elem.find("span").html(text);
-            elem.delay(200).fadeIn().delay(4000).fadeOut();
-        };
-
-        return that;
-    })
-    .controller('topController', ['$scope', '$location', 'httpService', 'userDataFactory', function ($scope, $location, httpService, userDataFactory) {  
+    .controller('topController', ['$scope', '$location', 'httpService', 'userDataFactory', 'userTenders', function ($scope, $location, httpService, userDataFactory, userTenders) {  
         $location.path('/');
         
         // User Tender Data
@@ -386,29 +437,25 @@ var tenderApp = angular
             },
             function(userData){
                 if(!angular.equals({}, userData)){
-                    $scope.myTenderCount = function(){
-                        var tags = 0;
-                        var partCount = 0;
-                        angular.forEach(userData.tenders, function(tender){
-                            tags += tender.userTags.length;
-                            if(tender.participationInfo.quotation) partCount++;
-                        })
-                        return {
-                            watching : userData.tenders.length,
-                            tags : tags,
-                            participated : partCount
-                        }
+
+                    userTenders.set(userData); //update user's watchlist with new data
+
+                    $scope.myTender = function(){
+                        return userTenders.get();
                     }
                 }
             }
         );
 
-        
+        $scope.callFetch = function(view){
+            $scope.$broadcast('fetchView', { getView : view });
+        }
+
     }])
     .controller('FooterCtrl', function($scope) {
         $scope.currentYear = new Date().getFullYear();
     })
-    .controller('TenderDetailCtrl', ['$scope', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', 'userDataFactory', 'httpService', 'userTenderData', 'validDate', 'userCompetitorInfo', '$filter', 'ngToast', function ($scope, tenderFactory, $state, userSearchField, daysDifference, tenderText, userDataFactory, httpService, userTenderData, validDate, userCompetitorInfo, $filter, ngToast) {  
+    .controller('TenderDetailCtrl', ['$scope', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', 'userDataFactory', 'httpService', 'userTenderData', 'validDate', 'userCompetitorInfo', '$filter', 'ngToast', 'myTenderList', function ($scope, tenderFactory, $state, userSearchField, daysDifference, tenderText, userDataFactory, httpService, userTenderData, validDate, userCompetitorInfo, $filter, ngToast, myTenderList) {  
         
         $scope.$state = $state;
         
@@ -880,6 +927,13 @@ var tenderApp = angular
                     $scope.hasPartInfo=false;
                     $scope.deleteAllPart=true;
                     $scope.saveUserForm();
+
+                    if (myTenderList.getView() === "Participated") {
+                        var tenderList = myTenderList.get();
+                        var unWatchIndex = tenderList.map(function(tender) {return tender._id}).indexOf($scope.tenderDetail._id);
+                        tenderList.splice(unWatchIndex, 1);
+                        myTenderList.set(tenderList);   
+                    };
                 }
             })      
         }
@@ -887,7 +941,7 @@ var tenderApp = angular
         // Unwatch listing
         $scope.deleteAllTenderInfo = function(){
 
-            bootbox.confirm("Remove from watchlist ? <br>(<em>All your information for this listing will be permanently deleted</em>)", function(result){
+            bootbox.confirm("Remove from watchlist ? <br>(<em>All your information including tags and notes for this listing will be permanently deleted</em>)", function(result){
                 if (result){
                     var url = '/Delete/User/TenderData';
                     var data = {
@@ -903,6 +957,16 @@ var tenderApp = angular
                             dismissButton : true
                         });
 
+                        // Update watching tender list factory (used for table view )
+                        if (myTenderList.getView() === "Watchlist") {
+                            var tenderList = myTenderList.get();
+                            var unWatchIndex = tenderList.map(function(tender) {return tender._id}).indexOf($scope.tenderDetail._id);
+                            tenderList.splice(unWatchIndex, 1);
+                            myTenderList.set(tenderList);   
+                        };
+                        
+
+                        // update user data
                         userDataFactory.set(userData);
                         resetTagsNotesNotification();
                         
@@ -981,7 +1045,7 @@ var tenderApp = angular
     .controller('DefaultCtrl', function($scope, $state){
         $scope.$state = $state;
     })
-    .controller('TenderAppCtrl', ['$scope', 'httpService', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', '$window', 'userDataFactory', function($scope, httpService, tenderFactory, $state, userSearchField, daysDifference, tenderText, $window, userDataFactory) {
+    .controller('TenderAppCtrl', ['$scope', 'httpService', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', '$window', 'userDataFactory', 'userTenders', 'myTenderList', function($scope, httpService, tenderFactory, $state, userSearchField, daysDifference, tenderText, $window, userDataFactory, userTenders, myTenderList) {
         
         
         
@@ -1038,8 +1102,9 @@ var tenderApp = angular
         function loadTenderData(url) {
             $scope.loadingData = true;
             httpService.getData(url).then(function (tenders) {  
-                 $scope.tenderlist = tenders;
-                 $scope.loadingData = false;
+                myTenderList.set(tenders);
+                //$scope.tenderlist = tenders;
+                $scope.loadingData = false;
             })
         };
         
@@ -1062,16 +1127,67 @@ var tenderApp = angular
             }
         };
 
+        $scope.$watchCollection(
+            function(){
+                return myTenderList.get();
+            },
+            function(newValue){
+                $scope.tenderlist = newValue;
+            }
+        )
+
+
+        $scope.$on('fetchView', function (event, args) {
+            $scope.fetch(args.getView);
+        })
+
         //Views (Active, All, Recent)
         $scope.currentView = "Active"; //default
+        myTenderList.setView("Active"); //used to talk cross-controller
+
         $scope.fetch = function(givenView) {
             if ($scope.currentView != givenView) {
                 $scope.loadingData = true;
                 $scope.currentView = givenView;
-                httpService.getData('/'+ givenView).then(function(tenders) {
-                    $scope.tenderlist = tenders;
-                    $scope.loadingData = false;
-                });
+                myTenderList.setView(givenView);
+
+                if(givenView === "Watchlist") {
+                    var userData = userTenders.get();
+                    var watchlistId = [];
+
+                    angular.forEach(userData.watching.list, function(watchingTender){
+                        watchlistId.push(watchingTender._id);
+                        //var detailTender = $filter('filter')($scope.tenderlist, {_id : watchingTender._id}, true);
+                    });
+
+                    httpService.putData('/Watchlist', watchlistId).then(function(tenders){
+                        myTenderList.set(tenders);
+                        //$scope.tenderlist = tenders;
+                        $scope.loadingData = false;
+                    })
+
+                }
+                else if(givenView === "Participated") {
+                    var userData = userTenders.get();
+                    var partListId = [];
+
+                    angular.forEach(userData.participated.list, function(partTender){
+                        partListId.push(partTender._id);
+                    });
+                    httpService.putData('/Participated', partListId).then(function(tenders){
+                        myTenderList.set(tenders);
+                        //$scope.tenderlist = tenders;
+                        $scope.loadingData = false;
+                    })
+
+                }
+                else {
+                    httpService.getData('/'+ givenView).then(function(tenders) {
+                        myTenderList.set(tenders);
+                        //$scope.tenderlist = tenders;
+                        $scope.loadingData = false;
+                    });
+                }
             }
         };
         

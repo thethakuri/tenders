@@ -142,6 +142,26 @@ module.exports = function (app, passport) {
         });
         
     });
+
+    // Get Watching Tenders
+    app.put('/Watchlist', isLoggedIn, function(req, res){
+        Tender.find({
+            _id : { $in : req.body}
+        }, function(err, docs){
+            res.json(docs);
+        });
+        
+    });
+
+    // Get Participated Tenders
+    app.put('/Participated', isLoggedIn, function(req, res){
+        Tender.find({
+            _id : { $in : req.body}
+        }, function(err, docs){
+            res.json(docs);
+        });
+        
+    });
     
     app.get('/User', isLoggedIn, function(req, res){
         

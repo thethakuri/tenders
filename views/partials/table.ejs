@@ -1,5 +1,5 @@
 
-<div class="row marginbottom20 margintop20">
+<div class="row marginbottom20 margintop20" id="mainTable">
     <h3 class="marginbottomnegative2 paddingbottom5 paddingleft15"><span class="label label-success">{{currentView}} postings</span></h3> 
     <div class="col-sm-8 col-xs-12">
         
@@ -11,10 +11,13 @@
             <!---Main Search Box-->
             <input class="form-control hasclear " ng-model="userSearch" type="text" placeholder="Search">
             <div id="viewSelect" class="input-group-btn">
-                <button type="button" id="searchViewButton" ng-model="searchViewButton" class="btn btn-default dropdown-toggle " data-toggle="dropdown"><span ng-bind="currentView"></span><span class="caret"></span></button>
+                <button type="button" id="searchViewButton" ng-model="searchViewButton" class="btn btn-default dropdown-toggle " data-toggle="dropdown"><span ng-bind="currentView"></span>&nbsp;<span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li ng-click="fetch('Active')"><a href="#/">Active Postings</a></li>
                     <li ng-click="fetch('Recent')"><a href="#/">Recent Postings</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li ng-click="fetch('Participated')"><a href="#/">Participated Tenders</a></li>
+                    <li ng-click="fetch('Watchlist')"><a href="#/">My Watchlist</a></li>
                     <li role="separator" class="divider"></li>
                     <li ng-click="fetch('All')"><a href="#/">All Postings</a></li>
                 </ul>
@@ -41,7 +44,7 @@
         <kbd ng-show="userSearch.length" class="padding5 margintop20">Searching for : <em>{{userSearch}}</em></kbd>
     </div>
 </div>
-<div class="row">
+<div class="row" ng-show="filtered.length">
     <div class="col-sm-12">
         <table class="table table-condensed table-hover">
             <thead>

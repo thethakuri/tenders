@@ -58,7 +58,7 @@ module.exports = function(passport) {
                 if (user) {
                     // if the user is already authenticated
                     if (user.isAuthenticated){
-                        console.log("user is authenticated : " + user.email);
+                        //console.log("user is authenticated : " + user.email);
                         return done(null, false, req.flash('signupMessage', 'User already exists'));
                     }
                     // if user exists but not authenticated update password & token to send new verification email

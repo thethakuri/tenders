@@ -16,14 +16,14 @@
             <ul class="nav navbar-nav navbar-right" >
                 <!--ng-bind once-->
                 <li class="nav_user">Welcome, <span ng-bind="::user"></span>@rudra.com.np</li>
-                <li class="active"><a href="#/">Home</a></li>
+                <li class="active"><a href="#/" ng-click="callFetch('Active')">Home</a></li>
                 <li><a href="">About</a></li>
                 <li class="dropdown">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Account<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href=""><i class="glyphicon glyphicon-check marginright10"></i>Participated Tenders <span class="badge" ng-bind="myTenderCount().participated"></span></a></li>
-                        <li><a href=""><i class="glyphicon glyphicon-eye-open marginright10"></i>Watch List <span class="badge" ng-bind="myTenderCount().watching"></span></a></li>
-                        <li><a href=""><i class="glyphicon glyphicon-tags marginright10"></i>My Tags <span class="badge" ng-bind="myTenderCount().tags"></span></a></li>
+                        <li><a href="#/#mainTable" ng-click="callFetch('Participated')"><i class="glyphicon glyphicon-check marginright10"></i>Participated Tenders <span class="badge" ng-bind="myTender().participated.count"></span></a></li>
+                        <li><a href="#/#mainTable" ng-click="callFetch('Watchlist')"><i class="glyphicon glyphicon-eye-open marginright10"></i>Watch List <span class="badge" ng-bind="myTender().watching.count"></span></a></li>
+                        <li><a href=""><i class="glyphicon glyphicon-tags marginright10"></i>My Tags <span class="badge" ng-bind="myTender().tags.count"></span></a></li>
                         <li><a href=""><i class="glyphicon glyphicon-edit marginright10"></i>Add Listing</a></li>
                         <li class="divider"></li>
                         <li><a href=""><i class="glyphicon glyphicon-cog marginright10"></i>Settings</a></li>
