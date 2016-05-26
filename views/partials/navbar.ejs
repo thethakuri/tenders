@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse navbar-static-top">
+<nav class="navbar navbar-inverse navbar-static-top ">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar3">
@@ -16,15 +16,15 @@
             <ul class="nav navbar-nav navbar-right" >
                 <!--ng-bind once-->
                 <li class="nav_user">Welcome, <span ng-bind="::user"></span>@rudra.com.np</li>
-                <li class="active"><a href="#/" ng-click="callFetch('Active')">Home</a></li>
+                <li ui-sref-active="active"><a ui-sref="home" ng-click="setView('Active')">Home</a></li>
                 <li><a href="">About</a></li>
-                <li class="dropdown">
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Account<span class="caret"></span></a>
+                <li class="dropdown" ui-sref-active="active">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button">My Account <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#/#mainTable" ng-click="callFetch('Participated')"><i class="glyphicon glyphicon-check marginright10"></i>Participated Tenders <span class="badge" ng-bind="myTender().participated.count"></span></a></li>
-                        <li><a href="#/#mainTable" ng-click="callFetch('Watchlist')"><i class="glyphicon glyphicon-eye-open marginright10"></i>Watch List <span class="badge" ng-bind="myTender().watching.count"></span></a></li>
+                        <li><a href="#/#postings" ng-click="setView('Participated')"><i class="glyphicon glyphicon-check marginright10"></i>Participated Tenders <span class="badge" ng-bind="myTender().participated.count"></span></a></li>
+                        <li><a href="#/#postings" ng-click="setView('Watchlist')"><i class="glyphicon glyphicon-eye-open marginright10"></i>Watch List <span class="badge" ng-bind="myTender().watching.count"></span></a></li>
                         <li><a href=""><i class="glyphicon glyphicon-tags marginright10"></i>My Tags <span class="badge" ng-bind="myTender().tags.count"></span></a></li>
-                        <li><a href=""><i class="glyphicon glyphicon-edit marginright10"></i>Add Listing</a></li>
+                        <li><a ui-sref="addlisting" ><i class="glyphicon glyphicon-edit marginright10"></i>Add Listing</a></li>
                         <li class="divider"></li>
                         <li><a href=""><i class="glyphicon glyphicon-cog marginright10"></i>Settings</a></li>
                         <li><a href="/logout"><i class="glyphicon glyphicon-log-out marginright10"></i>Logout</a></li>

@@ -1,5 +1,5 @@
 
-<div class="row marginbottom20 margintop20" id="mainTable">
+<div class="row marginbottom20 margintop20" id="postings">
     <h3 class="marginbottomnegative2 paddingbottom5 paddingleft15"><span class="label label-success">{{currentView}} postings</span></h3> 
     <div class="col-sm-8 col-xs-12">
         
@@ -13,13 +13,13 @@
             <div id="viewSelect" class="input-group-btn">
                 <button type="button" id="searchViewButton" ng-model="searchViewButton" class="btn btn-default dropdown-toggle " data-toggle="dropdown"><span ng-bind="currentView"></span>&nbsp;<span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <li ng-click="fetch('Active')"><a href="#/">Active Postings</a></li>
-                    <li ng-click="fetch('Recent')"><a href="#/">Recent Postings</a></li>
+                    <li ng-click="fetch('Active')"><a href="#/#postings">Active Postings</a></li>
+                    <li ng-click="fetch('Recent')"><a href="#/#postings">Recent Postings</a></li>
                     <li role="separator" class="divider"></li>
-                    <li ng-click="fetch('Participated')"><a href="#/">Participated Tenders</a></li>
-                    <li ng-click="fetch('Watchlist')"><a href="#/">My Watchlist</a></li>
+                    <li ng-click="fetch('Participated')"><a href="#/#postings">Participated Tenders</a></li>
+                    <li ng-click="fetch('Watchlist')"><a href="#/#postings">My Watchlist</a></li>
                     <li role="separator" class="divider"></li>
-                    <li ng-click="fetch('All')"><a href="#/">All Postings</a></li>
+                    <li ng-click="fetch('All')"><a href="#/#postings">All Postings</a></li>
                 </ul>
             </div>
             <!-- /btn-group -->
@@ -87,7 +87,7 @@
                     </th>
                     <th ng-click="sortTable.sortKey='remarks'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
                         <a href="#/" data-toggle='tooltip' title="Sort by classification" initialize-tooltip>
-                            Remarks
+                            Type
                         </a>
                         <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='remarks'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
                     </th>

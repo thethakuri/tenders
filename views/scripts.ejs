@@ -2,13 +2,22 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
 crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-sanitize.min.js"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-sanitize.min.js"></script>
 
 
 <!-- <script src="scripts/jquery.min.js"></script>
 <script src="scripts/angular.min.js"></script>
 <script src="scripts/bootstrap.min.js"></script>
 <script src="scripts/angular-sanitize.min.js"></script> -->
+
+
+<script type="text/javascript">
+// Fallbacks
+window.jQuery  || document.write('<script src="scripts/jquery.min.js"><\/script>');
+window.angular || document.write('<script src="scripts/angular.min.js"><\/script>');
+if(typeof($.fn.modal) === 'undefined') {document.write('<script src="scripts/bootstrap.min.js"><\/script>')};
+</script> 
+
 
 
 <!-- ng-Animate

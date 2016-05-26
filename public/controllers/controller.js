@@ -22,32 +22,27 @@ var tenderApp = angular
                     }
                 }
             })
-            //dummy state used for browser back button functionality only
-            .state('home.detail', { 
-                url : ':id'
-            })
-            
+
             .state('about', {
                 url : '/about',
                 templateUrl : 'partials/about.ejs',
                 controller : 'AboutCtrl'
             })
             
-            .state('account', {
+            .state('addlisting', {
+                url : '/addlisting',
+                templateUrl : 'partials/addlisting.ejs'
                 
             })
-            .state('account.participated', {
+
+            .state('settings', {
                 
             })
-            .state('account.watchlist', {
-                
-            })
-            .state('account.addlisting', {
-                
-            })
-            .state('account.settings', {
-                
-            });   
+
+            //dummy state used for browser back button functionality only
+            .state('home.detail', { 
+                url : ':id'
+            });
     }])
     /*
     .config(function($routeProvider) {
@@ -418,7 +413,7 @@ var tenderApp = angular
             return result;
         }
     })
-    .controller('topController', ['$scope', '$location', 'httpService', 'userDataFactory', 'userTenders', function ($scope, $location, httpService, userDataFactory, userTenders) {  
+    .controller('topController', ['$scope', '$location', 'httpService', 'userDataFactory', 'userTenders', 'myTenderList', function ($scope, $location, httpService, userDataFactory, userTenders, myTenderList) {  
         $location.path('/');
         
         // User Tender Data
@@ -447,14 +442,15 @@ var tenderApp = angular
             }
         );
 
-        $scope.callFetch = function(view){
-            $scope.$broadcast('fetchView', { getView : view });
+        $scope.setView = function(view){
+            myTenderList.setView(view);
         }
 
     }])
     .controller('FooterCtrl', function($scope) {
         $scope.currentYear = new Date().getFullYear();
     })
+
     .controller('TenderDetailCtrl', ['$scope', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', 'userDataFactory', 'httpService', 'userTenderData', 'validDate', 'userCompetitorInfo', '$filter', 'ngToast', 'myTenderList', function ($scope, tenderFactory, $state, userSearchField, daysDifference, tenderText, userDataFactory, httpService, userTenderData, validDate, userCompetitorInfo, $filter, ngToast, myTenderList) {  
         
         $scope.$state = $state;
@@ -1042,10 +1038,18 @@ var tenderApp = angular
         }
       
     }])
+
     .controller('DefaultCtrl', function($scope, $state){
         $scope.$state = $state;
     })
-    .controller('TenderAppCtrl', ['$scope', 'httpService', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', '$window', 'userDataFactory', 'userTenders', 'myTenderList', function($scope, httpService, tenderFactory, $state, userSearchField, daysDifference, tenderText, $window, userDataFactory, userTenders, myTenderList) {
+
+    .controller('AddlistingCtrl', ['scope', 'myTenderList', function ($scope, myTenderList){
+        
+        
+        
+    }])
+
+    .controller('TenderAppCtrl', ['$scope', 'httpService', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', '$window', 'userDataFactory', 'userTenders', 'myTenderList', '$location', function($scope, httpService, tenderFactory, $state, userSearchField, daysDifference, tenderText, $window, userDataFactory, userTenders, myTenderList, $location) {
         
         
         
@@ -1096,20 +1100,6 @@ var tenderApp = angular
         $scope.user;
         
         
-        // Default view
-        loadTenderData('/Active');
-        //Load Tender data
-        function loadTenderData(url) {
-            $scope.loadingData = true;
-            httpService.getData(url).then(function (tenders) {  
-                myTenderList.set(tenders);
-                //$scope.tenderlist = tenders;
-                $scope.loadingData = false;
-            })
-        };
-        
-        
-        
         //default sort table headers
         $scope.sortTable = {
             sortKey: 'subDate',
@@ -1137,19 +1127,16 @@ var tenderApp = angular
         )
 
 
-        $scope.$on('fetchView', function (event, args) {
-            $scope.fetch(args.getView);
-        })
-
-        //Views (Active, All, Recent)
-        $scope.currentView = "Active"; //default
-        myTenderList.setView("Active"); //used to talk cross-controller
+        // Default view
+        if(!myTenderList.getView()){
+            myTenderList.setView("Active");
+        }
+        
 
         $scope.fetch = function(givenView) {
             if ($scope.currentView != givenView) {
                 $scope.loadingData = true;
                 $scope.currentView = givenView;
-                myTenderList.setView(givenView);
 
                 if(givenView === "Watchlist") {
                     var userData = userTenders.get();
@@ -1188,8 +1175,16 @@ var tenderApp = angular
                         $scope.loadingData = false;
                     });
                 }
+                //$location.hash(''); //hack for anchor id to work 
             }
         };
+
+        //Watch for changing views
+        $scope.$watchCollection(function () {
+            return myTenderList.getView();
+        } , function(newView) {
+            $scope.fetch(newView);
+        });
         
         //Row color
         $scope.getStatus = function(subDate){

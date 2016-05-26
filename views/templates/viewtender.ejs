@@ -1,15 +1,15 @@
-<h3 class="page-header"><span class='firstChar'>{{tenderDetail.item.charAt(0)}}</span>{{tenderDetail.item.slice(1)}}</h3>
+<h3 class="page-header firstChar">{{tenderDetail.item}}</h3>
 <div class="row">
     <div class="col-lg-8 col-md-7 tenderCaller">
         <h4 class="paddingleft15 nomargin"> {{tenderDetail.caller}}</h4>
         <i class="glyphicon glyphicon-bullhorn"></i>
     </div>
     <div class="col-lg-4 col-md-5">
-         <a class="btn fbtn btn-danger pull-right marginleft15" data-toggle="tooltip" rel="tooltip" data-placement="top" data-original-title="Remove this listing from your watchlist" initialize-tooltip ng-show="hasTenderInfo" ng-click="deleteAllTenderInfo()">
+         <a class="btn fbtn btn-danger pull-right marginleft15 marginbottom10" data-toggle="tooltip" rel="tooltip" data-placement="top" data-original-title="Remove this listing from your watchlist" initialize-tooltip ng-show="hasTenderInfo" ng-click="deleteAllTenderInfo()">
             <span class="lineheight24"><i class="glyphicon glyphicon-eye-close"></i> Unwatch</span>
         </a>
         <!--NOTIFICATION-->
-        <div class="input-group col-xs-2 pull-right "> <!--col hack to prevent input-addon from running away-->
+        <div class="input-group col-xs-2 pull-right marginbottom10"> <!--col hack to prevent input-addon from running away-->
             <label class="checkbox-inline tenderOption btn fbtn  btn-success " data-toggle='tooltip' data-original-title="{{notifyOptionsValid(tenderDetail.subDate, 1) ? 'Select to get email notification' : 'This listing does not qualify for notification window'}}" initialize-tooltip ng-disabled="!notifyOptionsValid(tenderDetail.subDate, 1)">
                 <input type="checkbox" id="notify" ng-model="notify" ng-disabled="!notifyOptionsValid(tenderDetail.subDate, 1)" ng-click="notifyOptionsValid(tenderDetail.subDate, 1) ? enableSave = true : null"><span class="lineheight24">Receive notification</span>
             </label>
@@ -167,8 +167,8 @@
                                     data-original-title="{{isExpired(tenderDetail.subDate) ? '' : 'This listing is still active. Enter after submission date.'}}"
                                     -->
                                    
-                                    <a class="btn fbtn btn-danger" ng-click="bidInfoForm=true" data-toggle='tooltip' data-original-title="Provide your and your competitor's bid submission details for this listing" initialize-tooltip>
-                                        <span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter participation information</span>
+                                    <a class="btn fbtn btn-danger btn-lg" ng-click="bidInfoForm=true" data-toggle='tooltip' data-original-title="Provide your and your competitor's bid submission details for this listing" initialize-tooltip>
+                                        <span class="lineheight24"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Enter</span>
                                     </a>
                                 </div>
                             </div>
@@ -181,10 +181,10 @@
                                     <fieldset>
 
                                     <!-- BOQ -->
-                                    <div class="form-group" ng-class="{ 'has-error' : userBidPartForm.quotation.$invalid && !userBidPartForm.quotation.$pristine }">
+                                    <div class="form-group form-group-lg" ng-class="{ 'has-error' : userBidPartForm.quotation.$invalid && !userBidPartForm.quotation.$pristine }">
                                         <label class="col-md-4 control-label" for="quotation">Quotation<sup class="required">*</sup></label>
                                         <div class="col-md-7">
-                                            <div class="input-group"> 
+                                            <div class="input-group input-group-lg"> 
                                                 
                                                 <div class="input-group-btn ">
                                                     <select class="btn selectCurrency noradiusborder" ng-model="userCurrency">
@@ -211,7 +211,7 @@
                                     
                                     
                                     <!-- Guarantee Amount-->
-                                    <div class="form-group">
+                                    <div class="form-group form-group-lg">
                                     <label class="col-md-4 control-label" for="bgAmount">Bid Security</label>  
                                     <div class="col-md-7">
                                     <input id="bgAmount" name="bgAmount" type="number" placeholder="Security amount" class="form-control input-md" ng-model="bgAmount">
@@ -220,7 +220,7 @@
                                     </div>
                                     
                                     <!-- Bid Validity-->
-                                    <div class="form-group" ng-class="{ 'has-error' : !checkDate(bgValidity) && !userBidPartForm.bgValidity.$pristine && bgValidity != ''}">
+                                    <div class="form-group form-group-lg" ng-class="{ 'has-error' : !checkDate(bgValidity) && !userBidPartForm.bgValidity.$pristine && bgValidity != ''}">
                                         <label class="col-md-4 control-label" for="bgValidity">Guarantee Validity</label>  
                                         <div class="col-md-7">
                                             <div id="date" class="input-group input-append" ng-model="dateNow">
@@ -240,7 +240,7 @@
                                     </div>
                                     
                                     <!-- Bank Name-->
-                                    <div class="form-group">
+                                    <div class="form-group form-group-lg">
                                     <label class="col-md-4 control-label" for="bankName">Guarantee Issuer</label>  
                                     <div class="col-md-7">
                                     <input id="bankName" name="bankName" type="text" placeholder="Bank name" class="form-control input-md" ng-model="bankName">
@@ -249,7 +249,7 @@
                                     </div>
 
                                     <!-- Manufacturer-->
-                                    <div class="form-group">
+                                    <div class="form-group form-group-lg">
                                     <label class="col-md-4 control-label" for="manufacturer">Manufacturer</label>  
                                     <div class="col-md-7">
                                     <input id="manufacturer" name="manufacturer" type="text" placeholder="Manufacturer name" class="form-control input-md" ng-model="manufacturer">
@@ -259,7 +259,7 @@
                                     
                                     
                                     <!-- Remarks-->
-                                    <div class="form-group">
+                                    <div class="form-group form-group-lg">
                                     <label class="col-md-4 control-label" for="remarks">Remarks</label>
                                     <div class="col-md-7">                     
                                         <textarea class="form-control" id="remarks" name="remarks" ng-model="remarks"></textarea>
@@ -268,7 +268,7 @@
                                     
                                     <!-- Competitors-->
                                     
-                                    <div class="form-group paddingtop20" ng-show="competitorsBid.length">
+                                    <div class="form-group paddingtop20 form-group-lg" ng-show="competitorsBid.length">
                                         
                                         <label class="col-md-4 control-label marginbottom20" for="remarks">Competitors</label>
                                         <div class="col-md-7">
@@ -346,8 +346,8 @@
                         <div class="row marginleftright15" ng-show="hasPartInfo&&!bidInfoForm">
                             <div class="row paddingbottom20">
                                 <div class="col-xs-12 nopaddingleftright text-right">
-                                    <button class="btn btn-primary btn-sm marginright5" ng-click="populateBidInfo();bidInfoForm = true" data-toggle="tooltip" data-placement="top" data-original-title="Edit participation information" initialize-tooltip>Edit</button>
-                                    <button class="btn btn-danger btn-sm" ng-click="deleteAllPartInfo()" data-toggle="tooltip" data-placement="top" data-original-title="Delete participation information" initialize-tooltip>Delete</button>
+                                    <button class="btn btn-primary  marginright5" ng-click="populateBidInfo();bidInfoForm = true" data-toggle="tooltip" data-placement="top" data-original-title="Edit participation information" initialize-tooltip>Edit</button>
+                                    <button class="btn btn-danger " ng-click="deleteAllPartInfo()" data-toggle="tooltip" data-placement="top" data-original-title="Delete participation information" initialize-tooltip>Delete</button>
                                 </div>
                             </div>
                             
@@ -473,7 +473,7 @@
                             </div>-->
 
                             <!-- Competitor's name-->
-                            <div class="form-group" ng-class="{ 'has-error' : compBidPartForm.compName.$invalid && !compBidPartForm.compName.$pristine || selectCompetitor && compExists(selectCompetitor.name)}" >
+                            <div class="form-group form-group-lg" ng-class="{ 'has-error' : compBidPartForm.compName.$invalid && !compBidPartForm.compName.$pristine || selectCompetitor && compExists(selectCompetitor.name)}" >
                                 <label class="col-md-4 control-label" for="compName">Name<sup class="required">*</sup></label>  
                                 <div class="col-md-6" mass-autocomplete="{debounce_blur:700}">
                                     <input id="compName" name="compName" type="text" placeholder="Competing firm's name" class="form-control input-md" required ng-model="competitor.name" mass-autocomplete-item="autocomplete_options" ng-change="updateComp()" ng-disabled="editCompFormInfo.disable" ng-blur="forceSelectComp(competitor.name)">
@@ -497,7 +497,7 @@
                             </div>
 
                             <!-- Competitor's address -->
-                            <div class="form-group">
+                            <div class="form-group form-group-lg">
                                 <label class="col-md-4 control-label" for="compAddress">Address</label>  
                                 <div class="col-md-6">
                                 <input id="compAddress" name="compAddress" type="text" placeholder="" class="form-control input-md" ng-model="competitor.address" ng-disabled="selectCompetitor||editCompFormInfo.disable">
@@ -505,7 +505,7 @@
                             </div>
 
                             <!-- Competitor's contact person-->
-                            <div class="form-group">
+                            <div class="form-group form-group-lg">
                                 <label class="col-md-4 control-label" for="compPerson">Contact Person</label>  
                                 <div class="col-md-6">
                                 <input id="compPerson" name="compPerson" type="text" placeholder="" class="form-control input-md" ng-model="competitor.person" ng-disabled="selectCompetitor||editCompFormInfo.disable">
@@ -513,7 +513,7 @@
                             </div>
 
                             <!-- Competitor's phone -->
-                            <div class="form-group">
+                            <div class="form-group form-group-lg">
                                 <label class="col-md-4 control-label" for="compPhone">Phone</label>  
                                 <div class="col-md-6">
                                 <input id="compPhone" name="compPhone" type="text" placeholder="" class="form-control input-md" ng-model="competitor.phone" ng-disabled="selectCompetitor||editCompFormInfo.disable">
@@ -521,10 +521,10 @@
                             </div>
                             
                             <!-- Competitor's BOQ -->
-                            <div class="form-group" ng-class="{ 'has-error' : compBidPartForm.compQuotation.$invalid && !compBidPartForm.compQuotation.$pristine }">
+                            <div class="form-group form-group-lg" ng-class="{ 'has-error' : compBidPartForm.compQuotation.$invalid && !compBidPartForm.compQuotation.$pristine }">
                                 <label class="col-md-4 control-label" for="compQuotation">Quotation<sup class="required">*</sup></label>
                                 <div class="col-md-6">
-                                    <div class="input-group"> 
+                                    <div class="input-group input-group-lg"> 
                                         <div class="input-group-btn ">
                                             <select class="btn selectCurrency noradiusborder" ng-model="competitor.currency">
                                                 <option>NRs</option>
@@ -546,7 +546,7 @@
                             </div>
                             
                             <!-- Competitor's Guarantee Amount-->
-                            <div class="form-group">
+                            <div class="form-group form-group-lg">
                                 <label class="col-md-4 control-label" for="compBgAmount">Bid Security</label>  
                                 <div class="col-md-6">
                                     <input id="compBgAmount" name="compBgAmount" type="number" placeholder="Security amount" class="form-control input-md" ng-model="competitor.bgAmount">
@@ -554,7 +554,7 @@
                             </div>
                             
                             <!-- Competitor's Bid Validity-->
-                            <div class="form-group" ng-class="{ 'has-error' : !checkDate(competitor.bgValidity) && !compBidPartForm.compBgValidity.$pristine && competitor.bgValidity != ''}">
+                            <div class="form-group form-group-lg" ng-class="{ 'has-error' : !checkDate(competitor.bgValidity) && !compBidPartForm.compBgValidity.$pristine && competitor.bgValidity != ''}">
                                 <label class="col-md-4 control-label" for="compBgValidity">Validity</label>  
                                 <div class="col-md-6">
                                     <div id="date" class="input-group input-append" ng-model="compDateNow">
@@ -574,7 +574,7 @@
                             </div>
                             
                             <!-- Competitor's Bank Name-->
-                            <div class="form-group">
+                            <div class="form-group form-group-lg">
                                 <label class="col-md-4 control-label" for="compBankName">Guarantee Issuer</label>  
                                 <div class="col-md-6">
                                     <input id="compBankName" name="compBankName" type="text" placeholder="Bank name" class="form-control input-md" ng-model="competitor.bankName">
@@ -582,7 +582,7 @@
                             </div>
 
                             <!-- Competitor's Manufacturer-->
-                            <div class="form-group">
+                            <div class="form-group form-group-lg">
                                 <label class="col-md-4 control-label" for="compManufacturer">Manufacturer</label>  
                                 <div class="col-md-6">
                                     <input id="compManufacturer" name="compManufacturer" type="text" placeholder="Manufacturer name" class="form-control input-md" ng-model="competitor.manufacturer">
@@ -591,7 +591,7 @@
                             
                             
                             <!-- Competitor's Remarks-->
-                            <div class="form-group nomarginbottom">
+                            <div class="form-group form-group-lg nomarginbottom">
                                 <label class="col-md-4 control-label" for="compRemarks">Remarks</label>
                                 <div class="col-md-6">                     
                                     <textarea class="form-control" id="compRemarks" name="compRemarks" ng-model="competitor.remarks"></textarea>
@@ -609,8 +609,8 @@
                             <sup class="required">*</sup>Required
                         </div>
                         <div class="col-xs-8">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="resetCompForm()">Cancel</button>
-                            <button ng-click="saveCompForm('/Update/User/Competitor')" type="button" class="btn btn-primary" ng-disabled="disableCompSave(compBidPartForm.compName.$valid, compBidPartForm.compQuotation.$valid)">Submit</button>
+                            <button type="button" class="btn btn-lg btn-default" data-dismiss="modal" ng-click="resetCompForm()">Cancel</button>
+                            <button ng-click="saveCompForm('/Update/User/Competitor')" type="button" class="btn btn-lg btn-primary" ng-disabled="disableCompSave(compBidPartForm.compName.$valid, compBidPartForm.compQuotation.$valid)">Submit</button>
                         </div>
                         
                     </div>
