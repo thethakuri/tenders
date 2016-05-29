@@ -1,0 +1,234 @@
+<div class="container paddingbottom20 paddingtop20">
+    
+    <div class="row">
+        <!-- RIGHT PANEL-->
+        <div class="col-md-5 col-sm-6">
+            <!-- User Info -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3 class="page-header "><span class="glyphicon glyphicon-info-sign font18" ></span> User Information</h3>
+                    <table class="table table-condensed table-striped table-hover bidInfoTable ">
+                        <tr>
+                            <td class="title">
+                                <span class="marginleft15">Name</span> 
+                            </td>
+                            <td>
+                                {{userData.name}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                                <span class="marginleft15">Position</span> 
+                            </td>
+                            <td>
+                                {{userData.position}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                                <span class="marginleft15">Organization</span> 
+                            </td>
+                            <td>
+                                {{userData.company}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                                <span class="marginleft15">Address</span> 
+                            </td>
+                            <td>
+                                {{userData.address}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                               <span class="marginleft15">Phone no.</span> 
+                            </td>
+                            <td>
+                                {{userData.phone}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                                <span class="marginleft15">Email</span> 
+                            </td>
+                            <td>
+                                {{user.email}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title">
+                                <span class="marginleft15">Date Joined</span> 
+                            </td>
+                            <td>
+                                {{userData.createdAt | date : 'EEEE MMMM d, yyyy'}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!--Profile-->
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3 class="page-header "><span class="glyphicon glyphicon-user font18" ></span> Update Profile</h3>
+                    <form class="form-horizontal well noradiusborder" name="profileForm" novalidate>
+                        <fieldset>
+
+                            <!-- Username  -->
+                            <div class="form-group form-group-lg margintop20">
+                            <label for="userName" class="control-label col-sm-4">Name</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="userName" id="userName" ng-model="userName" placeholder="Your name">
+                                
+                            </div>
+                            </div>
+                            <!-- Position  -->
+                            <div class="form-group form-group-lg">
+                            <label for="userPosition" class="control-label col-sm-4">Position</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" id="userPosition" ng-model="userPosition" placeholder="eg. Senior Manager" required="">
+                                
+                            </div>
+                            </div>
+                            
+                            <!-- Organization  -->
+                            <div class="form-group form-group-lg">
+                            <label for="userCompany" class="control-label col-sm-4">Organization</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" id="userCompany" ng-model="userCompany" placeholder="Your company's name" required="">
+                                
+                            </div>
+                            </div>
+                            
+                            <!-- Address  -->
+                            <div class="form-group form-group-lg">
+                            <label for="userAddress" class="control-label col-sm-4">Address</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" id="userAddress" ng-model="userAddress" placeholder="Your company's address" required="">
+                                
+                            </div>
+                            </div>
+                            
+                            <!-- Phone  -->
+                            <div class="form-group form-group-lg">
+                            <label for="userPhone" class="control-label col-sm-4">Phone</label>
+                            <div class="col-sm-7">
+                                <input type="number" class="form-control" id="userPhone" ng-model="userPhone" placeholder="Your phone no." required="">
+                                
+                            </div>
+                            </div>
+
+                            <!-- Button  -->
+                            <div class="form-group">
+                            <label class="control-label col-sm-4" for="submitUser"></label>
+                            <div class="text-right col-sm-7">
+                                <button type="button" id="submitUser" name="submitUser" class="btn btn-primary btn-lg" ng-disabled="profileForm.$pristine" ng-click="updateProfile()">Submit</button>
+                                
+                            </div>
+                            </div>
+
+
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Space between -->
+        <div class="col-md-2"></div>
+        
+        <!-- LEFT PANEL -->
+        <div class="col-md-5 col-sm-6">
+            <!-- Password -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3 class="page-header "><span class="glyphicon glyphicon-lock font18" ></span> Change Password</h3>
+                    <form class="form-horizontal well noradiusborder" name="passwordReset" novalidate>
+                        <fieldset>
+                            <!-- Old Password -->
+                            <div class="form-group form-group-lg margintop20">
+                                <label for="oldPassword" class="control-label col-sm-4">Old Password</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control" id="oldPassword" ng-model="oldPassword" placeholder="Old password">
+                                    
+                                </div>
+                            </div>
+                            
+                            <!-- New Password -->
+                            <div class="form-group form-group-lg margintop20">
+                                <label for="newPassword" class="control-label col-sm-4">New Password</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control" id="newPassword" ng-model="newPassword" placeholder="New password">
+                                    
+                                </div>
+                            </div>
+                            
+                            <!-- Confirm Password -->
+                            <div class="form-group form-group-lg margintop20">
+                                <label for="confirmPassword" class="control-label col-sm-4">Confirm Password</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control" id="confirmPassword" ng-model="confirmPassword" placeholder="Confirm new password">
+                                    
+                                </div>
+                            </div>
+                            
+                            <!-- Button  -->
+                            <div class="form-group">
+                            <label class="control-label col-sm-4" for="submitPassword"></label>
+                            <div class="text-right col-sm-7">
+                                <button type="button" id="submitPassword" name="submitPassword" class="btn btn-primary btn-lg" aria-label="">Update</button>
+                                
+                            </div>
+                            </div>
+                            
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Competitors -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3 class="page-header "><span class="glyphicon glyphicon-piggy-bank font18" ></span> Competitors ({{userData.competitors.length}})
+                    <a class="btn ftn btn-link pull-right nopadding marginright10 compAdd" data-toggle="tooltip" data-placement="top" data-original-title="Add competitor" initialize-tooltip><span class="glyphicon glyphicon-plus-sign font28 "></span></a></h3>
+                    <table class="table table-condensed table-striped table-hover bidInfoTable ">
+                        <tr ng-repeat="competitor in userData.competitors | orderBy: 'name'">
+                            <td class="title" id="compSetting">
+                                <div class="row">
+                                    <div class="col-xs-10">
+                                        <h4 class="marginleft15">{{competitor.name}}</h4>
+                                    </div>
+                                    <div class="col-xs-2 text-right">
+                                        <span class="glyphicon btn btn-xs btn-link togglemore" data-toggle="collapse" data-target="{{'#compDetail-'+$index}}" ng-class="toggleMore ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom'" ng-click="toggleMore = !toggleMore" prevent-doubleclick></span>
+                                    </div>
+                                </div>
+                                <div class="row collapse" id="{{'compDetail-'+$index}}">
+                                    <div class="col-xs-12">
+                                        <dl class="dl-horizontal bidInfoList" >
+                                            
+                                            <dt>Address</dt>
+                                            <dd>{{competitor.address}}</dd>
+                                            
+                                            <dt>Contact Person</dt>
+                                            <dd>{{competitor.contactPerson}}</dd>
+                                            
+                                            <dt>Phone</dt>
+                                            <dd>{{competitor.phone}}</dd>
+                                        </dl>
+                                        
+                                    </div>
+                                </div>
+                                 
+                            </td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+                    
+        </div>
+        
+    </div>
+</div>

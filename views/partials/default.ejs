@@ -1,8 +1,8 @@
 <!--Default View-->
-<div ng-hide="$state.includes('home.detail')" ng-show="$state.includes('home')">
+<div ng-show="$state.is('home')">
     <div class="jumbotron hidden-xs">
         <div class="container text-center paddingbottom20 paddingtop20">
-            <h1>Tender Portal</h1>
+            <h1 class="no-fontwt">Tender Portal</h1>
             <p>View, edit, add and manage listings for Tenders, Quotations, EOIs etc.</p>    
             <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a></p>
         </div>
@@ -10,6 +10,6 @@
     <div ui-view="defaultView" class="container"></div>  
 </div>
 <!--Detail View-->
-<div ng-hide="$state.includes('home')" ng-show="$state.includes('home.detail')">
+<div ng-show="$state.is('home.detail')">
     <div ui-view="detailView" class="container"></div>
 </div>

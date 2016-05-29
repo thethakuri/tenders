@@ -1,57 +1,103 @@
 <div class="container paddingbottom20 paddingtop20">
     <div class="row">
         <div class="  col-md-8 col-md-offset-2 ">
-            <h3 class="page-header ">Add new listing</h3>
+            <h3 class="page-header "><span class="glyphicon glyphicon-edit font18" ></span> {{mode==='edit' ? 'Edit' : 'Add new'}} listing</h3>
             <form class="form-horizontal well noradiusborder" name="addlistingForm" novalidate>
                 <fieldset>
-
-
-                    <!-- Text input  -->
-                    <div class="form-group form-group-lg margintop20">
-                    <label for="tender-title" class="control-label col-sm-4">Title</label>
+                    
+                    <!-- Title  -->
+                    <div class="form-group form-group-lg margintop20 " ng-class="{ 'has-error' : addlistingForm.tenderTitle.$invalid && !addlistingForm.tenderTitle.$pristine }">
+                    <label for="tenderTitle" class="control-label col-sm-4">Title<sup class="required">*</sup></label>
                     <div class="col-sm-7">
-                        <input type="text" class="form-control" id="tender-title" placeholder="Tender title" required="">
+                        <input type="text" class="form-control" id="tenderTitle" name="tenderTitle" placeholder="Listing title" required ng-model="tenderTitle">
                         
                     </div>
                     </div>
-                    <!-- Text input  -->
-                    <div class="form-group form-group-lg">
-                    <label for="tender-caller" class="control-label col-sm-4">Caller</label>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-7">
+                            <p ng-show="addlistingForm.tenderTitle.$invalid && !addlistingForm.tenderTitle.$pristine" class="formError text-danger" ng-cloak>
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Please enter title for this listing
+                            </p>
+                        </div>
+                    </div>
+                                    
+                    <!-- Caller  -->
+                    <div class="form-group form-group-lg" ng-class="{ 'has-error' : addlistingForm.tenderCaller.$invalid && !addlistingForm.tenderCaller.$pristine }">
+                    <label for="tenderCaller" class="control-label col-sm-4">Caller<sup class="required">*</sup></label>
                     <div class="col-sm-7">
-                        <input type="text" class="form-control" id="tender-caller" placeholder="Name and address" required="">
+                        <input type="text" class="form-control" id="tenderCaller" name="tenderCaller" ng-model="tenderCaller" placeholder="Name and address" required>
                         
                     </div>
                     </div>
-                    <!-- Text input  -->
-                    <div class="form-group form-group-lg">
-                    <label for="pub-date" class="control-label col-sm-4">Publication Date</label>
-                    <div class="col-sm-7">
-                        <input type="date" class="form-control" id="pub-date" placeholder="eg. 2015-07-28" required="">
-                        
-                    </div>
-                    </div>
-                    <!-- Text input  -->
-                    <div class="form-group form-group-lg">
-                    <label for="pub-daily" class="control-label col-sm-4">Publication Daily</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" id="pub-daily" placeholder="Published newspaper" required="">
-                        
-                    </div>
-                    </div>
-                    <!-- Text input  -->
-                    <div class="form-group form-group-lg">
-                    <label for="sub-date" class="control-label col-sm-4">Submission Date</label>
-                    <div class="col-sm-7">
-                        <input type="date" class="form-control" id="sub-date" placeholder="eg. 2015-07-28" required="">
-                        
-                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-7">
+                            <p ng-show="addlistingForm.tenderCaller.$invalid && !addlistingForm.tenderCaller.$pristine" class="formError text-danger" ng-cloak>
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Please enter name and address of the caller
+                            </p>
+                        </div>
                     </div>
                     
-                    <!-- Input With Combobox  -->
+                    <!-- Publication Date  -->
+                    <div class="form-group form-group-lg" ng-class="{ 'has-error' : !checkDate(pubDate) && !addlistingForm.pubDate.$pristine || !dateConsistent(pubDate, subDate)}">
+                    <label for="pubDate" class="control-label col-sm-4">Publication Date<sup class="required">*</sup></label>
+                    <div class="col-sm-7">
+                        <input datetime-picker date-format="yyyy-MM-dd" date-only type="text" class="form-control" id="pubDate" name="pubDate" ng-model="pubDate" placeholder="eg. 2015-07-28" required>
+                        
+                    </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-7">
+                            <p ng-show="!checkDate(pubDate) && !addlistingForm.pubDate.$pristine" class="formError text-danger" ng-cloak>
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Date format: yyyy-MM-dd eg. 2015-07-28
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Publication Daily  -->
+                    <div class="form-group form-group-lg" ng-class="{ 'has-error' : addlistingForm.pubDaily.$invalid && !addlistingForm.pubDaily.$pristine }">
+                    <label for="pubDaily" class="control-label col-sm-4">Publication Daily<sup class="required">*</sup></label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="pubDaily" name="pubDaily" ng-model="pubDaily" placeholder="Published newspaper" required>
+                        
+                    </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-7">
+                            <p ng-show="addlistingForm.pubDaily.$invalid && !addlistingForm.pubDaily.$pristine" class="formError text-danger" ng-cloak>
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Please enter name of published daily
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Submission Date  -->
+                    <div class="form-group form-group-lg" ng-class="{ 'has-error' : !checkDate(subDate) && !addlistingForm.subDate.$pristine || !dateConsistent(pubDate, subDate)}">
+                    <label for="subDate" class="control-label col-sm-4">Submission Date<sup class="required">*</sup></label>
+                    <div class="col-sm-7">
+                        <input datetime-picker date-format="yyyy-MM-dd" date-only type="text" class="form-control" id="subDate" name="subDate" ng-model="subDate" placeholder="eg. 2015-07-28" required>
+                        
+                    </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-7">
+                            <p ng-show="!checkDate(subDate) && !addlistingForm.subDate.$pristine" class="formError text-danger" ng-cloak>
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Date format: yyyy-MM-dd eg. 2015-07-28
+                            </p>
+                            <p ng-show="!dateConsistent(pubDate, subDate)" class="formError text-danger" ng-cloak>
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Submission date is before publication date
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Listing type  -->
                     <div class="form-group form-group-lg">
                     <label class="control-label col-sm-4" for="type">Type</label>
                     <div class="controls text-right col-sm-7">
-                        <select class="form-control">
+                        <select class="form-control" ng-model="listingType">
                             <option value="Tender">Tender</option>
                             <option value="Quotation">Quotation</option>
                             <option value="Proposal">Proposal</option>
@@ -61,20 +107,33 @@
                     </div>
                     </div>
                     
-                    <!-- Textarea  -->
+                    <!-- Tags  -->
                     <div class="form-group form-group-lg">
-                    <label class="control-label col-sm-4" for="tags">Tags</label>
+                    <label class="control-label col-sm-4" for="tags">Tags<br><span class="smallerItalic">(Type in the box and hit Tab or Enter)</span></label>
                     <div class="col-sm-7">
-                        <textarea class="form-control" id="tags" name="tags" rows="5"></textarea>
-                        
+                        <div id="tag-container" class="form-control" set-focus >
+                            <div ng-repeat="tag in userTags" class="inputTag">
+                                {{tag}}
+                                <div class="deleteTag" data-ng-click="deleteTag($event, tag)">&times;</div>
+                            </div>
+                            
+                            <input id="tagText" type="text" data-user-tag-input="" data-new-tag="addTag()" ng-model="tagText" pu-elastic-input ng-class="{'text-danger' : alertTag}">
+
+                            
+                        </div>
                     </div>
                     </div>
 
                     <!-- Button  -->
                     <div class="form-group">
-                    <label class="control-label col-sm-4" for="submit-tender"></label>
+                    <span class="col-md-4 text-left" ><sup class="required">* </sup><span class="smallerItalic">Required</span></span>
                     <div class="text-right col-sm-7">
-                        <button type="submit" id="submit-tender" name="submit-tender" class="btn btn-primary btn-lg" aria-label=""><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Submit</button>
+                        
+                        <button ng-if="mode==='add'" type="button" class="btn btn-success btn-lg marginright10" ng-disabled="addlistingForm.$pristine" ng-click="resetForm()"><span class="glyphicon glyphicon-repeat"></span> Reset</button>
+                        <button ng-if="mode==='add'" type="button" class="btn btn-primary btn-lg" ng-disabled="addlistingForm.tenderTitle.$invalid||addlistingForm.tenderCaller.$invalid||addlistingForm.pubDaily.$invalid||dateInvalid(pubDate, subDate)" ng-click="addListing()"><span class="glyphicon glyphicon-export" ></span> Submit</button>
+                        
+                        <button ng-if="mode==='edit'" type="button" class="btn btn-danger btn-lg marginright10" ng-click="goBack()">Cancel</button>
+                        <button ng-if="mode==='edit'" type="button" class="btn btn-success btn-lg" ng-disabled="addlistingForm.tenderTitle.$invalid||addlistingForm.tenderCaller.$invalid||addlistingForm.pubDaily.$invalid||dateInvalid(pubDate, subDate)" ng-click="editListing()">Update</button>
                         
                     </div>
                     </div>

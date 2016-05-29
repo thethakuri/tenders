@@ -1,6 +1,6 @@
 
 <div class="row marginbottom20 margintop20" id="postings">
-    <h3 class="marginbottomnegative2 paddingbottom5 paddingleft15"><span class="label label-success">{{currentView}} postings</span></h3> 
+    <h2 class="marginbottomnegative2 paddingbottom5 paddingleft15"><span class="label label-success no-fontwt" ng-bind="getTitle(currentView).foo"></span></h2> 
     <div class="col-sm-8 col-xs-12">
         
         <i class="glyphicon glyphicon-remove clear" ng-click="clearSearch()" ng-show="userSearch.length" search-clear></i>
@@ -11,15 +11,16 @@
             <!---Main Search Box-->
             <input class="form-control hasclear " ng-model="userSearch" type="text" placeholder="Search">
             <div id="viewSelect" class="input-group-btn">
-                <button type="button" id="searchViewButton" ng-model="searchViewButton" class="btn btn-default dropdown-toggle " data-toggle="dropdown"><span ng-bind="currentView"></span>&nbsp;<span class="caret"></span></button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li ng-click="fetch('Active')"><a href="#/#postings">Active Postings</a></li>
-                    <li ng-click="fetch('Recent')"><a href="#/#postings">Recent Postings</a></li>
+                <button type="button" id="searchViewButton" ng-model="searchViewButton" class="btn btn-default dropdown-toggle " data-toggle="dropdown"><span ng-bind="getTitle(currentView).bar"></span>&nbsp;<span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-menu-right noradiusborder">
+                    <li ng-click="setView('Active')"><a href="#/#postings">Active postings</a></li>
+                    <li ng-click="setView('Recent')"><a href="#/#postings">Recent postings</a></li>
                     <li role="separator" class="divider"></li>
-                    <li ng-click="fetch('Participated')"><a href="#/#postings">Participated Tenders</a></li>
-                    <li ng-click="fetch('Watchlist')"><a href="#/#postings">My Watchlist</a></li>
+                    <li ng-click="setView('Participated')"><a href="#/#postings">Participated postings</a></li>
+                    <li ng-click="setView('Watchlist')"><a href="#/#postings">My Watchlist</a></li>
+                    <li ng-click="setView('myListings')"><a href="#/#postings">My Listings</a></li>
                     <li role="separator" class="divider"></li>
-                    <li ng-click="fetch('All')"><a href="#/#postings">All Postings</a></li>
+                    <li ng-click="setView('All')"><a href="#/#postings">All postings</a></li>
                 </ul>
             </div>
             <!-- /btn-group -->
@@ -44,6 +45,29 @@
         <kbd ng-show="userSearch.length" class="padding5 margintop20">Searching for : <em>{{userSearch}}</em></kbd>
     </div>
 </div>
+
+<!--Broken Listings Warning -->
+<div class="row paddingbottom20 margin10" ng-if="removedListings.length&&(currentView=='Watchlist'||currentView=='Participated')">
+    <div class="alert alert-danger col-sm-10 col-sm-offset-1" role="alert">
+        <button type = "button" class = "close" data-dismiss = "alert" aria-hidden = "true">
+          &times;
+       </button>
+        <h4 class="page-header" ><strong>Broken Listing(s)</strong></h4>
+        Following listing(s) that you have been watching and/or participated in have been deleted from the system:
+        <ul class="margintop10 paddingbottom20" >
+            <li ng-repeat="removedList in removedListings">
+                <strong>{{removedList.item}} </strong><em>{{removedList._id}}</em>
+            </li>
+        </ul>
+        It is recommended that you remove them from your profile as well since you will not be able to access them anymore.
+        <div class="row margintop10">
+            <span class="col-sm-12 text-right">
+                <button class="btn btn-danger" ng-click="removeDeadList()" >Delete</button>
+            </span>
+        </div>
+    </div>
+</div>
+
 <div class="row" ng-show="filtered.length">
     <div class="col-sm-12">
         <table class="table table-condensed table-hover">

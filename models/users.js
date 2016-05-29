@@ -39,6 +39,7 @@ var UserTender = new Schema({
         ref : 'Tender',
         required : true    
     },
+    item : String,
     preferences : {
         notify : {
             type : Boolean,
@@ -142,8 +143,14 @@ var userSchema = new Schema({
     },
     messages : [String],
     tenders : [UserTender],
+    myListings : [Schema.ObjectId],
     competitors : [Competitor],
-    groups : [Group]
+    groups : [Group],
+    name : String,
+    company : String,
+    position : String,
+    address : String,
+    phone : Number
     
 }, { timestamps : true }, {collection: 'users'});
 

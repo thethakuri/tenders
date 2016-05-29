@@ -21,6 +21,7 @@ var tenderSchema = new Schema({
         type: Date,
         required: true
     },
+    pubDaily: String,
     remarks: {
         type: String
     },
@@ -32,6 +33,9 @@ var tenderSchema = new Schema({
     },
     link: {
         type: String
+    },
+    owner: {
+        type: Schema.ObjectId
     }
     
 }, {collection: 'listing'});

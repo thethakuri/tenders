@@ -8,7 +8,8 @@ html {
 }
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 100px;
+    margin-bottom: 100px;
+    font-family: 'Roboto', sans-serif;
 }
 
 /*.jumbotron{
@@ -357,17 +358,31 @@ div.form-signup input[type="password"] {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+    
+    background-color: white;
+    
+    -webkit-transition: background-color 1000ms linear;
+    -moz-transition: background-color 1000ms linear;
+    -o-transition: background-color 1000ms linear;
+    -ms-transition: background-color 1000ms linear;
+    transition: background-color 1000ms linear;
 }
 .notesInput:focus{
      /*outline: 0 none;
     -webkit-appearance:none;*/
     box-shadow: none;
     /*border-color: none;*/
+    background-color: #f9f2f4;
+    
 }
 
 /************TAGS*************/
 .tag-panel{
     position: relative;
+}
+
+.tag-panel-body{
+    min-height: 72px
 }
 
 .tag-container{
@@ -550,6 +565,79 @@ div.form-signup input[type="password"] {
     -moz-border-radius:0px !important;
 }
 
+/* Add Listing*/
+#tag-container{
+    
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    
+    -moz-appearance: textfield-multiline;
+    -webkit-appearance: textarea;
+    
+    height: 120px;
+    overflow: auto;
+    resize: vertical;
+    width: 100%;
+}
+#tag-container input {
+    display: inline-block;
+    float: left;
+    padding: 5px;
+    border: 0;
+}
+#tag-container input:focus{
+    outline: 0;
+    box-shadow: 0;
+}
+#tag-container .inputTag {
+    padding: 5px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-color: rgb(173, 173, 173);
+    background-color: rgb(173, 173, 173);
+    color: #fff;
+    display: inline-block;
+    float: left;
+    border-radius: 4px;
+    margin: 2px 5px 2px 0;
+}
+#tag-container .inputTag .deleteTag{
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 2px;
+}
+#tag-container .inputTag .deleteTag:hover{
+    background-color: #e6e6e6;
+    color: #bbb;
+    text-decoration: none;
+}
+
+#compSetting h4 {
+    font-weight: 600;
+}
+#compSetting dt {
+    font-weight: 400;
+}
+#compSetting .togglemore{
+    padding: 0;
+    color: #67655D;
+    top: 10px;
+}
+#compSetting .togglemore:hover{
+    text-decoration: none;
+}
+
+.compAdd{
+    color : #f0ad4e;
+}
+.compAdd:hover {
+    color : #ec971f;
+}
+
 /*==================================================
 =            Helper Styles:         ;             =
 ==================================================*/
@@ -626,6 +714,9 @@ div.form-signup input[type="password"] {
 .nopaddingright {
    padding-right: 0 !important;
 }
+.nopaddingbottom {
+    padding-bottom: 0 !important;
+}
 .nopadding{
     padding : 0 !important;
 }
@@ -659,6 +750,33 @@ div.form-signup input[type="password"] {
     border-radius:1px  !important; 
     -webkit-border-radius:1px  !important;
     -moz-border-radius:1px  !important;
+}
+.smallerItalic{
+    font-size: smaller;
+    font-style: italic;
+}
+.btn-hyperlink { 
+  outline: none !important;
+  padding: 5px 20px; 
+  border: 0px; 
+  font-size: 16px;
+  box-sizing: none; 
+  background-color: transparent;
+  display: block; 
+}
+.btn-hyperlink:active {
+    box-shadow: none !important;
+}
+
+.no-fontwt{
+    font-weight: 400;
+}
+
+.font18{
+    font-size: 18px;
+}
+.font28{
+    font-size: 28px !important;
 }
 
 /*Round button*/
@@ -738,9 +856,14 @@ div.form-signup input[type="password"] {
         .tenderCaller{
             margin-bottom: 20px !important;
         }
-        .navbar-nav .open .dropdown-menu>li>a {
+        .navbar-nav .open .dropdown-menu>li>a, .navbar-nav .open .dropdown-menu>li>button {
             padding-top: 10px;
             padding-bottom: 10px;
+        }
+        
+        .navbar-inverse .navbar-nav .dropdown-menu>li>button {
+            color: #9d9d9d !important;
+            padding-left: 25px !important;
         }
     }
 

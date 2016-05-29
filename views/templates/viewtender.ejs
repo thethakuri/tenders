@@ -1,3 +1,12 @@
+ 
+ <!-- User created listing modification options -->
+ <div class="row margintop20  text-right" ng-if="isMyListing">
+    <div class="col-xs-12 ">
+        <button class="btn fbtn btn-danger btn-round marginright5" data-toggle="tooltip" rel="tooltip" data-placement="bottom" data-original-title="Delete this listing" initialize-tooltip ng-click="deleteListing()"><span class="glyphicon glyphicon-remove"></span></button>
+        <button class="btn fbtn btn-round btn-primary" data-toggle="tooltip" rel="tooltip" data-placement="bottom" data-original-title="Edit this listing" initialize-tooltip ng-click="editListing(tenderDetail)"><span class="glyphicon glyphicon-edit"></span>    </button>        
+    </div>        
+</div>
+
 <h3 class="page-header firstChar">{{tenderDetail.item}}</h3>
 <div class="row">
     <div class="col-lg-8 col-md-7 tenderCaller">
@@ -7,6 +16,9 @@
     <div class="col-lg-4 col-md-5">
          <a class="btn fbtn btn-danger pull-right marginleft15 marginbottom10" data-toggle="tooltip" rel="tooltip" data-placement="top" data-original-title="Remove this listing from your watchlist" initialize-tooltip ng-show="hasTenderInfo" ng-click="deleteAllTenderInfo()">
             <span class="lineheight24"><i class="glyphicon glyphicon-eye-close"></i> Unwatch</span>
+        </a>
+        <a class="btn fbtn btn-danger pull-right marginleft15 marginbottom10" data-toggle="tooltip" rel="tooltip" data-placement="top" data-original-title="Add this listing from your watchlist" initialize-tooltip ng-show="!hasTenderInfo" ng-click="watchTender()">
+            <span class="lineheight24"><i class="glyphicon glyphicon-eye-open"></i> Watch</span>
         </a>
         <!--NOTIFICATION-->
         <div class="input-group col-xs-2 pull-right marginbottom10"> <!--col hack to prevent input-addon from running away-->
@@ -57,7 +69,9 @@
 </div>
 
 <div class="row">
+    <!--Left column-->
     <div class="col-md-5 form-group oh-well">
+        
         <div class="row paddingbottom20">
             <div class="col-xs-12">
                 <span>Published in<a ui-sref="home" class="padding5 nounderline lead" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
@@ -134,9 +148,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body tag-panel-body">
                         <ul class="nav nav-pills" role="tablist">
-                            <li ng-repeat="category in tenderDetail.category.concat(userTags)" role="presentation" class="active margin5 fbtn">
+                            <li ng-repeat="category in tenderDetail.category.concat(userTags) track by $index" role="presentation" class="active margin5 fbtn">
                                 <a ui-sref="home" ng-style="checkTag(category) && {'background-color':'#adadad',
     'border-color': '#adadad'}" class="padding5 input-tag btn btn-md" ng-click="searchTag(category)">{{category}}
                                     <button class="delete-tag" ng-if="checkTag(category)" data-ng-click="deleteTag($event, category)">&times;</button>
@@ -330,8 +344,8 @@
 
                                     <!-- Competitors Add / Cancel -->
                                     <div class="form-group">
-                                    <label class="col-md-4 control-label" for="competitors"></label>
-                                    <div class="col-md-8">
+                                    <span class="col-md-4 text-left" ><sup class="required">* </sup><span class="smallerItalic">Required</span></span>
+                                    <div class="col-md-7 ">
                                         <button id="newCompetitor" name="newCompetitor" class="btn btn-warning marginright10" data-toggle="modal" data-target="#competitors" data-placement="top" data-original-title="Add competitor's information" initialize-tooltip><i class="glyphicon glyphicon-plus-sign"></i> Competitors</button>
                                         <button id="cancelCompetitor" name="cancelCompetitor" class="btn btn-danger" ng-click="bidInfoForm = false; resetBidPartForm()">Cancel</button>
                                     </div>
@@ -606,7 +620,7 @@
                     <div class="row">
                        
                         <div class="col-xs-4 text-left">
-                            <sup class="required">*</sup>Required
+                            <sup class="required">*</sup><span class="smallerItalic">Required</span>
                         </div>
                         <div class="col-xs-8">
                             <button type="button" class="btn btn-lg btn-default" data-dismiss="modal" ng-click="resetCompForm()">Cancel</button>
