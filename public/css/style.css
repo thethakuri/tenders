@@ -619,13 +619,14 @@ div.form-signup input[type="password"] {
 #compSetting h4 {
     font-weight: 600;
 }
-#compSetting dt {
+#compSetting dt, #compSetting li {
     font-weight: 400;
 }
 #compSetting .togglemore{
     padding: 0;
     color: #67655D;
     top: 10px;
+    margin-right : 15px;
 }
 #compSetting .togglemore:hover{
     text-decoration: none;
@@ -669,6 +670,9 @@ div.form-signup input[type="password"] {
 }
 .marginright10{
     margin-right: 10px;
+}
+.marginright15{
+    margin-right: 15px;
 }
 .marginright5{
     margin-right: 5px;

@@ -220,6 +220,24 @@ var tenderApp = angular
             });
         }
     })
+    .directive('compareTo', function() {
+        return {
+            require: "ngModel",
+            scope: {
+                otherModelValue: "=compareTo"
+            },
+            link: function(scope, element, attributes, ngModel) {
+
+                ngModel.$validators.compareTo = function(modelValue) {
+                    return modelValue == scope.otherModelValue;
+                };
+
+                scope.$watch("otherModelValue", function() {
+                    ngModel.$validate();
+                });
+            }
+        };// compare two input fields if they match (eg. passwords)
+    })
     .factory('userDataFactory', function() { //holds comprehensive information about user's tenders
         var userDataObj = {};
         return {
@@ -742,7 +760,7 @@ var tenderApp = angular
 
         // Competitor's bid form action
         
-        $scope.saveCompForm = function(url){
+        $scope.saveCompForm = function(){
 
             if($scope.editCompFormInfo.disable){ //We just want to update competitor's bid information
                 var index = $scope.editCompFormInfo.index;
@@ -1290,8 +1308,12 @@ var tenderApp = angular
                 $scope.resetForm();
 
                 // go to new listing detailed view
-                tenderFactory.set(response);
-                $state.transitionTo('home.detail', {id: response._id});
+                tenderFactory.set(data);
+
+                // If there are no user data for this listing, response is null 
+                if(response) userDataFactory.set(response);
+
+                $state.transitionTo('home.detail', {id: data._id});
                 $window.scrollTo(0, 0);
 
             });
@@ -1352,10 +1374,12 @@ var tenderApp = angular
         
     }])
 
-    .controller('SettingsCtrl', ['$scope', 'userDataFactory', 'httpService', 'ngToast', function ($scope, userDataFactory, httpService, ngToast){
+    .controller('SettingsCtrl', ['$scope', '$state', '$window', 'userDataFactory', 'tenderFactory', 'httpService', 'ngToast', function ($scope, $state, $window, userDataFactory, tenderFactory, httpService, ngToast){
 
         // Get user data
         $scope.userData = userDataFactory.get();
+        var competitorBiddingList = compParticipationInfoList();
+        var existingCompetitors = getCompetitors();
 
         // Watch for changes in user data
         $scope.$watchCollection(
@@ -1364,6 +1388,8 @@ var tenderApp = angular
             },
             function(newValue){
                 $scope.userData = newValue;
+                existingCompetitors = getCompetitors();
+                // competitorBiddingList = compParticipationInfoList();
             }
         )
 
@@ -1401,8 +1427,236 @@ var tenderApp = angular
 
         }
 
+        $scope.validPassword = true;
+        $scope.$watch(
+            'oldPassword',
+            function(newValue){
+                if(!$scope.validPassword) $scope.validPassword = true;
+            }
+        )
+        //Password Change
+        $scope.changePassword = function(){
+            var data = {
+                oldPassword : $scope.oldPassword,
+                newPassword : $scope.newPassword
+            };
+
+            httpService.postData('/Change/User/Password', data).then(function(message){
+                ngToast.create({
+                        className : message.result,
+                        content : message.text,
+                        timeout : 6000,
+                        dismissButton : true
+                });
+                if(message.result === 'success'){
+                    $scope.oldPassword = null;
+                    $scope.newPassword = null;
+                    $scope.confirmPassword = null;
+                    $scope.passwordResetForm.$setPristine();
+                }
+                else $scope.validPassword = false;
+                    
+            })
+        }
+
         $scope.toggleMore = false; //toggle competitor's panel accordion
+
+        // function to return array of competitors object with their bidding information
+        function compParticipationInfoList(){
+            var compBidList = [];
+
+            angular.forEach($scope.userData.tenders, function(tender){
+                tender.participationInfo.competitorsBid.map(function(o){
+
+                    var competitor = {};
+                    competitor.tenderList = []
+                    competitor._id = o._id;
+
+                    var newTender = {};
+                    newTender._id = tender._id;
+                    newTender.item = tender.item; 
+
+                    competitor.tenderList.push(newTender);
+
+                    var compIdList = compBidList.map(function(ob){return ob._id});
+                    var compIndex = compIdList.indexOf(o._id);
+
+                    if(compIndex !== -1){ // if competitor already exists in the list just push new tender info
+                        compBidList[compIndex].tenderList.push(newTender);
+                    }
+                    else {
+                        compBidList.push(competitor);
+                    }
+
+                });
+                
+            })
+            return compBidList;
+        }
         
+        
+
+        //get competitor's bidding information
+        $scope.getCompBid = function(compId){
+            $scope.compHasBiddingInfo = false;
+            var compFound = false;
+            var compBidList = [];
+            angular.forEach(competitorBiddingList, function(value, key){
+                if (!compFound){ //hack to break the loop
+                    if(angular.equals(value._id, compId)){
+                        compBidList = value.tenderList;
+                        $scope.compHasBiddingInfo = true;
+                        compFound = true;
+                    }
+                }
+            });
+            return compBidList;
+        }
+        
+        //get competitor's bidding information
+        // $scope.getCompBid = function(compId){
+        //     $scope.compHasBiddingInfo = false;
+        //     var compBidList = [];
+        //     angular.forEach($scope.userData.tenders, function(tender){
+        //         angular.forEach(tender.participationInfo.competitorsBid, function(compBid){
+                    
+        //             if(compBid._id === compId){
+                        
+        //                 compBidList.push(tender.item);
+        //                 $scope.compHasBiddingInfo = true;
+        //             }
+        //         })
+        //     })
+        //     //console.log(JSON.stringify(compBidList));
+        //     return compBidList;
+        // }
+
+        // load tender detail
+        $scope.loadTender = function (tenderId) {
+            httpService.getData('/Tender/'+tenderId).then(function(tender){
+                tenderFactory.set(tender);
+                $state.go('home.detail', {id: tender._id});
+                $window.scrollTo(0, 0);
+            })
+        }
+
+        // List of Existing Competitors
+        function getCompetitors(){
+            return $scope.userData.competitors.map(function(o){
+                return o.name.toLowerCase().trim();
+            })
+        }
+        
+        $scope.nameValid = true;
+        $scope.checkCompName = function(newName){
+            var currentCompIndex = existingCompetitors.indexOf($scope.currentCompetitor);
+            var newCompIndex = existingCompetitors.indexOf(newName.toLowerCase().trim());
+            if(newCompIndex !== currentCompIndex && newCompIndex!== -1){
+                $scope.nameValid = false;
+                return;
+            }
+            $scope.nameValid = true;
+        }
+
+        //Add Edit Competitor
+        $scope.competitor = {};
+    
+        $scope.populateCompInfoForm = function (competitor){
+
+            $scope.editCompInfoForm = true;
+            $scope.currentCompetitor = competitor.name.toLowerCase().trim(); //used for checkCompName()
+
+            $scope.competitor._id = competitor._id;
+            $scope.competitor.name = competitor.name;
+            $scope.competitor.address = competitor.address;
+            $scope.competitor.phone = competitor.phone;
+            $scope.competitor.person = competitor.contactPerson;
+            
+        }
+        $scope.resetCompInfoForm = function(){
+
+            $scope.competitor = {};
+            $scope.compInfoForm.$setPristine();
+            $scope.editCompInfoForm = false;
+        }
+
+        $scope.deleteCompetitor = function(competitor){
+            var data = {
+                _id : competitor._id,
+                name : competitor.name
+            }
+
+            bootbox.confirm({
+                size : 'small',
+                message : 'Remove competitor <strong>'+ data.name +'</strong> ?',
+                callback :  function(result){
+                                if(result){
+                                    
+                                    httpService.deleteData('/Delete/User/Competitor', data).then(function (userData) {
+                                            
+                                        ngToast.create({
+                                            className : 'danger',
+                                            content : 'Competitor <strong>' + data.name + '</strong> deleted',
+                                            timeout : 6000,
+                                            dismissButton : true
+                                        });
+
+                                        userDataFactory.set(userData);
+                                    });
+
+                                }
+                            }
+            })        
+  
+        }
+
+        $scope.addCompetitor = function () {
+            var data = {
+                name : $scope.competitor.name,
+                address : $scope.competitor.address,
+                contactPerson : $scope.competitor.person,
+                phone : $scope.competitor.phone
+            }
+            httpService.putData('/Create/User/Competitor', data).then(function (userData) {
+                    
+                ngToast.create({
+                    className : 'info',
+                    content : 'New competitor <strong>' + data.name + '</strong> created',
+                    timeout : 6000,
+                    dismissButton : true
+                });
+
+                $scope.resetCompInfoForm();
+
+                userDataFactory.set(userData);
+                angular.element(document.querySelector('#competitorInfoForm')).modal('hide'); //hide modal
+            });
+        }
+
+        $scope.updateCompInfo = function(){
+            var data = {
+                _id : $scope.competitor._id,
+                name : $scope.competitor.name,
+                address : $scope.competitor.address,
+                contactPerson : $scope.competitor.person,
+                phone : $scope.competitor.phone
+            }
+            httpService.putData('/Update/User/Competitor', data).then(function (userData) {
+                    
+                ngToast.create({
+                    className : 'info',
+                    content : 'Information for competitor <strong>' + data.name + '</strong> updated',
+                    timeout : 6000,
+                    dismissButton : true
+                });
+
+                $scope.resetCompInfoForm();
+
+                userDataFactory.set(userData);
+                angular.element(document.querySelector('#competitorInfoForm')).modal('hide'); //hide modal
+            });
+        }
+
     }])
 
     .controller('TenderAppCtrl', ['$scope', 'httpService', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', '$window', 'userDataFactory', 'userTenders', 'myTenderList', '$location', 'ngToast', function($scope, httpService, tenderFactory, $state, userSearchField, daysDifference, tenderText, $window, userDataFactory, userTenders, myTenderList, $location, ngToast) {

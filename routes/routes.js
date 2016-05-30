@@ -188,6 +188,26 @@ module.exports = function (app, passport) {
         });
         
     });
+
+    app.post('/Change/User/Password', isLoggedIn, function(req, res){
+        Users.findById(req.user._id, 'password', function(err, user){
+            if(err){
+                console.log(err);
+                res.status(500).send();
+            }
+            if(!user.validPassword(req.body.oldPassword)){
+                return res.json({result : 'danger', text : 'Old password is incorrect'});
+            }
+            user.password = req.body.newPassword;
+            user.save(function(err){
+                if(err) {
+                    console.log(err);
+                    res.status(500).send();
+                }
+                return res.json({result : 'success', text : 'Password successfully changed'});
+            })
+        })
+    });
     
     app.get('/User', isLoggedIn, function(req, res){
         
@@ -342,6 +362,48 @@ module.exports = function (app, passport) {
             });
     });
 
+    app.put('/Update/User/Competitor', isLoggedIn, function (req, res){
+        Users
+            .findOneAndUpdate({'_id' : req.user._id, 'competitors._id' : req.body._id},
+            {
+                $set : {'competitors.$.name' : req.body.name, 
+                    'competitors.$.address' : req.body.address, 
+                    'competitors.$.contactPerson' : req.body.contactPerson,
+                    'competitors.$.phone' : req.body.phone
+                }
+            },
+            {new: true, upsert : false, select : '-password -authToken -isAuthenticated'},
+            function (err, userData){
+                if(err){
+                    console.log(err);
+                    res.status(500).send();
+                }
+                return res.json(userData);
+            }
+        );
+    });
+
+    app.delete('/Delete/User/Competitor', isLoggedIn, function (req, res) {
+        Users
+            .findOne({'_id' : req.user._id}, '-password -authToken -isAuthenticated', function (err, doc) {  
+                
+                if (err){
+                    console.log(err);
+                    res.status(500).send();
+                }
+                doc.competitors.pull(req.body._id);
+                doc.save(function (err, doc){
+                    if(err){
+                        console.log(err);
+                        res.status(500).send();
+                    }
+                    
+                    //return res.json(doc.competitors[doc.competitors.length-1]._id);
+                    return res.json(doc);
+                });
+            });
+    });
+
     app.put('/Create/User/Tender', isLoggedIn, function (req, res){
 
         newTender = new Tender(req.body);
@@ -362,8 +424,22 @@ module.exports = function (app, passport) {
                 console.log(err);
                 res.status(500).send();
             } 
-
-            return res.json(tender);
+            return Users.findOneAndUpdate({'_id' : req.user._id, 'tenders._id' : tender._id}, 
+                {
+                    $set : {
+                        'tenders.$.item' : tender.item
+                    }
+                },
+                {new: true, upsert : false, select : '-password -authToken -isAuthenticated'},
+                function (err, userData){
+                    if(err){
+                        console.log(err);
+                        res.status(500).send();
+                    }
+                    
+                    return res.json(userData);
+                })
+            
         })
 
     });
@@ -396,13 +472,13 @@ module.exports = function (app, passport) {
         });
     });
     
-    // Get specific tender detail
-    // app.get('/:id', isLoggedIn, function (req, res) {
+    //Get specific tender detail
+    app.get('/Tender/:id', isLoggedIn, function (req, res) {
         
-    //     Tender.findById(req.params.id, function (err, doc) {
-    //         res.json(doc);
-    //     });
-    // });
+        Tender.findById(req.params.id, function (err, doc) {
+            res.json(doc);
+        });
+    });
     
     // process the signup form
     app.post('/signup', captchaVerify, passport.authenticate('local-signup', {
