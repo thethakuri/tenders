@@ -1,0 +1,67 @@
+<!DOCTYPE>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <%- include css.ejs %>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Tender Portal - Rudra International</title>
+</head>
+
+<body ng-app="formValidationApp" ng-controller="FormCtrl">
+
+    <div class="container">
+        <div class="row margintop40">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="row">
+                    <div class="col-sm-8 signup-header">
+                        <img class="img-responsive paddingbottom20" src="/assets/tender_logo_white.png" alt="Signup">
+
+                    </div>
+                    <div class="col-sm-4 text-right">
+                        <span class="text-right"><a href="/">Back to Login</a></span>
+                    </div>
+                </div>
+                <div class="row form-signup">
+                    <div class="col-sm-12">
+                        <h3 class="page-header">Reset Password</h3>
+
+                        <form role="form" action="/reset" method="post" name="resetForm" ng-submit="resetPassForm(resetForm.email.$valid)"
+                                novalidate>
+                                    <!-- Hack for browser prepopulating form -->
+                                    <input type="text" class="hidden">
+                                    <input type="password" class="hidden">
+                                    <!-- ------------------------------------- -->
+
+
+                                    <div class="form-group">
+                                       <input type="email" name="email" placeholder="Email ID" class="form-control" id="email" required ng-model="email">
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                        </div>
+                                        <div class="col-sm-6 text-right">
+                                            <button type="submit" class="btn fbtn btn-lg btn-primary" ng-disabled="resetForm.email.$invalid">Reset Password</button>
+                                        </div>
+                                    </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+        
+        
+        
+       
+    <%- include footer.ejs %>
+    <%- include scripts.ejs %>
+    <script src="/controllers/formcontrol.js"></script>
+
+</body>
+
+</html>

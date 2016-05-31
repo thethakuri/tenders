@@ -26,6 +26,11 @@ module.exports = function (app, passport) {
             alert : 'alert-danger' 
         });
     });
+    
+    app.get('/reset', function(req, res) {
+        res.render('reset', {});
+    });
+
     app.get('/sendmail', function(req, res) {
         if(!req.user){
             return res.redirect('/');
@@ -57,7 +62,7 @@ module.exports = function (app, passport) {
                 res.json({ message: info.response});
             };
         });
-        /* Following hack if required from keeping user authenticated after signup (not verfied yet)*/
+        /* Following hack is required from keeping user authenticated after signup (not verfied yet)*/
         req.logOut(); 
         req.session.destroy();
         

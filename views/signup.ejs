@@ -22,13 +22,13 @@
                         <div class="row">
                             <div class="col-sm-8 signup-header">
                                 <img class="img-responsive paddingbottom20" src="/assets/tender_logo_white.png" alt="Signup">
-                                <h3>Registration Form:</h3>
+                                
                             </div>
                             <div class="col-sm-4 text-right">
                                 <span class="text-right"><a href="/">Back to Login</a></span>
                             </div>
                         </div>
-
+                        <h3 class="page-header">Registration Form</h3>
                         <div class="alert alert-info" role="alert">This portal is accessible only to the employees, members and associates of Rudra International and
                             its concerns. You will need a valid email id <strong>@rudra.com.np</strong> to sign up.
                         </div>
@@ -42,7 +42,7 @@
                     </div>
                     <% } %>
                         <div class="form-signup">
-                            <form role="form" action="/signup" method="post" class="registration-form" name="userForm" , ng-submit="submitForm(userForm.$valid)"
+                            <form role="form" action="/signup" method="post" class="registration-form" name="userForm" ng-submit="submitForm(userForm.$valid)"
                             novalidate>
                                 <!-- Hack for browser prepopulating form -->
                                 <input type="text" class="hidden">
@@ -53,7 +53,7 @@
                                 <div class="input-group form-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
                                     <label class="sr-only" for="email">Email ID</label>
                                     <input type="text" name="email" placeholder="Email ID" class="form-control" id="email" required ng-model="email">
-                                    <span class="input-group-addon">@rudra.com.np</span>
+                                    <span class="input-group-addon noradiusborder">@rudra.com.np</span>
                                 </div>
                                 <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="formError text-danger" ng-cloak>
                                     <i class="glyphicon glyphicon-exclamation-sign"></i> Email user id is required.</p>

@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "angular-loading-bar": "^0.9.0",
+    "async": "^2.0.0-rc.5",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.0.0",
     "connect-flash": "^0.1.1",
