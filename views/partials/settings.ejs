@@ -64,14 +64,22 @@
                                 {{userData.createdAt | date : 'EEEE MMMM d, yyyy'}}
                             </td>
                         </tr>
+                        <tr>
+                            <td class="title">
+                                <span class="marginleft15">Password</span> 
+                            </td>
+                            <td>
+                                <button class="btn btn-lg btn-link nopadding nounderline" ng-disabled="showPassForm" ng-click="showPassForm = true"><span class="text-danger">Change password</span>
+                                </button>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
-            
-             <!-- Password -->
-            <div class="row">
+            <!-- Change Password -->
+            <div class="row" ng-show="showPassForm">
                 <div class="col-xs-12">
-                    <h3 class="page-header "><span class="glyphicon glyphicon-lock font18" ></span> Change Password</h3>
+                    <h3 class="page-header margintop20"><span class="glyphicon glyphicon-lock font18" ></span> Change Password</h3>
                     <form class="form-horizontal well noradiusborder" name="passwordResetForm" novalidate>
                         <fieldset>
                             <!-- Hack for browser prepopulating form -->
@@ -99,7 +107,7 @@
                             </div>
                             
                             <!-- New Password -->
-                            <div class="form-group form-group-lg margintop20" ng-class="{ 'has-error' : passwordResetForm.newPassword.$invalid && !passwordResetForm.newPassword.$pristine }">
+                            <div class="form-group form-group-lg " ng-class="{ 'has-error' : passwordResetForm.newPassword.$invalid && !passwordResetForm.newPassword.$pristine }">
                                 <label for="newPassword" class="control-label col-sm-4">New<sup class="required">*</sup></label>
                                 <div class="col-sm-7">
                                     <input type="password" class="form-control" name="newPassword" id="newPassword" ng-model="newPassword" placeholder="New password" required ng-minlength="6">
@@ -117,7 +125,7 @@
                             </div>
                         
                             <!-- Confirm Password -->
-                            <div class="form-group form-group-lg margintop20" ng-class="{ 'has-error' : passwordResetForm.confirmPassword.$invalid && !passwordResetForm.confirmPassword.$pristine }">
+                            <div class="form-group form-group-lg " ng-class="{ 'has-error' : passwordResetForm.confirmPassword.$invalid && !passwordResetForm.confirmPassword.$pristine }">
                                 <label for="confirmPassword" class="control-label col-sm-4">Confirm<sup class="required">*</sup></label>
                                 <div class="col-sm-7">
                                     <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="confirmPassword" placeholder="Confirm new password" required compare-to="newPassword">
@@ -222,152 +230,9 @@
                     </form>
                 </div>
             </div>
-            
-            <!-- Competitors -->
-            <div class="row">
-                <div class="col-xs-12">
-                    <h3 class="page-header "><span class="glyphicon glyphicon-piggy-bank font18" ></span> Competitors ({{userData.competitors.length}})
-                    <a class="btn ftn btn-link pull-right nopadding marginright10 compAdd" data-toggle="modal" data-target="#competitorInfoForm" data-placement="top" data-original-title="Add competitor" initialize-tooltip "><span class="glyphicon glyphicon-plus-sign font28 "></span></a></h3>
-                    <table class="table table-condensed table-striped table-hover bidInfoTable ">
-                        <tr ng-repeat="competitor in userData.competitors | orderBy: 'name'">
-                            <td class="title" id="compSetting">
-                                <div class="row">
-                                    <div class="col-xs-10">
-                                        <h4 class="marginleft15">{{competitor.name}}</h4>
-                                    </div>
-                                    <div class="col-xs-2 text-right ">
-                                        <span class="glyphicon btn btn-xs btn-link togglemore" data-toggle="collapse" data-target="{{'#compDetail-'+$index}}" ng-class="toggleMore ? 'glyphicon-triangle-top' : 'glyphicon-triangle-bottom'" ng-click="toggleMore = !toggleMore" prevent-doubleclick></span>
-                                    </div>
-                                </div>
-                                <div class="row collapse" id="{{'compDetail-'+$index}}">
-                                    <div class="col-xs-12">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <dl class="dl-horizontal bidInfoList" >
-                                                    <dt>Address</dt>
-                                                    <dd>{{competitor.address}}</dd>
-                                                    
-                                                    <dt>Contact Person</dt>
-                                                    <dd>{{competitor.contactPerson}}</dd>
-                                                    
-                                                    <dt>Phone</dt>
-                                                    <dd>{{competitor.phone}}</dd>
-                                                </dl>
-                                                
-                                                <ul ng-show="compHasBiddingInfo">Bidding Information<hr class="nomargintop marginbottom10">
-                                                    <li ng-repeat="compBid in getCompBid(competitor._id)"><a ng-click="loadTender(compBid._id)">{{compBid.item}}</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>    
-                                        
-                                        <div class="row">
-                                            <div class="col-xs-12 text-right marginbottom10">
-                                                <button class="btn btn-primary fbtn marginright5" data-toggle="modal" data-target="#competitorInfoForm" data-placement="top" data-original-title="Edit competitor's information" initialize-tooltip
-                                                ng-click="populateCompInfoForm(competitor)">
-                                                    <span class="glyphicon glyphicon-edit"></span>
-                                                </button> 
-                                                <button ng-if="!compHasBiddingInfo" class="btn btn-danger fbtn marginright5" data-toggle="tooltip" data-placement="top" data-original-title="Remove competitor" initialize-tooltip ng-click="deleteCompetitor(competitor)">
-                                                    <span class="glyphicon glyphicon-remove"></span>
-                                                </button> 
-                                            </div>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
                     
         </div>
         
     </div>
-    
-    
-    <!-- Competitors Add/Modify Modal -->
-    <div class="modal fade" id="competitorInfoForm" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" prevent-backspace>
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" ng-click="resetCompInfoForm()">
-                    <span>&times;</span>
-                </button>
-                <h4 class="modal-title" id="competitorsLabel">{{editCompInfoForm ? 'Update' : 'Enter new'}} competitor's information</h4>
-            </div>
-            <div class="modal-body">
-                
-                <!-- Competitor's Information Form -->
-                <form class="form-horizontal nomarginbottom" name="compInfoForm" novalidate>
-                    
-                    <fieldset>
-
-                        <!-- Competitor's name-->
-                        <div class="form-group form-group-lg" ng-class="{ 'has-error' : compInfoForm.compName.$invalid && !compInfoForm.compName.$pristine && nameValid}" >
-                            <label class="col-md-4 control-label" for="compName">Name<sup class="required">*</sup></label>  
-                            <div class="col-md-6">
-                                <input id="compName" name="compName" type="text" placeholder="Competitor firm's name" class="form-control input-md" required ng-model="competitor.name" ng-change="(competitor.name)?checkCompName(competitor.name):null" >
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4"></div>
-                            <div class="col-md-6">
-                                <p ng-show="compInfoForm.compName.$invalid && !compInfoForm.compName.$pristine" class="formError text-danger" ng-cloak>
-                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Please provide competitor firm's name
-                                </p>
-                                <p ng-show="!nameValid && (competitor.name)" class="formError text-danger" ng-cloak>
-                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Given name already exists
-                                </p>
-                                
-                            </div>
-                            <div class="col-md-2"></div>
-                        </div>
-
-                        <!-- Competitor's address -->
-                        <div class="form-group form-group-lg">
-                            <label class="col-md-4 control-label" for="compAddress">Address</label>  
-                            <div class="col-md-6">
-                            <input id="compAddress" name="compAddress" type="text" placeholder="Competitor's address" class="form-control input-md" ng-model="competitor.address">
-                            </div>
-                        </div>
-
-                        <!-- Competitor's contact person-->
-                        <div class="form-group form-group-lg">
-                            <label class="col-md-4 control-label" for="compPerson">Contact Person</label>  
-                            <div class="col-md-6">
-                            <input id="compPerson" name="compPerson" type="text" placeholder="" class="form-control input-md" ng-model="competitor.person">
-                            </div>
-                        </div>
-
-                        <!-- Competitor's phone -->
-                        <div class="form-group form-group-lg">
-                            <label class="col-md-4 control-label" for="compPhone">Phone</label>  
-                            <div class="col-md-6">
-                            <input id="compPhone" name="compPhone" type="text" placeholder="" class="form-control input-md" ng-model="competitor.phone">
-                            </div>
-                        </div>
-                    
-                    </fieldset>
-                </form>
-                
-            </div>
-            <div class="modal-footer">
-                <div class="row">
-                
-                    <div class="col-xs-4 text-left">
-                        <sup class="required">*</sup><span class="smallerItalic">Required</span>
-                    </div>
-                    <div class="col-xs-8">
-                        <button type="button" class="btn btn-lg btn-default" data-dismiss="modal" ng-click="resetCompInfoForm()">Cancel</button>
-                        <button ng-click="editCompInfoForm ? updateCompInfo() : addCompetitor()" type="button" class="btn btn-lg btn-primary" ng-disabled="compInfoForm.compName.$invalid || compInfoForm.$pristine || !nameValid">Submit</button>
-                    </div>
-                    
-                </div>
-            </div>
-            </div>
-        </div>
-    </div> <!--End of Modal-->
-    
-    
     
 </div>

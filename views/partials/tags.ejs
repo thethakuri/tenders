@@ -1,0 +1,43 @@
+<div class="container paddingbottom20 paddingtop20">
+    <div class="row">
+        <div class="col-xs-12">
+            <h3 class="page-header nomarginbottom"><span class="glyphicon glyphicon-tags font18" ></span> My Tags </h3>
+            
+            <div class="text-muted marginbottom20 margintop10">Tags are great way to categorize and organize your documents</div>
+        </div>
+    </div>
+    <!-- TAG List -->
+    <div class="row paddingtop20 ">
+        <div class="col-xs-12 ">
+            <ul class="nav nav-pills well noradiusborder" role="tablist">
+                <li ng-repeat="tag in tagLinkList" role="presentation" class="active margin5 fbtn">
+                    <button ng-style="{'background-color':'#adadad',
+'border-color': '#a1a1a1', 'color' : '#fff'}" class="padding5 input-tag btn btn-lg nobuttonoutline" ng-click="setTagList(tag)">{{tag.name}}<small> {{ (tag.tendersList.length > 1) ? '('+tag.tendersList.length+')' : null}}</small>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Tender List -->
+    <div class="row paddingtop20">
+        <div class="col-xs-12">
+            <ul ng-if="tagTenderList"><span class="lead marginbottom10"> Listing(s) tagged with the term <tag class="font28">{{tagTenderList.name}}</tag></span>
+                <li ng-repeat="tender in tagTenderList.tendersList" class="marginleft20 padding5">
+                   <a ng-click="loadTender(tender._id)">{{tender.item}}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- All Tender List -->
+    <div class="row paddingtop20">
+        <div class="col-xs-12">
+            <ul ng-if="!tagTenderList&&allTaggedTenders.length"><span class="lead marginbottom10"> All <tag class="font28">tagged</tag> listing(s)  </span>
+                <li ng-repeat="tender in allTaggedTenders" class="marginleft20 padding5">
+                   <a ng-click="loadTender(tender._id)">{{tender.item}}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+</div>

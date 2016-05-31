@@ -15,7 +15,7 @@
         <div id="navbar3" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right" >
                 <!--ng-bind once-->
-                <li class="nav_user">Welcome, <span ng-bind="::user.email"></span>@rudra.com.np</li>
+                <li class="nav_user">Welcome, <span ng-bind="userData.name ? userData.name : userData.email + '@rudra.com.np'"></span></li>
                 <li ui-sref-active="active"><a ui-sref="home" ng-click="setView('Active')">Home</a></li>
                 <li><a href="">About</a></li>
                 <li class="dropdown" ui-sref-active="active">
@@ -23,8 +23,13 @@
                     <ul class="dropdown-menu" role="menu">
                         <li><button class="btn btn-hyperlink" ng-click="setView('Participated')" ng-disabled="myTender().participated.count <= 0""><i class="glyphicon glyphicon-check marginright10"></i>Participated Tenders <span class="badge" ng-bind="myTender().participated.count"></span></button></li>
                         <li><button class="btn btn-hyperlink" ng-click="setView('Watchlist')" ng-disabled="myTender().watching.count <= 0"><i class="glyphicon glyphicon-eye-open marginright10"></i>Watch List <span class="badge" ng-bind="myTender().watching.count"></span></button></li>
-                        <li><a href=""><i class="glyphicon glyphicon-tags marginright10"></i>My Tags <span class="badge" ng-bind="myTender().tags.count"></span></a></li>
+
+                        <li><button class="btn btn-hyperlink" ui-sref="tags" ng-disabled="myTender().tags.count <= 0"><i class="glyphicon glyphicon-tags marginright10"></i>My Tags <span class="badge" ng-bind="myTender().tags.count"></span></button></li>
+
+                        
                         <li><button class="btn btn-hyperlink" ng-click="setView('myListings')" ng-disabled="myTender().myListings.count <= 0"><i class="glyphicon glyphicon-duplicate marginright10"></i>My Listings <span class="badge" ng-bind="myTender().myListings.count"></span></button></li>
+                        <li><a ui-sref="competitors" ><i class="glyphicon glyphicon-piggy-bank marginright10"></i>Competitors</a></li>
+
                         <li class="divider"></li>
                         <li><a ui-sref="addlisting" ><i class="glyphicon glyphicon-edit marginright10"></i>Add Listing</a></li>
                         <li><a ui-sref="settings"><i class="glyphicon glyphicon-cog marginright10"></i>Settings</a></li>

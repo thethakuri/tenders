@@ -378,7 +378,26 @@ module.exports = function (app, passport) {
                     console.log(err);
                     res.status(500).send();
                 }
-                return res.json(userData);
+
+                // update corresponding name in competitors bidding information
+                userData.tenders.forEach(function(tender){
+                    tender.participationInfo.competitorsBid.forEach(function(compBid){
+                        
+                        if(compBid._id.equals(req.body._id)){
+                            compBid.name = req.body.name;
+                        }
+                    })
+                })
+
+                userData.save(function (err, doc){
+                    if(err){
+                        console.log(err);
+                        res.status(500).send();
+                    }
+                    return res.json(doc);
+                })
+
+                
             }
         );
     });

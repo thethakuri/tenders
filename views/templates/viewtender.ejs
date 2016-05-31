@@ -424,8 +424,10 @@
                                 
                                     <legend >Competitors</legend>
                                     <div class="marginleftright15" ng-repeat="competitorBid in competitorsBid">
-                                        <span class="glyphicon glyphicon-chevron-right" ></span>
-                                        <span class="title">{{competitorBid.name}}</span>
+                                        <a ng-click="viewCompInfo(competitorBid._id)" class="nounderline">
+                                            <span class="glyphicon glyphicon-chevron-right" ></span>
+                                            <span class="title compTitle"> {{competitorBid.name}}</span>
+                                        </a>
                                         <dl class="dl-horizontal bidInfoList" >
                                             <dt></dt>
                                             <dt>Quotation</dt>

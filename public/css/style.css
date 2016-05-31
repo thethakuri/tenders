@@ -517,6 +517,10 @@ div.form-signup input[type="password"] {
     font-weight: 600;
 }
 
+.compTitle{
+    color: rgb(51, 51, 51);
+    font-size: large !important;
+}
 
 #newCompetitor{
     outline: 0;
@@ -632,13 +636,6 @@ div.form-signup input[type="password"] {
     text-decoration: none;
 }
 
-.compAdd{
-    color : #f0ad4e;
-}
-.compAdd:hover {
-    color : #ec971f;
-}
-
 /*==================================================
 =            Helper Styles:         ;             =
 ==================================================*/
@@ -689,6 +686,9 @@ div.form-signup input[type="password"] {
 .marginleft15{
     margin-left: 15px !important;
 }
+.marginleft20{
+    margin-left: 20px !important;
+}
 .marginleftright15{
     margin-left: 15px;
     margin-right: 15px;   
@@ -704,6 +704,9 @@ div.form-signup input[type="password"] {
 }
 .paddingleft15{
     padding-left: 15px;
+}
+.paddingright40{
+    padding-right: 40px;
 }
 .padding5{
     padding: 5px !important;
@@ -739,7 +742,7 @@ div.form-signup input[type="password"] {
 .nomarginleft{
     margin-left: 0 !important;
 }
-.nounderline:hover { text-decoration: none; }
+.nounderline:hover { text-decoration: none !important; }
 .lineheight24{
     line-height:24px !important;
 }
@@ -770,6 +773,10 @@ div.form-signup input[type="password"] {
 }
 .btn-hyperlink:active {
     box-shadow: none !important;
+}
+
+.nobuttonoutline:focus, .nobuttonoutline:active{
+    outline: none !important;
 }
 
 .no-fontwt{

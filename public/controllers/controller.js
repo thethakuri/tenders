@@ -40,6 +40,23 @@ var tenderApp = angular
                 
             })
 
+            .state('competitors', {
+                url : '/competitors',
+                templateUrl : 'partials/competitors.ejs',
+                controller : 'CompetitorsCtrl',
+                params : {
+                    'uncollapse' : null // show competitor's info when directly linked
+                }
+                
+            })
+
+            .state('tags', {
+                url : '/tags',
+                templateUrl : 'partials/tags.ejs',
+                controller : 'TagsCtrl'
+                
+            })
+
             .state('settings', {
                 url : '/settings',
                 templateUrl : 'partials/settings.ejs',
@@ -531,9 +548,21 @@ var tenderApp = angular
         }
 
     }])
-    .controller('NavCtrl', function($scope) {
+    .controller('NavCtrl', ['$scope', 'userDataFactory', function($scope, userDataFactory) {
         $scope.user = JSON.parse($scope.user);
-    })
+
+        $scope.$watch(
+            function(){
+                return userDataFactory.get();
+            },
+            function(newValue){
+                $scope.userData = newValue;
+            }
+        )
+
+        $scope.userData = userDataFactory.get();
+
+    }])
     .controller('FooterCtrl', function($scope) {
         $scope.currentYear = new Date().getFullYear();
     })
@@ -1145,6 +1174,10 @@ var tenderApp = angular
             }) 
         }
 
+        $scope.viewCompInfo = function(competitorId){
+            $state.go('competitors', { 'uncollapse' : competitorId});
+        }
+
         $scope.checkDate = function (dateString){
             return validDate.check(dateString);
         }
@@ -1374,7 +1407,10 @@ var tenderApp = angular
         
     }])
 
-    .controller('SettingsCtrl', ['$scope', '$state', '$window', 'userDataFactory', 'tenderFactory', 'httpService', 'ngToast', function ($scope, $state, $window, userDataFactory, tenderFactory, httpService, ngToast){
+    .controller('CompetitorsCtrl', ['$scope', '$state', '$window', 'userDataFactory', 'tenderFactory', 'httpService', 'ngToast', '$stateParams', '$timeout', function ($scope, $state, $window, userDataFactory, tenderFactory, httpService, ngToast, $stateParams, $timeout) {
+
+        
+
 
         // Get user data
         $scope.userData = userDataFactory.get();
@@ -1392,72 +1428,6 @@ var tenderApp = angular
                 // competitorBiddingList = compParticipationInfoList();
             }
         )
-
-        // Pre-fill profile form
-        $scope.userName = $scope.userData.name;
-        $scope.userPosition = $scope.userData.position;
-        $scope.userCompany = $scope.userData.company;
-        $scope.userAddress = $scope.userData.address;
-        $scope.userPhone = $scope.userData.phone;
-
-
-        // Update profile
-        $scope.updateProfile = function(){
-            var data = {
-                name : $scope.userName ? $scope.userName : null,
-                position : $scope.userPosition ? $scope.userPosition : null,
-                company : $scope.userCompany ? $scope.userCompany : null,
-                address : $scope.userAddress ? $scope.userAddress : null,
-                phone : $scope.userPhone ? $scope.userPhone : null
-            }
-
-            httpService.putData('/Update/User/Profile', data).then(function (userData) {
-                    
-                    ngToast.create({
-                        className : 'success',
-                        content : 'Your profile is updated successfully',
-                        timeout : 6000,
-                        dismissButton : true
-                    });
-                    
-                    userDataFactory.set(userData);
-                    $scope.profileForm.$setPristine();
-
-                });
-
-        }
-
-        $scope.validPassword = true;
-        $scope.$watch(
-            'oldPassword',
-            function(newValue){
-                if(!$scope.validPassword) $scope.validPassword = true;
-            }
-        )
-        //Password Change
-        $scope.changePassword = function(){
-            var data = {
-                oldPassword : $scope.oldPassword,
-                newPassword : $scope.newPassword
-            };
-
-            httpService.postData('/Change/User/Password', data).then(function(message){
-                ngToast.create({
-                        className : message.result,
-                        content : message.text,
-                        timeout : 6000,
-                        dismissButton : true
-                });
-                if(message.result === 'success'){
-                    $scope.oldPassword = null;
-                    $scope.newPassword = null;
-                    $scope.confirmPassword = null;
-                    $scope.passwordResetForm.$setPristine();
-                }
-                else $scope.validPassword = false;
-                    
-            })
-        }
 
         $scope.toggleMore = false; //toggle competitor's panel accordion
 
@@ -1656,6 +1626,164 @@ var tenderApp = angular
                 angular.element(document.querySelector('#competitorInfoForm')).modal('hide'); //hide modal
             });
         }
+
+        $scope.collap = $stateParams.uncollapse; // direct competitor view link - uncollapse 
+        
+
+    }])
+
+    .controller('TagsCtrl', ['$scope', 'tenderFactory', 'userDataFactory', 'httpService', '$state', '$window', function($scope, tenderFactory, userDataFactory, httpService, $state, $window){
+
+        var userTenderList = userDataFactory.get().tenders;
+
+        $scope.tagLinkList = tagLinkList(); // initialize
+
+        $scope.setTagList = function(tenderList){
+            $scope.tagTenderList = tenderList;
+        }
+
+        $scope.loadTender = function (tenderId) {
+            httpService.getData('/Tender/'+tenderId).then(function(tender){
+                tenderFactory.set(tender);
+                $state.go('home.detail', {id: tender._id});
+                $window.scrollTo(0, 0);
+            })
+        }
+
+        // list all listings those are tagged by user
+        $scope.allTaggedTenders = getTaggedTenders();
+        function getTaggedTenders (){
+            var taggedTenders = [];
+            angular.forEach(userTenderList, function(userTender){
+                if(userTender.userTags.length) {
+                    var tender = {
+                        _id : userTender._id,
+                        item : userTender.item 
+                    };
+                    taggedTenders.push(tender)
+                }
+            });
+            return taggedTenders;
+        }
+
+        //function to get array of tags with their corresponding listings
+        function tagLinkList(){
+            var tagList = [];
+            
+            angular.forEach(userTenderList, function(userTender){
+
+                var tender = {};
+                tender.item = userTender.item;
+                tender._id = userTender._id;
+
+                angular.forEach(userTender.userTags, function(userTag){
+
+                    var tag = {
+                        name : '',
+                        tendersList : []
+                    };
+
+                    var tagIndex = tagList.map(function(o){return o.name}).indexOf(userTag);
+
+                    if( tagIndex !== -1) {
+                        tagList[tagIndex].tendersList.push(tender);
+                    }
+                    else {
+                        tag.name = userTag;
+                        tag.tendersList.push(tender);
+                        tagList.push(tag);
+                    }
+                })
+            })
+            return tagList;
+        }
+
+
+    }])
+
+    .controller('SettingsCtrl', ['$scope', '$state', 'userDataFactory', 'httpService', 'ngToast', function ($scope, $state, userDataFactory, httpService, ngToast){
+
+        // Get user data
+        $scope.userData = userDataFactory.get();
+
+        // Watch for changes in user data
+        $scope.$watchCollection(
+            function(){
+                return userDataFactory.get();
+            },
+            function(newValue){
+                $scope.userData = newValue;
+            }
+        )
+
+        // Pre-fill profile form
+        $scope.userName = $scope.userData.name;
+        $scope.userPosition = $scope.userData.position;
+        $scope.userCompany = $scope.userData.company;
+        $scope.userAddress = $scope.userData.address;
+        $scope.userPhone = $scope.userData.phone;
+
+
+        // Update profile
+        $scope.updateProfile = function(){
+            var data = {
+                name : $scope.userName ? $scope.userName : null,
+                position : $scope.userPosition ? $scope.userPosition : null,
+                company : $scope.userCompany ? $scope.userCompany : null,
+                address : $scope.userAddress ? $scope.userAddress : null,
+                phone : $scope.userPhone ? $scope.userPhone : null
+            }
+
+            httpService.putData('/Update/User/Profile', data).then(function (userData) {
+                    
+                    ngToast.create({
+                        className : 'success',
+                        content : 'Your profile is updated successfully',
+                        timeout : 6000,
+                        dismissButton : true
+                    });
+                    
+                    userDataFactory.set(userData);
+                    $scope.profileForm.$setPristine();
+
+                });
+
+        }
+
+        $scope.showPassForm = false;
+
+        $scope.validPassword = true;
+        $scope.$watch(
+            'oldPassword',
+            function(newValue){
+                if(!$scope.validPassword) $scope.validPassword = true;
+            }
+        )
+        //Password Change
+        $scope.changePassword = function(){
+            var data = {
+                oldPassword : $scope.oldPassword,
+                newPassword : $scope.newPassword
+            };
+
+            httpService.postData('/Change/User/Password', data).then(function(message){
+                ngToast.create({
+                        className : message.result,
+                        content : message.text,
+                        timeout : 6000,
+                        dismissButton : true
+                });
+                if(message.result === 'success'){
+                    $scope.oldPassword = null;
+                    $scope.newPassword = null;
+                    $scope.confirmPassword = null;
+                    $scope.passwordResetForm.$setPristine();
+                }
+                else $scope.validPassword = false;
+                    
+            })
+        }
+
 
     }])
 
