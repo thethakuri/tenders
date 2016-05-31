@@ -419,11 +419,23 @@ module.exports = function (app, passport) {
     });
     app.put('/Edit/User/Tender', isLoggedIn, function (req, res){
 
-        Tender.findByIdAndUpdate(req.body._id, req.body, {new: true, upsert : false}, function (err, tender){
+        Tender.findByIdAndUpdate(req.body._id, {
+            $set : {
+                'owner' : req.user._id,
+                'caller' : req.body.caller,
+                'item' : req.body.item,
+                'pubDate'  : req.body.pubDate,
+                'subDate' : req.body.subDate,
+                'pubDaily' : req.body.pubDaily,
+                'remarks' : req.body.remarks,
+                'category' : req.body.category
+            }
+        }, {new: true, upsert : false}, function (err, tender){
             if (err) {
                 console.log(err);
                 res.status(500).send();
             } 
+
             return Users.findOneAndUpdate({'_id' : req.user._id, 'tenders._id' : tender._id}, 
                 {
                     $set : {
