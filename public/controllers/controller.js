@@ -507,13 +507,26 @@ var tenderApp = angular
             return result;
         }
     })
-    .controller('topController', ['$scope', '$location', '$state', 'httpService', 'userDataFactory', 'userTenders', 'myTenderList', function ($scope, $location, $state, httpService, userDataFactory, userTenders, myTenderList) {  
+    .controller('topController', ['$scope', '$location', '$state', 'httpService', 'userDataFactory', 'userTenders', 'myTenderList', 'ngToast', function ($scope, $location, $state, httpService, userDataFactory, userTenders, myTenderList, ngToast) {  
         $location.path('/');
 
         //Declare session user
         //$scope.user;
 
-        
+        // Password reset toast
+        $scope.$watch(
+            'message',
+            function(newValue){
+                if(newValue&&newValue!=='false'){
+                    ngToast.create({
+                        className : 'success',
+                        content : newValue,
+                        timeout : 6000,
+                        dismissButton : true
+                    });
+                }   
+            }
+        )
         
         // User Tender Data
         loadUserData('/User');
@@ -1126,6 +1139,7 @@ var tenderApp = angular
         // Edit user created listing
         $scope.editListing = function(){
             $state.go('addlisting', { 'mode' : 'edit' });
+            ngToast.dismiss();
 
         }
 
@@ -1170,6 +1184,7 @@ var tenderApp = angular
                     $state.go('^', {reload : true});
                     $location.path('/').replace();
                     //history.back();
+
                 }
             }) 
         }

@@ -1,12 +1,42 @@
 var formValidationApp = angular
-    .module('formValidationApp', [])
+    
+    .module('formValidationApp', ['ngSanitize', 'ngToast'])
+
+    .config(['ngToastProvider', function(ngToast) {
+        ngToast.configure({
+          
+          horizontalPosition: 'center'
+          
+        });
+    }])
+    
     .controller('FooterCtrl', function($scope){
         $scope.currentYear = new Date().getFullYear();
     })
-    .controller('FormCtrl', function ($scope) {  
 
+    .controller('FormCtrl', ['$scope', '$window', 'ngToast', function ($scope, $window, ngToast) {  
         
-    });
+        $scope.$watch(
+            'message',
+            function(newValue){
+                if(newValue && $scope.alert !== 'info'){
+                    ngToast.create({
+                        className : $scope.alert,
+                        content : newValue,
+                        timeout : 6000,
+                        dismissButton : true
+                    });
+                }   
+            }
+        )
+
+        $scope.goBack = function(){
+            $window.history.back();
+        }
+
+            
+        
+    }]);
 
 /* Directive */    
 var compareTo = function() {

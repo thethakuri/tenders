@@ -1,5 +1,5 @@
 <!DOCTYPE>
-<html>
+<html ng-app="formValidationApp">
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -12,86 +12,87 @@
     <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 
-<body ng-app="formValidationApp" ng-controller="FormCtrl">
-
+<body ng-controller="FormCtrl" ng-init="message = '<%= message %>'; alert = '<%= alert %>'">
+	<toast></toast>
     <div class="container">
-        <div id="formContent" class="row">
-            <div class="form-box col-sm-5">
-                <div class="form-top">
-                    <div class="form-top-left">
-                        <div class="row">
-                            <div class="col-sm-8 signup-header">
-                                <img class="img-responsive paddingbottom20" src="/assets/tender_logo_white.png" alt="Signup">
-                                
-                            </div>
-                            <div class="col-sm-4 text-right">
-                                <span class="text-right"><a href="/">Back to Login</a></span>
-                            </div>
-                        </div>
-                        <h3 class="page-header">Registration Form</h3>
-                        <div class="alert alert-info" role="alert">This portal is accessible only to the employees, members and associates of Rudra International and
-                            its concerns. You will need a valid email id <strong>@rudra.com.np</strong> to sign up.
-                        </div>
+        <div class="row margintop40">
+            <div class="col-sm-6 col-md-4 col-md-offset-4 ">
 
+            	<div class="row">
+                    <div class="col-sm-10">
+                        <img class="img-responsive paddingbottom20" src="/assets/tender_logo_white.png" alt="Signup">
                     </div>
                 </div>
-                <% if (message.length > 0) { %>
-                    <div class="alert <%= alert %> alert-dismissible" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <%= message %>
-                    </div>
-                    <% } %>
-                        <div class="form-signup">
-                            <form role="form" action="/signup" method="post" class="registration-form" name="userForm" ng-submit="submitForm(userForm.$valid)"
-                            novalidate>
+
+                <div class="row form-signup margintop10">
+                    <div class="col-sm-12">
+                        
+                    	<% if (!message.length || alert!=='info') { %>
+                        <h3 class="page-header nomargintop">Registration Form</h3>
+                        <!-- <div class="alert alert-info" role="alert">This portal is accessible only to the employees, members and associates of Rudra International and
+                            its concerns. You will need a valid email id <strong>@rudra.com.np</strong> to sign up.
+                        </div> -->
+                     	<% } %>
+
+                     	<div class="form-signup">
+                            <form role="form" action="/signup" method="post" class="registration-form" name="userForm" novalidate>
                                 <!-- Hack for browser prepopulating form -->
                                 <input type="text" class="hidden">
                                 <input type="password" class="hidden">
                                 <!-- ------------------------------------- -->
+                                
+                                <!-- Verification link send success info box -->
+                                <% if (message.length && alert === 'info') { %>
+				                    <div class="alert alert-info" role="alert">
+				                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				                        <%= message %>
+				                    </div>
+			                    <% } %>
 
+			                    <% if (!message.length || alert!=='info') { %>
 
-                                <div class="input-group form-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
-                                    <label class="sr-only" for="email">Email ID</label>
-                                    <input type="text" name="email" placeholder="Email ID" class="form-control" id="email" required ng-model="email">
-                                    <span class="input-group-addon noradiusborder">@rudra.com.np</span>
-                                </div>
-                                <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="formError text-danger" ng-cloak>
-                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Email user id is required.</p>
+	                                <div class="form-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
+	                                    <label class="sr-only" for="email">Email ID</label>
+	                                    <input type="email" name="email" placeholder="Email ID" class="form-control" id="email" required ng-model="email">
+	                                    <!-- <span class="input-group-addon noradiusborder">@rudra.com.np</span> -->
+	                                </div>
+	                                <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="formError text-danger" ng-cloak>
+	                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Valid e-mail is required</p>
 
-                                <div class="form-group" ng-class="{ 'has-error' : userForm.password.$invalid && !userForm.password.$pristine }">
-                                    <label class="sr-only" for="password">Password</label>
-                                    <input type="password" name="password" placeholder="Password" class="form-control" id="password" required ng-minlength="6"
-                                    ng-model="password">
-                                </div>
-                                <p ng-show="userForm.password.$error.minlength" class="formError text-danger">
-                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Your password is too short.</p>
+	                                <div class="form-group" ng-class="{ 'has-error' : userForm.password.$invalid && !userForm.password.$pristine }">
+	                                    <label class="sr-only" for="password">Password</label>
+	                                    <input type="password" name="password" placeholder="Password" class="form-control" id="password" required ng-minlength="6"
+	                                    ng-model="password">
+	                                </div>
+	                                <p ng-show="userForm.password.$error.minlength" class="formError text-danger">
+	                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Password must contain at least 6 characters</p>
 
-                                <div class="form-group" ng-class="{ 'has-error' : userForm.confirm_password.$invalid && !userForm.confirm_password.$pristine }">
-                                    <label class="sr-only" for="confirm_password">Confirm Password</label>
-                                    <input type="password" name="confirm_password" placeholder="Confirm Password" class="form-control" id="confirm_password"
-                                    required ng-model="confirm_password" compare-to="password">
-                                </div>
-                                <p ng-show="userForm.confirm_password.$invalid && !userForm.confirm_password.$pristine" class="formError text-danger">
-                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Both passwords should match.</p>
+	                                <div class="form-group" ng-class="{ 'has-error' : userForm.confirm_password.$invalid && !userForm.confirm_password.$pristine }">
+	                                    <label class="sr-only" for="confirm_password">Confirm Password</label>
+	                                    <input type="password" name="confirm_password" placeholder="Confirm Password" class="form-control" id="confirm_password"
+	                                    required ng-model="confirm_password" compare-to="password">
+	                                </div>
+	                                <p ng-show="userForm.confirm_password.$invalid && !userForm.confirm_password.$pristine" class="formError text-danger">
+	                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Both passwords should match</p>
 
-                                <div class="form-group">
-                                    <div class="g-recaptcha" data-sitekey="6Lc05h0TAAAAAAWK14mmdPPon7lKdPBLyeOW3RNb"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <button type="submit" class="btn fbtn btn-lg btn-primary" ng-disabled="userForm.$invalid">Sign me up!</button>
-                                    </div>
-                                    <div class="col-sm-6 text-right">
+	                                <div class="form-group">
+	                                    <div class="g-recaptcha" data-sitekey="6Lc05h0TAAAAAAWK14mmdPPon7lKdPBLyeOW3RNb"></div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <button type="submit" class="btn fbtn btn-lg btn-primary marginright5" ng-disabled="userForm.$invalid">Sign me up !</button>
 
+	                                    <button ng-click="goBack()" type="button" class="btn fbtn btn-lg btn-danger paddingleftright20"><span class="glyphicon glyphicon-share-alt gly-flip-horizontal"></span></button>
 
-                                    </div>
-                                </div>
+	                                </div>
+
+                                <% } %>
+
                             </form>
                         </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="col-sm-1 middle-border"></div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-5"></div>
         </div>
     </div>
     <%- include footer.ejs %>

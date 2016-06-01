@@ -133,14 +133,13 @@ var userSchema = new Schema({
         type : Boolean,
         default : false
     },
-    authToken : {
-        type : String,
-        required : true
-    },
+    authToken : String,
     isAuthenticated : { 
         type : Boolean, 
         required : true 
     },
+    resetToken : String, //password reset
+    resetExpires : Date,
     messages : [String],
     tenders : [UserTender],
     myListings : [Schema.ObjectId],
@@ -165,17 +164,18 @@ userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 };
 
-// if password updated or reset
-userSchema.pre('save', function(next){
-    var user = this;
+// currently using generateHash() method to hash password
+// alternately this method auto hashes password on each save
+// userSchema.pre('save', function(next){
+//     var user = this;
 
-    if (!user.isModified('password')) {
-        return next();
-    }
+//     if (!user.isModified('password')) {
+//         return next();
+//     }
 
-    user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(8), null);
-    next();
-});
+//     user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(8), null);
+//     next();
+// });
 
 
 // create the model for users and expose it to our app

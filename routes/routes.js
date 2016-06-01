@@ -1,4 +1,6 @@
 //routes/routes.js 
+var async = require('async');
+var crypto = require('crypto');
 
 var Tender = require('../models/tender');
 var Users = require('../models/users');
@@ -10,43 +12,54 @@ recaptcha = new reCAPTCHA({
     secretKey: process.env.RECAPTCHA_SECRETKEY
 });
 
+var gmailCredentials = {
+    user: process.env.NODEMAILUSER,
+    pass: process.env.NODEMAILPASS
+}
+
+var rememberFor = 30; // cookie validity
+var hours = 24; // token validity time frame
+
 module.exports = function (app, passport) {
     /* Define http endpoints */
     
     app.get('/login', function(req, res) {
         res.render('login', { 
             message: req.flash('loginMessage'),
-            alert : 'alert-danger' 
+            alert : 'danger' 
         });
     });
     
     app.get('/signup', function(req, res) {
         res.render('signup', { 
             message: req.flash('signupMessage'),
-            alert : 'alert-danger' 
+            alert : 'danger' 
         });
     });
     
-    app.get('/reset', function(req, res) {
-        res.render('reset', {});
+    app.get('/forgot', function(req, res) {
+        res.render('forgot', {
+            message : req.flash('forgotMessage'),
+            alert : 'danger'
+        });
     });
 
     app.get('/sendmail', function(req, res) {
         if(!req.user){
             return res.redirect('/');
         }
-        res.render('message', { 
-            user : req.user.email
-        });
+        
         var transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
-                user: process.env.NODEMAILUSER,
-                pass: process.env.NODEMAILPASS
+                user: gmailCredentials.user,
+                pass: gmailCredentials.pass
             }
         });
-        var recipient = req.user.email + '@rudra.com.np';
-        var html = "Dear "+ req.user.email +",<br><br>You have been registered for Tender Portal @ Rudra International. Please click the following link to verify your email address:<br><br><a target=_blank href=\'http://tenders.rudra.com.np/verify?token=" + req.user.authToken + "\'>Confirm your email</a><br><br>Once your email is verified, you can login using the credentials you provided.<br><br>Thank you,<br>Rudra International";
+        //var recipient = req.user.email + '@rudra.com.np';
+        var recipient = req.user.email;
+        var userid = recipient.match(/^([^@]*)@/)[1];
+        var html = "Dear "+ userid +",<br><br>You have been registered for Tender Portal @ Rudra International. Please click the following link to verify your e-mail address:<br><br><a target=_blank href=\'http://tenders.rudra.com.np/verify?token=" + req.user.authToken + "\'>Confirm your e-mail</a><br><br>Once your e-mail is verified, you can login using the credentials you provided.<br><br>Thank you,<br>Rudra International";
         var mailOptions = {
             from: 'Rudra International<no-reply@rudra.com.np>', // sender address
             to: recipient, // list of receivers
@@ -56,36 +69,61 @@ module.exports = function (app, passport) {
         transporter.sendMail(mailOptions, function(error, info){
             if(error){
                 console.log(error);
-                res.json({ error: error});
+                res.status(500).send();
             }else{
-                console.log('Message sent: ' + info.response);
-                res.json({ message: info.response});
+                req.flash('signupMessage', 'An e-mail with verification link has been sent to '+ recipient +'. Please follow the link in your mail to verify your account before logging in. For security reasons please close this browser window.');
+                //res.json({ message: info.response});
+                res.render('signup', { 
+                    message : req.flash('signupMessage'),
+                    alert : 'info' 
+                });
+                /* Following hack is required from keeping user authenticated after signup (not verfied yet)*/
+                req.logOut(); 
+                req.session.destroy();
+                return;
             };
         });
-        /* Following hack is required from keeping user authenticated after signup (not verfied yet)*/
-        req.logOut(); 
-        req.session.destroy();
+        
         
     });
+    
+    // Reset password form
+    app.get('/reset', function(req, res){
+        Users.findOne({ resetToken : req.query.token, resetExpires : { $gte : Date.now() } }, function(err, user){
+            if(!user) {
+                req.flash('resetMessage', 'Password reset token is invalid or has expired');
+                return res.render('forgot', {
+                    message : req.flash('resetMessage'),
+                    alert : 'danger'
+                })
+            }
+
+            return res.render('reset', {
+                message : req.flash('resetMessage'),
+                alert : 'danger',
+                token : req.query.token,
+                email : user.email
+            });
+        });
+    });
+
     // Verification email api
     app.get('/verify', function(req, res) {
-        //console.log('verify_email token: ',req.query.token);
 
         Users.findOne({ authToken: req.query.token }, function(err, user) {
             if (err) { return console.error(err); }
             //console.dir(user);
             
             if(user){
-               user.isAuthenticated = true;
+                user.isAuthenticated = true;
+                user.authToken = undefined;
                 user.save(function (err) {
                     if (err) return console.error(err);
-                    //console.log('succesfully updated user');
-                    //console.log(user);
-                    //res.redirect('/');
-                    req.flash('userverifiedMessage', 'User ' + user.email + ' is verified. Enter your credentials to sign in.')
+                    
+                    req.flash('userverifiedMessage', 'Account ' + user.email + ' is verified. Enter your credentials to sign in.')
                     res.render('login', { 
                         message : req.flash('userverifiedMessage'),
-                        alert : 'alert-success' 
+                        alert : 'success' 
                     });
                 });   
             }
@@ -93,7 +131,7 @@ module.exports = function (app, passport) {
                 req.flash('invalidtokenMessage', 'Invalid token')
                 res.render('login', { 
                     message: req.flash('invalidtokenMessage'),
-                    alert : 'alert-danger' 
+                    alert : 'danger' 
                 });
             }
             
@@ -101,13 +139,15 @@ module.exports = function (app, passport) {
     });
     
     app.get('/', isLoggedIn, function(req, res) {
-
+        req.flash('reset', 'Password reset successful');
         res.render('home', {
-            user : {
-                _id : req.user._id
-                , email : req.user.email // get the user out of session and pass to template
-            }
+            user : { // get the user out of session and pass to template
+                _id :  req.user._id, 
+                email : req.user.email
+            },
+            message : req.session.reset ? req.flash('reset') : false
         });
+        delete req.session.reset;
        
     });
 
@@ -203,7 +243,7 @@ module.exports = function (app, passport) {
             if(!user.validPassword(req.body.oldPassword)){
                 return res.json({result : 'danger', text : 'Old password is incorrect'});
             }
-            user.password = req.body.newPassword;
+            user.password = user.generateHash(req.body.newPassword);
             user.save(function(err){
                 if(err) {
                     console.log(err);
@@ -218,7 +258,7 @@ module.exports = function (app, passport) {
         
         Users
             .findById(req.user._id)
-            .select('-password -authToken -isAuthenticated')
+            .select('-password -isAuthenticated')
             // .populate([
             //     {
             //         path : 'tenders',
@@ -251,7 +291,7 @@ module.exports = function (app, passport) {
 
     app.put('/Update/User/Profile', isLoggedIn, function (req, res) {
         
-        Users.findByIdAndUpdate(req.user._id, req.body, {new: true, upsert : false, select : '-password -authToken -isAuthenticated'}, function (err, user){
+        Users.findByIdAndUpdate(req.user._id, req.body, {new: true, upsert : false, select : '-password -isAuthenticated'}, function (err, user){
             if (err) {
                 console.log(err);
                 res.status(500).send();
@@ -264,7 +304,7 @@ module.exports = function (app, passport) {
     
     app.put('/Update/User/TenderData', isLoggedIn, function (req, res) {  
         Users
-            .findOne({'_id' : req.user._id }, '-password -authToken -isAuthenticated', function(err, doc){
+            .findOne({'_id' : req.user._id }, '-password -isAuthenticated', function(err, doc){
                 if (err){
                     console.log(err);
                     res.status(500).send();
@@ -284,7 +324,7 @@ module.exports = function (app, passport) {
 
     app.put('/Delete/User/TenderData', isLoggedIn, function (req, res){ //provide single id
         Users
-            .findOne({'_id' : req.user._id }, '-password -authToken -isAuthenticated', function(err, doc){
+            .findOne({'_id' : req.user._id }, '-password -isAuthenticated', function(err, doc){
                 if (err){
                     console.log(err);
                     res.status(500).send();
@@ -304,7 +344,7 @@ module.exports = function (app, passport) {
     });
     app.put('/Delete/User/MultipleTenderData', isLoggedIn, function (req, res){ //provide array of ids
         Users
-            .findOne({'_id' : req.user._id }, '-password -authToken -isAuthenticated', function(err, doc){
+            .findOne({'_id' : req.user._id }, '-password -isAuthenticated', function(err, doc){
                 if (err){
                     console.log(err);
                     res.status(500).send();
@@ -328,7 +368,7 @@ module.exports = function (app, passport) {
     app.put('/Update/User/Listings', isLoggedIn, function (req, res) {  
         
         Users
-            .findOne({'_id' : req.user._id}, '-password -authToken -isAuthenticated', function (err, doc) {  
+            .findOne({'_id' : req.user._id}, '-password -isAuthenticated', function (err, doc) {  
                 
                 if (err){
                     console.log(err);
@@ -348,7 +388,7 @@ module.exports = function (app, passport) {
     });
     app.put('/Create/User/Competitor', isLoggedIn, function (req, res) {  
         Users
-            .findOne({'_id' : req.user._id}, '-password -authToken -isAuthenticated', function (err, doc) {  
+            .findOne({'_id' : req.user._id}, '-password -isAuthenticated', function (err, doc) {  
                 
                 if (err){
                     console.log(err);
@@ -377,7 +417,7 @@ module.exports = function (app, passport) {
                     'competitors.$.phone' : req.body.phone
                 }
             },
-            {new: true, upsert : false, select : '-password -authToken -isAuthenticated'},
+            {new: true, upsert : false, select : '-password -isAuthenticated'},
             function (err, userData){
                 if(err){
                     console.log(err);
@@ -409,7 +449,7 @@ module.exports = function (app, passport) {
 
     app.delete('/Delete/User/Competitor', isLoggedIn, function (req, res) {
         Users
-            .findOne({'_id' : req.user._id}, '-password -authToken -isAuthenticated', function (err, doc) {  
+            .findOne({'_id' : req.user._id}, '-password -isAuthenticated', function (err, doc) {  
                 
                 if (err){
                     console.log(err);
@@ -466,7 +506,7 @@ module.exports = function (app, passport) {
                         'tenders.$.item' : tender.item
                     }
                 },
-                {new: true, upsert : false, select : '-password -authToken -isAuthenticated'},
+                {new: true, upsert : false, select : '-password -isAuthenticated'},
                 function (err, userData){
                     if(err){
                         console.log(err);
@@ -522,13 +562,145 @@ module.exports = function (app, passport) {
         failureRedirect : '/signup', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
     }));
+    
     // process the login form
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect : '/', // redirect to the secure home section
-        failureRedirect : '/login', // redirect back to the signup page if there is an error
-        failureFlash : true // allow flash messages
-    }));
-  }
+            //successRedirect : '/', // redirect to the secure home section
+            failureRedirect : '/login', // redirect back to the signup page if there is an error
+            failureFlash : true // allow flash messages
+        }),
+        function(req, res, user){
+            // check if 'remember' is checked
+            if(req.body.remember){
+                req.session.cookie.maxAge = rememberFor * 24 * 60 * 60 * 1000; //30 days default
+            } else {
+                req.session.cookie.expires = false;
+            }
+            //req.session.user = req.user;
+            //console.log(JSON.stringify(req.session.user));
+            res.redirect('/');
+        }
+
+    );
+
+    // reset password
+    app.post('/reset', function(req,res){
+        
+        async.waterfall([
+            function(done){
+                Users.findOne({ resetToken : req.body.token, resetExpires : { $gte : Date.now() } }, function(err, user){
+                    if(!user){
+                        req.flash('resetMessage', 'Password reset token is invalid or has expired');
+                        return res.render('forgot', {
+                            message : req.flash('resetMessage'),
+                            alert : 'danger'
+                        });
+                    }
+
+                    user.password = user.generateHash(req.body.password);
+                    user.resetToken = undefined;
+                    user.resetExpires = undefined;
+
+                    user.save(function(err){
+                        req.logIn(user, function(err){
+                            done(err, user);
+                        })
+                    })
+                })
+            },
+
+            function(user, done){
+
+                var transporter = nodemailer.createTransport({
+                    service: 'Gmail',
+                    auth: {
+                        user: gmailCredentials.user,
+                        pass: gmailCredentials.pass
+                    }
+                });
+                var recipient = user.email;
+                var userid = recipient.match(/^([^@]*)@/)[1];
+                var html = "Dear "+ userid +",<br><br>Your password has been reset.<br><br>Thank you,<br>Tender Portal Team,<br>Rudra International";
+                var mailOptions = {
+                    from: 'Rudra International<no-reply@rudra.com.np>', // sender address
+                    to: recipient, // list of receivers
+                    subject: 'Password Reset Successful- Tender Portal', // Subject line
+                    html: html
+                };
+                transporter.sendMail(mailOptions, function(error, info){
+                    //req.flash('resetMessage', 'Password reset successful');
+                    done(error);
+                });
+            }
+
+        ],  function (err) {
+                req.session.reset = true;
+                res.redirect('/');
+        });
+    });
+    // send password reset email
+    app.post('/forgot', function(req, res, next){
+        
+        async.waterfall([ //execute http requests one after another passing responses
+            function(done) {
+                crypto.randomBytes(20, function(err, buff){
+                    var resetToken = buff.toString('hex');
+                    done(err, resetToken);
+                });
+            },
+            function(resetToken, done){
+                Users.findOne({email : req.body.email}, function(err, user){
+                    if(!user){
+                        req.flash('forgotMessage', 'Account '+req.body.email+' does not exist');
+                        return res.render('forgot', { 
+                            message : req.flash('forgotMessage'),
+                            alert : 'danger' 
+                        });
+                        
+                    }
+                    user.resetToken = resetToken;
+                    user.resetExpires = Date.now() + (hours*60*60*1000); // expires
+
+                    user.save(function(err){
+                        done(err, resetToken, user);
+                    });
+                });
+            },
+            function(resetToken, user, done){
+                var transporter = nodemailer.createTransport({
+                    service: 'Gmail',
+                    auth: {
+                        user: gmailCredentials.user,
+                        pass: gmailCredentials.pass
+                    }
+                });
+                var recipient = user.email;
+                var userid = recipient.match(/^([^@]*)@/)[1];
+                var html = "Dear "+ userid +",<br><br>We received a requested to reset the password for your Tender Portal account.<br><br>To reset your password, click on the following link: <br><br><a target=_blank href=\'http://tenders.rudra.com.np/reset?token=" + resetToken + "\'>Reset your password</a><br><br>If you did not request to have your password reset, you can safely ignore this message.<br><br>Thank you,<br>Tender Portal Team,<br>Rudra International";
+                var mailOptions = {
+                    from: 'Rudra International<no-reply@rudra.com.np>', // sender address
+                    to: recipient, // list of receivers
+                    subject: 'Password Reset Request - Tender Portal', // Subject line
+                    html: html
+                };
+                transporter.sendMail(mailOptions, function(error, info){
+                    
+                    req.flash('forgotMessage', 'An e-mail has been sent to ' + user.email + ' with further instructions to reset your password. For security reasons please close this browser window.');
+                    
+                    done(error, 'done');
+                });
+            }
+
+        ], function(err){
+            if(err) return next(err);
+            return res.render('forgot', { 
+                    message : req.flash('forgotMessage'),
+                    alert : 'info' 
+            });
+            //res.redirect('/reset');
+        });
+    })
+}
   
   // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
@@ -537,7 +709,7 @@ function isLoggedIn(req, res, next) {
         return next();
     } 
     // if they aren't redirect them to the login page
-    res.redirect('/login');
+    return res.redirect('/login');
 }
 
 function captchaVerify(req, res, next){
@@ -552,9 +724,9 @@ function captchaVerify(req, res, next){
         // invalid
         //res.json({formSubmit:false,errors:recaptcha.translateErrors(errorCodes)});// translate error codes to human readable text
         req.flash('recaptchaFailed', 'reCAPTCHA : ' + recaptcha.translateErrors(errorCodes));
-        res.render('signup', { 
+        return res.render('signup', { 
             message : req.flash('recaptchaFailed'),
-            alert : 'alert-danger' 
+            alert : 'danger' 
         });
     });
 }
