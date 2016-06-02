@@ -1,6 +1,6 @@
 var formValidationApp = angular
     
-    .module('formValidationApp', ['ngSanitize', 'ngToast', 'ui.router'])
+    .module('formValidationApp', ['ngSanitize', 'ngToast'])
 
     .config(['ngToastProvider', function(ngToast) {
         ngToast.configure({
@@ -15,7 +15,7 @@ var formValidationApp = angular
         //     'loggedIn',
         //     function(newValue){
         //         if(newValue){
-                    
+
         //         }
         //     }
         // );
