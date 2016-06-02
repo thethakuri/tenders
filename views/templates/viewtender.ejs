@@ -23,7 +23,7 @@
         <!--NOTIFICATION-->
         <div class="input-group col-xs-2 pull-right marginbottom10"> <!--col hack to prevent input-addon from running away-->
             <label class="checkbox-inline tenderOption btn fbtn  btn-success " data-toggle='tooltip' data-original-title="{{notifyOptionsValid(tenderDetail.subDate, 1) ? 'Select to get email notification' : 'This listing does not qualify for notification window'}}" initialize-tooltip ng-disabled="!notifyOptionsValid(tenderDetail.subDate, 1)">
-                <input type="checkbox" id="notify" ng-model="notify" ng-disabled="!notifyOptionsValid(tenderDetail.subDate, 1)" ng-click="notifyOptionsValid(tenderDetail.subDate, 1) ? enableSave = true : null"><span class="lineheight24">Receive notification</span>
+                <input type="checkbox" id="notify" ng-model="notify" ng-disabled="!notifyOptionsValid(tenderDetail.subDate, 1)" ng-click="notifyOptionsValid(tenderDetail.subDate, 1) ? enableSave = true : null; updateNotify = true"><span class="lineheight24">Receive notification</span>
             </label>
             <!--Notification frequency dropdown-->
             <div class="input-group-btn">
@@ -34,7 +34,7 @@
                     <li><span>Select alert frequency</span></li>
                     <li class="divider"></li>
                     <li>
-                        <a data-value="oneday" tabIndex="-1" ng-model="notifyOptions.oneday" ng-click="notifyOptions.oneday = !notifyOptions.oneday; enableSave = true">
+                        <a data-value="oneday" tabIndex="-1" ng-model="notifyOptions.oneday" ng-click="notifyOptions.oneday = !notifyOptions.oneday; enableSave = true; updateNotify = true">
                             <label class="checkbox-inline">
                                 <input type="checkbox" ng-checked="notifyOptions.oneday"/>1 day prior
                             </label>
@@ -42,21 +42,21 @@
                         
                     </li>
                     <li ng-show="notifyOptionsValid(tenderDetail.subDate, 3)">
-                        <a data-value="threedays" tabIndex="-1" ng-model="notifyOptions.threedays" ng-click="notifyOptions.threedays = !notifyOptions.threedays; enableSave = true">
+                        <a data-value="threedays" tabIndex="-1" ng-model="notifyOptions.threedays" ng-click="notifyOptions.threedays = !notifyOptions.threedays; enableSave = true; updateNotify = true">
                             <label class="checkbox-inline">
                                 <input type="checkbox" ng-checked="notifyOptions.threedays"/>3 days prior
                             </label>
                         </a>
                     </li>
                     <li ng-show="notifyOptionsValid(tenderDetail.subDate, 5)">
-                        <a data-value="fivedays" tabIndex="-1" ng-model="notifyOptions.fivedays" ng-click="notifyOptions.fivedays = !notifyOptions.fivedays; enableSave = true">
+                        <a data-value="fivedays" tabIndex="-1" ng-model="notifyOptions.fivedays" ng-click="notifyOptions.fivedays = !notifyOptions.fivedays; enableSave = true; updateNotify = true">
                             <label class="checkbox-inline">
                                 <input type="checkbox" ng-checked="notifyOptions.fivedays"/>5 days prior
                             </label>
                         </a>
                     </li>
                     <li ng-show="notifyOptionsValid(tenderDetail.subDate, 7)">
-                        <a data-value="sevendays" tabIndex="-1" ng-model="notifyOptions.sevendays" ng-click="notifyOptions.sevendays = !notifyOptions.sevendays; enableSave = true">
+                        <a data-value="sevendays" tabIndex="-1" ng-model="notifyOptions.sevendays" ng-click="notifyOptions.sevendays = !notifyOptions.sevendays; enableSave = true; updateNotify = true">
                             <label class="checkbox-inline">
                                 <input type="checkbox" ng-checked="notifyOptions.sevendays"/>7 days prior
                             </label>

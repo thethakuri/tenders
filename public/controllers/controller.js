@@ -392,6 +392,39 @@ var tenderApp = angular
             }
         }
     })
+    .factory('notification', function(){ // return dates@array to receive notification
+
+        function days(notifyBefore){
+            switch(notifyBefore) {
+                case 'oneday' :
+                    return 1;
+                    break;
+                case 'threedays' :
+                    return 3;
+                    break;
+                case 'fivedays' :
+                    return 5;
+                    break;
+                case 'sevendays' :
+                    return 7;
+                    break;
+            }
+        };
+
+        function getDate(submissionDate, notifyFrequency){
+            var notifyDates = [];
+            var subDate = new Date(submissionDate);
+            angular.forEach(notifyFrequency, function(value, key){
+                if(value){
+                    notifyDates.push(new Date(subDate - days(key) * 1000 * 60 * 60 * 24));
+                }
+            });
+            return notifyDates;
+        }
+        return ({
+            getDate : getDate
+        })
+    })
     .factory('daysDifference', function(){
         function diffDays(subDate) {  
             var now = new Date();//Today
@@ -580,7 +613,7 @@ var tenderApp = angular
         $scope.currentYear = new Date().getFullYear();
     })
 
-    .controller('TenderDetailCtrl', ['$scope', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', 'userDataFactory', 'httpService', 'userTenderData', 'validDate', 'userCompetitorInfo', '$filter', 'ngToast', 'myTenderList', '$location', function ($scope, tenderFactory, $state, userSearchField, daysDifference, tenderText, userDataFactory, httpService, userTenderData, validDate, userCompetitorInfo, $filter, ngToast, myTenderList, $location) {  
+    .controller('TenderDetailCtrl', ['$scope', '$q', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', 'userDataFactory', 'httpService', 'userTenderData', 'validDate', 'userCompetitorInfo', '$filter', 'ngToast', 'myTenderList', '$location', 'notification', function ($scope, $q, tenderFactory, $state, userSearchField, daysDifference, tenderText, userDataFactory, httpService, userTenderData, validDate, userCompetitorInfo, $filter, ngToast, myTenderList, $location, notification) {  
         
         $scope.$state = $state;
 
@@ -656,6 +689,7 @@ var tenderApp = angular
                     $scope.alertTag = false;
                     $scope.hasTenderInfo = false; //does user has information for this tender previously saved
                     $scope.hasPartInfo = false; //does the current listing has user's participation information
+                    $scope.updateNotify = false; //check if notification settings have been altered
 
                     //Initialize bid participation form elements
                     $scope.competitor = {};
@@ -905,7 +939,7 @@ var tenderApp = angular
             //     data.$scope.competitorsBid.push($scope.competitorsBid);
             //     $scope.competitorsBid = undefined;
             // }
-            
+
             httpService.putData(url, data).then(function (userData) {  
                 
                 ngToast.create({
@@ -920,6 +954,42 @@ var tenderApp = angular
                 $scope.resetBidPartForm();
                 populateUserTenderInfo(data);
             });
+
+
+            // update notifications
+            if($scope.updateNotify){
+                if(data.preferences.notify){ // if notification is set to true
+                    var subDate = $scope.tenderDetail.subDate;
+                    var notifyDates = notification.getDate(subDate, data.preferences.notifyFrequency);
+
+                    var notifyData = {
+                        'dates' : notifyDates,
+                        'email' : $scope.user.email,
+                        'tender' : {
+                            '_id' : $scope.tenderDetail._id,
+                            'item' : $scope.tenderDetail.item,
+                            'subDate' : $scope.tenderDetail.subDate
+                        }
+                    };
+                    
+                    httpService.putData('/Update/User/Notification', notifyData);
+
+                }
+                else { // delete all notification
+                    var notifyData = {
+                        'dates' : [],
+                        'email' : $scope.user.email,
+                        'tender' : {
+                            '_id' : $scope.tenderDetail._id
+                        }
+                    };
+                    httpService.putData('/Update/User/Notification', notifyData);
+                }
+
+             $scope.updateNotify = false;   
+
+            }
+
         };
 
         // Populate user's bid information form with previous data 
@@ -1119,6 +1189,19 @@ var tenderApp = angular
                             tenderList.splice(unWatchIndex, 1);
                             myTenderList.set(tenderList);   
                         };
+
+                        // remove all notification is any
+                        if($scope.notify){
+                            var notifyData = {
+                                'dates' : [],
+                                'email' : $scope.user.email,
+                                'tender' : {
+                                    '_id' : $scope.tenderDetail._id
+                                }
+                            };
+                            httpService.putData('/Update/User/Notification', notifyData);
+                            $scope.updateNotify = false;
+                        }
                         
 
                         // update user data

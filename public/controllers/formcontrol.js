@@ -1,6 +1,6 @@
 var formValidationApp = angular
     
-    .module('formValidationApp', ['ngSanitize', 'ngToast'])
+    .module('formValidationApp', ['ngSanitize', 'ngToast', 'ui.router'])
 
     .config(['ngToastProvider', function(ngToast) {
         ngToast.configure({
@@ -9,6 +9,17 @@ var formValidationApp = angular
           
         });
     }])
+
+    .controller('PeekCtrl', function($scope){
+        // $scope.$watch(
+        //     'loggedIn',
+        //     function(newValue){
+        //         if(newValue){
+                    
+        //         }
+        //     }
+        // );
+    })
     
     .controller('FooterCtrl', function($scope){
         $scope.currentYear = new Date().getFullYear();

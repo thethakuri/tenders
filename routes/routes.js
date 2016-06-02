@@ -2,8 +2,11 @@
 var async = require('async');
 var crypto = require('crypto');
 
+//models
 var Tender = require('../models/tender');
 var Users = require('../models/users');
+var Notify = require('../models/notification');
+
 var nodemailer = require('nodemailer');
 var reCAPTCHA=require('recaptcha2');
  
@@ -17,8 +20,8 @@ var gmailCredentials = {
     pass: process.env.NODEMAILPASS
 }
 
-var rememberFor = 30; // cookie validity
-var hours = 24; // token validity time frame
+var rememberFor = 30; // cookie validity days
+var hours = 24; // token validity time frame for password reset
 
 module.exports = function (app, passport) {
     /* Define http endpoints */
@@ -234,6 +237,41 @@ module.exports = function (app, passport) {
         
     });
 
+    //Notifications
+    app.put('/Update/User/Notification', isLoggedIn, function(req, res, next){
+
+        Notify.remove({email : req.body.email, 'tender._id' : req.body.tender._id}, function(err, count){
+            if(err){
+                console.log(err);
+                res.status(500).send();
+            }
+
+            var data = [];
+            req.body.dates.forEach(function(date){
+                data.push({
+                    'date' : date,
+                    'email' : req.body.email,
+                    'tender' : req.body.tender
+                })
+            });
+
+            if(data.length){
+                Notify.insertMany(data, function(err, docs){
+                    if(err){
+                        console.log(err);
+                        res.status(500).send();
+                    }
+                    return res.send();
+                });
+            }
+
+            return res.send();
+
+        })  
+    });
+
+
+    /************** Uer updates  ***************/
     app.post('/Change/User/Password', isLoggedIn, function(req, res){
         Users.findById(req.user._id, 'password', function(err, user){
             if(err){
@@ -253,7 +291,7 @@ module.exports = function (app, passport) {
             })
         })
     });
-    
+
     app.get('/User', isLoggedIn, function(req, res){
         
         Users
@@ -555,6 +593,18 @@ module.exports = function (app, passport) {
             res.json(doc);
         });
     });
+
+    //Peek
+    app.get('/Peek/:id', function (req, res) {
+        Tender.findById(req.params.id, function (err, doc) {
+            if(req.isAuthenticated()){
+                doc.loggedIn = true;
+            }
+            else doc.loggedIn = false;
+            console.log(JSON.stringify(doc));
+            res.render('peek', doc);
+        });
+    })
     
     // process the signup form
     app.post('/signup', captchaVerify, passport.authenticate('local-signup', {
@@ -699,6 +749,99 @@ module.exports = function (app, passport) {
             });
             //res.redirect('/reset');
         });
+    });
+
+    //cron job
+    app.get('/cron/notification', function (req, res){
+
+        var now = Date.now(),
+            oneDay = ( 1000 * 60 * 60 * 24 ),
+            today = new Date( now - ( now % oneDay ) ),
+            tomorrow = new Date( today.valueOf() + oneDay);
+
+
+        Notify.find({ date : { $gte : today, $lt : tomorrow }}, function(err, notifications) { 
+
+            if(err){
+                console.log(err);
+                res.status(500).send();
+            }
+
+            // sort tenders and assign them to their corresponding email address 
+            var notifyList = [];
+            notifications.forEach(function(notification){
+
+                var emailList = notifyList.map(function(o){ return o.email});
+                var emailIndex = emailList.indexOf(notification.email);
+                if(emailIndex !== -1){
+
+                    notifyList[emailIndex].tender.push(notification.tender);
+                    
+                } else {
+
+                    var notify = {
+                        email : '',
+                        tender : []
+                    }
+
+                    notify.email = notification.email;
+                    notify.tender.push(notification.tender);
+
+                    notifyList.push(notify);
+                      
+                }
+            })
+
+            // send mail to each of those email
+            notifyList.forEach(function(notify){
+                var transporter = nodemailer.createTransport({
+                    service: 'Gmail',
+                    auth: {
+                        user: gmailCredentials.user,
+                        pass: gmailCredentials.pass
+                    }
+                });
+                var recipient = notify.email;
+                var userid = recipient.match(/^([^@]*)@/)[1];
+
+                var tenderlist = '<ul style="list-style-type: none; padding:0; margin:0;">';
+                notify.tender.forEach(function(tender){
+                    tenderlist += "<li><strong><a target=_blank href=\'http://tenders.rudra.com.np/Peek/" + tender._id + "\'>" + tender.item + "</a></strong></li>";
+                    tenderlist += '<li> Submission Date: ' + new Date(tender.subDate).toLocaleDateString() + '</li>';
+                    tenderlist += '<li>&nbsp;</li>';
+                })
+                tenderlist += '</ul>';
+
+                var html = "Dear "+ userid +",<br><br>Following listings are nearing their submission deadline:<br><br>";
+                html += tenderlist;
+                html += "<br><br>You are receiving these notifications as per your settings. You can change those from the listings' page itself.<br><br>Thank you,<br>Tender Portal Team,<br>Rudra International";
+                
+                var mailOptions = {
+                    from: 'Rudra International<no-reply@rudra.com.np>', // sender address
+                    to: recipient, // list of receivers
+                    subject: 'Notification - Tender Portal', // Subject line
+                    html: html
+                };
+                transporter.sendMail(mailOptions, function(error, info){
+
+                    // remove sent notification collections from the database 
+                    Notify.remove({ date : { $gte : today, $lt : tomorrow }}, function(err, count){
+                        if(err){
+                            console.log(err);
+                            res.status(500).send();
+                        }
+                        return res.send();
+                    })
+    
+                });
+
+            });
+
+            // console.log(JSON.stringify(notifyList));
+            // console.log(notifyList.length);
+            res.send();
+
+        })
     })
 }
   
