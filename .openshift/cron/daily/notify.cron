@@ -1,0 +1,4 @@
+#!/use/bin/env bash
+curl -G http://tenders.rudra.com.np/cron/notification
+
+

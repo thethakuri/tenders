@@ -1,6 +1,6 @@
 //$scope is the glue between application controller and the view
 var tenderApp = angular
-    .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar', 'ui.router', 'angularjs-datetime-picker', 'ngSanitize', 'MassAutoComplete', 'ngToast', 'puElasticInput'])
+    .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar', 'ui.router', 'angularjs-datetime-picker', 'ngSanitize', 'MassAutoComplete', 'ngToast', 'puElasticInput', 'angular-clipboard'])
     .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {  
         
         $urlRouterProvider.otherwise('/');
@@ -710,6 +710,8 @@ var tenderApp = angular
                         if($scope.tenderDetail.owner === $scope.user._id)
                             $scope.isMyListing = true;
                     }
+
+                    $scope.permalink = 'http://tenders.rudra.com.np/Peek/' + $scope.tenderDetail._id;
 
                     $scope.competitorsList = $scope.userData.competitors; //get the list of pre defined competitors
                     
