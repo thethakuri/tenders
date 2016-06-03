@@ -630,6 +630,10 @@ div.form-signup input[type="email"] {
     text-decoration: none;
 }
 
+.etender{
+    border-color: #7DBCE0;
+}
+
 /*==================================================
 =            Helper Styles:         ;             =
 ==================================================*/

@@ -83,10 +83,22 @@
                 </span>
             </div>
         </div>
-        <div class="row paddingbottom20 well" ng-if="tenderDetail.remarks==='E-Tender'">
-            <div class="col-xs-12 form-group">
-                <label for="permalink">E-Tender</label>
-                <a href="tenderDetail.link" class="btn btn-danger">Link</a>
+        <div class="row paddingbottom20" ng-if="tenderDetail.remarks==='E-Tender'&&tenderDetail.link">
+            <div class="col-xs-12">
+                <div class="alert alert-info etender" role="alert"> 
+                    <div class="marginbottom5">
+                        <span class="glyphicon glyphicon-exclamation-sign font18" aria-hidden="true"></span><strong> E-Tender</strong>
+                    </div>
+                    <div>
+                        Further information (eg. bidding document and submission portal) for this listing can be accessed directly from caller's website.
+                    </div>
+                    <div class="text-right margintop5">
+                        <a href="{{tenderDetail.link}}" class="btn btn-danger">Get more info</a>    
+                    </div>
+                    
+                </div>
+                                   
+                
             </div>
         </div>
         <div class="row paddingbottom20">
