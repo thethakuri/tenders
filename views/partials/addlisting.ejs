@@ -147,7 +147,7 @@
                     <div class="text-right col-sm-7">
                         
                         <button ng-if="mode==='add'" type="button" class="btn btn-success btn-lg marginright10" ng-disabled="addlistingForm.$pristine" ng-click="resetForm()"><span class="glyphicon glyphicon-repeat"></span> Reset</button>
-                        <button ng-if="mode==='add'" type="button" class="btn btn-primary btn-lg" ng-disabled="addlistingForm.tenderTitle.$invalid||addlistingForm.tenderCaller.$invalid||addlistingForm.pubDaily.$invalid||dateInvalid(pubDate, subDate)" ng-click="addListing()"><span class="glyphicon glyphicon-export" ></span> Submit</button>
+                        <button ng-if="mode==='add'" type="button" class="btn btn-primary btn-lg" ng-disabled="addlistingForm.tenderTitle.$invalid||addlistingForm.tenderCaller.$invalid||addlistingForm.pubDaily.$invalid||(!addlistingForm.url.$pristine&&addlistingForm.url.$invalid)||dateInvalid(pubDate, subDate)" ng-click="addListing()"><span class="glyphicon glyphicon-export" ></span> Submit</button>
                         
                         <button ng-if="mode==='edit'" type="button" class="btn btn-danger btn-lg marginright10" ng-click="goBack()">Cancel</button>
                         <button ng-if="mode==='edit'" type="button" class="btn btn-success btn-lg" ng-disabled="addlistingForm.tenderTitle.$invalid||addlistingForm.tenderCaller.$invalid||addlistingForm.pubDaily.$invalid||dateInvalid(pubDate, subDate)" ng-click="editListing()">Update</button>
