@@ -754,13 +754,18 @@ module.exports = function (app, passport) {
     //cron job
     app.get('/cron/notification', function (req, res){
 
-        var now = Date.now(),
-            oneDay = ( 1000 * 60 * 60 * 24 ),
-            today = new Date( now - ( now % oneDay ) ),
-            tomorrow = new Date( today.valueOf() + oneDay);
+        var now = Date.now();
+        // var oneDay = ( 1000 * 60 * 60 * 24 ),
+        //     today = new Date( now - ( now % oneDay ) ),
+        //     tomorrow = new Date( today.valueOf() + oneDay);
+        
+        // var start = new Date();
+        // start.setHours(0,0,0,0);
+        // var end = new Date();
+        // end.setHours(23,59,59,999);
 
 
-        Notify.find({ date : { $gte : today, $lt : tomorrow }}, function(err, notifications) { 
+        Notify.find({ date : { $lte : now }}, function(err, notifications) { 
 
             if(err){
                 console.log(err);
@@ -825,7 +830,7 @@ module.exports = function (app, passport) {
                 transporter.sendMail(mailOptions, function(error, info){
 
                     // remove sent notification collections from the database 
-                    Notify.remove({ date : { $gte : today, $lt : tomorrow }}, function(err, count){
+                    Notify.remove({ date : { $lte : now }}, function(err, count){
                         if(err){
                             console.log(err);
                             res.status(500).send();
