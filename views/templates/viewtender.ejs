@@ -261,15 +261,20 @@
                                     </div>
                                     
                                     <!-- Bid Validity-->
-                                    <div class="form-group form-group-lg" ng-class="{ 'has-error' : !checkDate(bgValidity) && !userBidPartForm.bgValidity.$pristine && bgValidity != ''}">
+                                    <div class="form-group form-group-lg has-feedback" ng-class="{ 'has-error' : !checkDate(bgValidity) && !userBidPartForm.bgValidity.$pristine && bgValidity != ''}">
+                                        
                                         <label class="col-md-4 control-label" for="bgValidity">Guarantee Validity</label>  
                                         <div class="col-md-7">
+                                            <input datetime-picker ng-model="bgValidity" date-format="yyyy-MM-dd" date-only id="bgValidity" name="bgValidity" type="text" placeholder="eg. 2015-07-28" class="date form-control input-md">
+                                            <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
+                                        </div>
+                                        <!-- <div class="col-md-7">
                                             <div id="date" class="input-group input-append" ng-model="dateNow">
                                                 <input datetime-picker ng-model="bgValidity" date-format="yyyy-MM-dd" date-only id="bgValidity" name="bgValidity" type="text" placeholder="eg. 2015-07-28" class="date form-control input-md">
-                                                <span class="input-group-addon add-on noradiusborder"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                <span class="input-group-addon add-on noradiusborder"><i datetime-picker date-format="yyyy-MM-dd" date-only  class="glyphicon glyphicon-calendar"></i></span>
                                                 
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4"></div>
@@ -597,14 +602,15 @@
                             </div>
                             
                             <!-- Competitor's Bid Validity-->
-                            <div class="form-group form-group-lg" ng-class="{ 'has-error' : !checkDate(competitor.bgValidity) && !compBidPartForm.compBgValidity.$pristine && competitor.bgValidity != ''}">
+                            <div class="form-group form-group-lg has-feedback" ng-class="{ 'has-error' : !checkDate(competitor.bgValidity) && !compBidPartForm.compBgValidity.$pristine && competitor.bgValidity != ''}">
                                 <label class="col-md-4 control-label" for="compBgValidity">Validity</label>  
                                 <div class="col-md-6">
-                                    <div id="date" class="input-group input-append" ng-model="compDateNow">
+                                    <!--<div id="date" class="input-group input-append" ng-model="compDateNow">-->
                                         <input datetime-picker ng-model="competitor.bgValidity" date-format="yyyy-MM-dd" date-only id="compBgValidity" name="compBgValidity" type="text" placeholder="eg. 2015-07-28" class="date form-control input-md">
-                                        <span class="input-group-addon add-on noradiusborder"><i class="glyphicon glyphicon-calendar"></i></span>
+                                        <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
+                                        <!--<span class="input-group-addon add-on noradiusborder"><i class="glyphicon glyphicon-calendar"></i></span>-->
                                         
-                                    </div>
+                                    <!--</div>-->
                                 </div>
                             </div>
                             <div class="row">

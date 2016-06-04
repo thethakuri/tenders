@@ -40,10 +40,11 @@
                     </div>
                     
                     <!-- Publication Date  -->
-                    <div class="form-group form-group-lg" ng-class="{ 'has-error' : !checkDate(pubDate) && !addlistingForm.pubDate.$pristine || !dateConsistent(pubDate, subDate)}">
+                    <div class="form-group form-group-lg has-feedback" ng-class="{ 'has-error' : !checkDate(pubDate) && !addlistingForm.pubDate.$pristine || !dateConsistent(pubDate, subDate)}">
                     <label for="pubDate" class="control-label col-sm-4">Publication Date<sup class="required">*</sup></label>
                     <div class="col-sm-7">
                         <input datetime-picker date-format="yyyy-MM-dd" date-only type="text" class="form-control" id="pubDate" name="pubDate" ng-model="pubDate" placeholder="eg. 2015-07-28" required>
+                        <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
                         
                     </div>
                     </div>
@@ -74,10 +75,11 @@
                     </div>
                     
                     <!-- Submission Date  -->
-                    <div class="form-group form-group-lg" ng-class="{ 'has-error' : !checkDate(subDate) && !addlistingForm.subDate.$pristine || !dateConsistent(pubDate, subDate)}">
+                    <div class="form-group form-group-lg has-feedback" ng-class="{ 'has-error' : !checkDate(subDate) && !addlistingForm.subDate.$pristine || !dateConsistent(pubDate, subDate)}">
                     <label for="subDate" class="control-label col-sm-4">Submission Date<sup class="required">*</sup></label>
                     <div class="col-sm-7">
                         <input datetime-picker date-format="yyyy-MM-dd" date-only type="text" class="form-control" id="subDate" name="subDate" ng-model="subDate" placeholder="eg. 2015-07-28" required>
+                        <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
                         
                     </div>
                     </div>
