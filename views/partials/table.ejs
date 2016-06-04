@@ -80,12 +80,14 @@
                         </a>
                         <span class="glyphicon  pull-right" ng-show="sortTable.sortKey=='item'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
                     </th>
+                    <th class="hidden-xs">&nbsp;</th> <!-- Image -->
                     <th ng-click="sortTable.sortKey='caller'; sortTable.reverse = !sortTable.reverse">
                         <a href="#/" data-toggle='tooltip' title="Sort by caller" initialize-tooltip>
                             Caller
                         </a>
                         <span class="glyphicon pull-right" ng-show="sortTable.sortKey=='caller'" ng-class="{'glyphicon-sort-by-alphabet-alt':sortTable.reverse,'glyphicon-sort-by-alphabet':!sortTable.reverse}"></span>
                     </th>
+                    
                     <th ng-click="sortTable.sortKey='pubDate'; sortTable.reverse = !sortTable.reverse" class="hidden-xs">
                         <a href="#/" data-toggle='tooltip' title="Sort by publication date" initialize-tooltip>
                             Publication Date
@@ -124,6 +126,7 @@
                 current-page="pagination.currentPage" ng-class="getStatus(tender.subDate)" ng-click="loadTender(tender)" ng-cloak>
                     <td class="hidden-xs">{{ ($index + 1) + (pagination.currentPage - 1) * pagination.pageSize}}</td>
                     <td>{{tender.item}}</td>
+                    <td class="hidden-xs"><span data-toggle="tooltip" title="Newspaper clipping" initialize-tooltip ng-show="tender.img" class="glyphicon glyphicon-picture"></span></td>
                     <td>{{tender.caller}}</td>
                     <td class="hidden-xs">{{tender.pubDate | date : 'dd/MM/yyyy'}}</td>
                     <td class="hidden-xs">{{tender.pubDaily}}</td>
