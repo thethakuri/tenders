@@ -1410,7 +1410,7 @@ var tenderApp = angular
             $scope.pubDaily = tenderDetail.pubDaily;
             $scope.listingType = tenderDetail.remarks;
             $scope.userTags = tenderDetail.category;
-            $scope.url = tenderDetail.url;
+            $scope.url = tenderDetail.link;
         }
 
         $scope.goBack = function(){
