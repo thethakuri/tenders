@@ -80,9 +80,11 @@
                     <code class="days-remaining" ng-class="getStatus(tenderDetail.subDate)">
                     {{remainingDays(tenderDetail.subDate)}}
                     </code>  
-                </span>
+                </span><br>
+                <span ng-if="tenderDetail.remarks!=='E-Tender'&&tenderDetail.link"><text class="text-primary">Link</text> : {{tenderDetail.link}} </span>
             </div>
         </div>
+        <!--E-Tender-->
         <div class="row paddingbottom20" ng-if="tenderDetail.remarks==='E-Tender'&&tenderDetail.link">
             <div class="col-xs-12">
                 <div class="alert alert-info etender" role="alert"> 
