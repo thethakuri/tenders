@@ -102,9 +102,26 @@
                             <option value="Quotation">Quotation</option>
                             <option value="Proposal">Proposal</option>
                             <option value="EOI">EOI</option>
+                            <option value="EOI">E-Tender</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
+                    </div>
+                    
+                    <!-- URL  -->
+                    <div class="form-group form-group-lg" ng-class="{ 'has-error' : addlistingForm.url.$invalid && !addlistingForm.url.$pristine}">
+                    <label for="url" class="control-label col-sm-4">Link Address</label>
+                    <div class="col-sm-7">
+                        <input type="url" class="form-control" id="url" name="url" ng-model="url" placeholder="eg. http://www.caller.com/listing.html">
+                    </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-7">
+                            <p ng-show="addlistingForm.url.$invalid && !addlistingForm.url.$pristine" class="formError text-danger" ng-cloak>
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Invalid url
+                            </p>
+                        </div>
                     </div>
                     
                     <!-- Tags  -->

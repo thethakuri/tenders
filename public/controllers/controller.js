@@ -1410,6 +1410,7 @@ var tenderApp = angular
             $scope.pubDaily = tenderDetail.pubDaily;
             $scope.listingType = tenderDetail.remarks;
             $scope.userTags = tenderDetail.category;
+            $scope.url = tenderDetail.url;
         }
 
         $scope.goBack = function(){
@@ -1427,7 +1428,8 @@ var tenderApp = angular
                 'subDate' : $scope.subDate,
                 'pubDaily' : $scope.pubDaily,
                 'remarks' : $scope.listingType,
-                'category' : $scope.userTags
+                'category' : $scope.userTags,
+                'link' : $scope.url ? $scope.url : undefined
             };
 
             httpService.putData(url, data).then(function (response) {  
@@ -1463,7 +1465,8 @@ var tenderApp = angular
                 'subDate' : $scope.subDate,
                 'pubDaily' : $scope.pubDaily,
                 'remarks' : $scope.listingType,
-                'category' : $scope.userTags
+                'category' : $scope.userTags,
+                'link' : $scope.url ? $scope.url : undefined
             };
 
             httpService.putData(url, data).then(function (response) {  
@@ -1500,6 +1503,7 @@ var tenderApp = angular
             $scope.pubDaily = null;
             $scope.listingType = "Tender";
             $scope.userTags = [];
+            $scope.url = null;
 
             $scope.addlistingForm.$setPristine();
             $scope.addlistingForm.tenderTitle.$setPristine();
