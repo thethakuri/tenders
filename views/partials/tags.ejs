@@ -10,6 +10,10 @@
     <div class="row paddingtop20 ">
         <div class="col-xs-12 ">
             <ul class="nav nav-pills well noradiusborder" role="tablist">
+                <li role="presentation" class="active margin5 fbtn">
+                    <button class="padding5 input-tag btn btn-lg nobuttonoutline btn-primary" ng-click="setTagList()">view all
+                    </button>
+                </li>
                 <li ng-repeat="tag in tagLinkList" role="presentation" class="active margin5 fbtn">
                     <button ng-style="{'background-color':'#adadad',
 'border-color': '#a1a1a1', 'color' : '#fff'}" class="padding5 input-tag btn btn-lg nobuttonoutline" ng-click="setTagList(tag)">{{tag.name}}<small> {{ (tag.tendersList.length > 1) ? '('+tag.tendersList.length+')' : null}}</small>
