@@ -62,7 +62,7 @@ module.exports = function (app, passport) {
         //var recipient = req.user.email + '@rudra.com.np';
         var recipient = req.user.email;
         var userid = recipient.match(/^([^@]*)@/)[1];
-        var html = "Dear "+ userid +",<br><br>You have been registered for Tender Portal @ Rudra International. Please click the following link to verify your e-mail address:<br><br><a target=_blank href=\'http://tenders.rudra.com.np/verify?token=" + req.user.authToken + "\'>Confirm your e-mail</a><br><br>Once your e-mail is verified, you can login using the credentials you provided.<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'>";
+        var html = "Dear "+ userid +",<br><br>You have been registered for Tender Portal @ Rudra International. Please click the following link to verify your e-mail address:<br><br><a target=_blank href=\'http://tenders.rudra.com.np/verify?token=" + req.user.authToken + "\'>Confirm your e-mail</a><br><br>Once your e-mail is verified, you can login using the credentials you provided.<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'>";
         var mailOptions = {
             from: 'Rudra International<no-reply@rudra.com.np>', // sender address
             to: recipient, // list of receivers
@@ -670,7 +670,7 @@ module.exports = function (app, passport) {
                 });
                 var recipient = user.email;
                 var userid = recipient.match(/^([^@]*)@/)[1];
-                var html = "Dear "+ userid +",<br><br>Your password has been reset.<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'>";
+                var html = "Dear "+ userid +",<br><br>Your password has been reset.<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'>";
                 var mailOptions = {
                     from: 'Rudra International<no-reply@rudra.com.np>', // sender address
                     to: recipient, // list of receivers
@@ -726,7 +726,7 @@ module.exports = function (app, passport) {
                 });
                 var recipient = user.email;
                 var userid = recipient.match(/^([^@]*)@/)[1];
-                var html = "Dear "+ userid +",<br><br>We received a requested to reset the password for your Tender Portal account.<br><br>To reset your password, click on the following link: <br><br><a target=_blank href=\'http://tenders.rudra.com.np/reset?token=" + resetToken + "\'>Reset your password</a><br><br>If you did not request to have your password reset, you can safely ignore this message.<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'>";
+                var html = "Dear "+ userid +",<br><br>We received a requested to reset the password for your Tender Portal account.<br><br>To reset your password, click on the following link: <br><br><a target=_blank href=\'http://tenders.rudra.com.np/reset?token=" + resetToken + "\'>Reset your password</a><br><br>If you did not request to have your password reset, you can safely ignore this message.<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'>";
                 var mailOptions = {
                     from: 'Rudra International<no-reply@rudra.com.np>', // sender address
                     to: recipient, // list of receivers
@@ -819,7 +819,7 @@ module.exports = function (app, passport) {
 
                 var html = "Dear "+ userid +",<br><br>Following listings are nearing their submission deadline:<br><br>";
                 html += tenderlist;
-                html += "<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'><br><br><span style='font-size:11px'>You are receiving these notifications as per your settings. You can change those from the listings' page itself.</span>";
+                html += "<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'><br><br><span style='font-size:11px'>You are receiving these notifications as per your settings. You can change those from the listings' page itself.</span>";
                 
                 var mailOptions = {
                     from: 'Rudra International<no-reply@rudra.com.np>', // sender address
