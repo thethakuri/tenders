@@ -20,9 +20,9 @@
     </div>
     
     <!-- Tender List -->
-    <div class="row paddingtop20">
+    <div class="row paddingtop20" ng-if="tagTenderList">
         <div class="col-xs-12">
-            <ul ng-if="tagTenderList"><span class="lead marginbottom10"> Listing(s) tagged with the term <tag class="font28">{{tagTenderList.name}}</tag></span>
+            <ul><span class="lead marginbottom10"> Listing(s) tagged with the term <tag class="font28">{{tagTenderList.name}}</tag></span>
                 <li ng-repeat="tender in tagTenderList.tendersList" class="marginleft20 padding5">
                    <a ng-click="loadTender(tender._id)">{{tender.item}}</a>
                 </li>
@@ -30,9 +30,9 @@
         </div>
     </div>
     <!-- All Tender List -->
-    <div class="row paddingtop20">
+    <div class="row paddingtop20" ng-if="!tagTenderList&&allTaggedTenders.length">
         <div class="col-xs-12">
-            <ul ng-if="!tagTenderList&&allTaggedTenders.length"><span class="lead marginbottom10"> All <tag class="font28">tagged</tag> listing(s)  </span>
+            <ul ><span class="lead marginbottom10"> All <tag class="font28">tagged</tag> listing(s)  </span>
                 <li ng-repeat="tender in allTaggedTenders" class="marginleft20 padding5">
                    <a ng-click="loadTender(tender._id)">{{tender.item}}</a>
                 </li>
