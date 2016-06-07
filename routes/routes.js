@@ -819,7 +819,7 @@ module.exports = function (app, passport) {
 
                 var html = "Dear "+ userid +",<br><br>Following listings are nearing their submission deadline:<br><br>";
                 html += tenderlist;
-                html += "<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><img src='https://dl.dropboxusercontent.com/content_link/6NSFYRxHGz7A0tLqJrWV2AHu2YSVXUaa6OdTtvwjyHiJeHbGIao5KiUxeXdlfLUk/file' alt='Tender Portal'><br><br><i style='font-size:10px'>You are receiving these notifications as per your settings. You can change those from the listings' page itself.</i>";
+                html += "<br><span style='font-size:11px'>You are receiving these notifications as per your settings. You can change those from the listings' page itself.</span>";
                 
                 var mailOptions = {
                     from: 'Rudra International<no-reply@rudra.com.np>', // sender address
