@@ -755,17 +755,17 @@ module.exports = function (app, passport) {
     app.get('/cron/notification', function (req, res){
 
         var now = Date.now();
-        // var oneDay = ( 1000 * 60 * 60 * 24 ),
-        //     today = new Date( now - ( now % oneDay ) ),
-        //     tomorrow = new Date( today.valueOf() + oneDay);
+        var oneDay = ( 1000 * 60 * 60 * 24 ),
+            today = new Date( now - ( now % oneDay ) ),
+            tomorrow = new Date( today.valueOf() + oneDay);
         
         // var start = new Date();
         // start.setHours(0,0,0,0);
         // var end = new Date();
         // end.setHours(23,59,59,999);
 
-
-        Notify.find({ date : { $lte : now }}, function(err, notifications) { 
+        /** Maybe due to timezone difference, using $lte : now caused a delay of one day. So used tomorrow instead **/
+        Notify.find({ date : { $lte : tomorrow }}, function(err, notifications) { 
 
             if(err){
                 console.log(err);
@@ -819,7 +819,7 @@ module.exports = function (app, passport) {
 
                 var html = "Dear "+ userid +",<br><br>Following listings are nearing their submission deadline:<br><br>";
                 html += tenderlist;
-                html += "<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'><br><br><span style='font-size:11px'>You are receiving these notifications as per your settings. You can change those from the listings' page itself.</span>";
+                html += "<br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'><br><br><span style='font-size:11px'>You are receiving these notifications as per your settings. Please edit your setting from the listings' page if you do not wish to receive further notification.</span>";
                 
                 var mailOptions = {
                     from: 'Rudra International<no-reply@rudra.com.np>', // sender address
