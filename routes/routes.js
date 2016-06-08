@@ -141,7 +141,8 @@ module.exports = function (app, passport) {
         });
     });
     
-    app.get('/ping', function(req, res){
+    app.get('/ping', function(req, res){ //HAproxy httpchk fix
+       req.session.destroy();
        res.send(200); 
     });
     
