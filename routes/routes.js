@@ -764,7 +764,7 @@ module.exports = function (app, passport) {
         // var end = new Date();
         // end.setHours(23,59,59,999);
 
-        /** Maybe due to timezone difference, using $lte : now caused a delay of one day. So used tomorrow instead **/
+        /** Maybe due to server-locale timezone difference, using $lte : now caused a delay of one day. So used tomorrow instead **/
         Notify.find({ date : { $lte : tomorrow }}, function(err, notifications) { 
 
             if(err){
