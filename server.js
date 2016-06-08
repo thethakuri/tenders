@@ -45,7 +45,7 @@ process.on('SIGINT', function (){
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 /* Middlewares */
-app.use(express.favicon(__dirname + '/public/assets/favicon.ico'));
+//app.use(express.favicon(__dirname + '/public/assets/favicon.ico'));
 // Look for static files like html, css, js in the given directory
 //app.use(express.static(__dirname + "/public", {index:'login.html'}));
 app.use(express.static(__dirname + "/views"));
