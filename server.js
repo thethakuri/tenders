@@ -9,9 +9,8 @@ var flash    = require('connect-flash');
 var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
-var session      = require('express-session');
 
-// var Users = require('./models/users');
+var MongoStore = require('connect-mongo/es5')(express);
 
 var app = express();
 
@@ -59,27 +58,15 @@ app.use(cookieParser()); // read cookies (needed for auth)
 
 // required for passport
 //app.use(session({ secret: (process.env.SECRET) ? process.env.SECRET : 'topsecret' })); // session secret
-app.use(session({ secret: process.env.SECRET })); // session secret
+/** Persistent database backed session **/
+app.use(express.session({ 
+    secret: process.env.SECRET,
+    store: new MongoStore({mongooseConnection : mongoose.connection}) 
+}));
+    
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // expose the req.flash() method that allows to create and retrieve the flash message
-
-// //session middleware - cookie restore
-// app.use(function(req, res, next){
-//   if(req.session && req.session.user){
-//     Users.findOne({ email : req.session.user.email }, function (err, user) {
-//       if (user) {
-//         req.user = user;
-//         delete req.user.password; // delete the password from the session
-//         req.session.user = user; //refresh the session value
-//         res.locals.user = user;
-//       }
-//       next();
-//     });
-//   } else {
-//       next();
-//   }
-// });
 
 
 // ======================================================================
