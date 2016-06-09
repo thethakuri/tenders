@@ -41,6 +41,11 @@ process.on('SIGINT', function (){
    }); 
 });
 
+app.use('/ping', function(req, res){ //HAproxy httpchk fix
+    //req.session.destroy();
+    res.send(200); 
+});
+
 /* Configuration */
 app.set('view engine', 'ejs'); // set up ejs for templating
 

@@ -141,11 +141,6 @@ module.exports = function (app, passport) {
         });
     });
     
-    app.get('/ping', function(req, res){ //HAproxy httpchk fix
-       req.session.destroy();
-       res.send(200); 
-    });
-    
     app.get('/', isLoggedIn, function(req, res) {
         req.flash('reset', 'Password reset successful');
         res.render('home', {
