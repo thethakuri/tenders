@@ -96,7 +96,7 @@
                     </div>
                     
                     <!-- Listing type  -->
-                    <div class="form-group form-group-lg">
+                    <div ng-show="!isAdmin" class="form-group form-group-lg">
                     <label class="control-label col-sm-4" for="type">Type</label>
                     <div class="controls text-right col-sm-7">
                         <select class="form-control" ng-model="listingType">
@@ -108,6 +108,30 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
+                    </div>
+
+                    <!-- Listing type -admin  -->
+                    <div ng-show="isAdmin" class="form-group form-group-lg">
+                        <label for="type" class="control-label col-sm-4">Type</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="type" name="type" ng-model="type" placeholder="Listing type">
+                        </div>
+                    </div>
+
+                    <!-- IMG  -->
+                    <div ng-show="isAdmin" class="form-group form-group-lg" ng-class="{ 'has-error' : addlistingForm.img.$invalid && !addlistingForm.img.$pristine}">
+                    <label for="img" class="control-label col-sm-4">Image Link</label>
+                    <div class="col-sm-7">
+                        <input type="url" class="form-control" id="img" name="img" ng-model="img" placeholder="eg. http://www.caller.com/listing.jpg">
+                    </div>
+                    </div>
+                    <div ng-show="isAdmin" class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-7">
+                            <p ng-show="addlistingForm.img.$invalid && !addlistingForm.img.$pristine" class="formError text-danger" ng-cloak>
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Invalid image url
+                            </p>
+                        </div>
                     </div>
                     
                     <!-- URL  -->

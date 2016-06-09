@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var tenderSchema = new Schema({
     sn: {
-        type: Number
+        type: String
     },
     caller: {
         type: String,

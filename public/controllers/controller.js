@@ -580,6 +580,8 @@ var tenderApp = angular
 
                     userTenders.set(userData); //update user's watchlist with new data
 
+                    $scope.isAdmin = userData.admin; //if user is admin
+
                     $scope.myTender = function(){
                         return userTenders.get();
                     }
@@ -613,9 +615,14 @@ var tenderApp = angular
         $scope.currentYear = new Date().getFullYear();
     })
 
-    .controller('TenderDetailCtrl', ['$scope', '$q', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', 'userDataFactory', 'httpService', 'userTenderData', 'validDate', 'userCompetitorInfo', '$filter', 'ngToast', 'myTenderList', '$location', 'notification', function ($scope, $q, tenderFactory, $state, userSearchField, daysDifference, tenderText, userDataFactory, httpService, userTenderData, validDate, userCompetitorInfo, $filter, ngToast, myTenderList, $location, notification) {  
+    .controller('TenderDetailCtrl', ['$scope', '$window', '$q', 'tenderFactory', '$state', 'userSearchField', 'daysDifference', 'tenderText', 'userDataFactory', 'httpService', 'userTenderData', 'validDate', 'userCompetitorInfo', '$filter', 'ngToast', 'myTenderList', '$location', 'notification', function ($scope, $window, $q, tenderFactory, $state, userSearchField, daysDifference, tenderText, userDataFactory, httpService, userTenderData, validDate, userCompetitorInfo, $filter, ngToast, myTenderList, $location, notification) {  
         
         $scope.$state = $state;
+
+
+        $scope.print = function(){
+            $window.print();
+        }
 
         //$scope.userData = userDataFactory.get();
         //$scope.tenderDetail = tenderFactory.get();
@@ -835,6 +842,15 @@ var tenderApp = angular
             return exists;
         }
 
+        // Reset other winner bid checkbox to false
+        $scope.resetWinner = function(winner){
+            if(winner !== 'me') $scope.winner = false;
+            $scope.competitorsBid.forEach(function(competitor){
+                competitor.winner = false;
+            })
+            
+        }
+
 
         // Competitor's bid form action
         
@@ -845,6 +861,7 @@ var tenderApp = angular
                 $scope.competitorsBid[index].quotation = $scope.competitor.quotation;
                 $scope.competitorsBid[index].currency = $scope.competitor.currency;
                 $scope.competitorsBid[index].vat = $scope.competitor.vat;
+                $scope.competitorsBid[index].winner = $scope.competitor.winner;
                 $scope.competitorsBid[index].security = $scope.competitor.bgAmount ? $scope.competitor.bgAmount : undefined;
                 $scope.competitorsBid[index].validity = $scope.competitor.bgValidity ? $scope.competitor.bgValidity : undefined;
                 $scope.competitorsBid[index].issuer = $scope.competitor.bankName ? $scope.competitor.bankName : undefined;
@@ -888,6 +905,7 @@ var tenderApp = angular
                     , 'quotation' : $scope.competitor.quotation
                     , 'currency' : $scope.competitor.currency
                     , 'vat' : $scope.competitor.vat
+                    , 'winner' : $scope.competitor.winner
                     , 'security' : $scope.competitor.bgAmount ? $scope.competitor.bgAmount : undefined
                     , 'validity' : $scope.competitor.bgValidity ? $scope.competitor.bgValidity : undefined
                     , 'issuer' : $scope.competitor.bankName ? $scope.competitor.bankName : undefined
@@ -920,6 +938,7 @@ var tenderApp = angular
                     'quotation' : $scope.quotation
                     , 'currency' : $scope.userCurrency
                     , 'vat' : $scope.vat
+                    , 'winner' : $scope.winner
                     , 'security' : $scope.bgAmount ? $scope.bgAmount : undefined
                     , 'validity' : $scope.bgValidity ? $scope.bgValidity : undefined
                     , 'issuer' : $scope.bankName ? $scope.bankName : undefined
@@ -999,6 +1018,7 @@ var tenderApp = angular
             $scope.userCurrency = $scope.partInfo.currency;
             $scope.quotation = $scope.partInfo.quotation;
             $scope.vat = $scope.partInfo.vat;
+            $scope.winner = $scope.partInfo.winner;
             $scope.bgAmount = $scope.partInfo.security;
             $scope.bgValidity = $filter('date')($scope.partInfo.validity, 'yyyy-MM-dd');
             $scope.bankName = $scope.partInfo.issuer;
@@ -1012,6 +1032,7 @@ var tenderApp = angular
             $scope.userCurrency =  'NRs';
             $scope.quotation =  null;
             $scope.vat =  true;
+            $scope.winner =  false;
             $scope.bgAmount =  null;
             $scope.bgValidity =  null;
             $scope.bankName =  null;
@@ -1044,6 +1065,7 @@ var tenderApp = angular
             $scope.competitor.quotation = null;
             $scope.competitor.currency = 'NRs'; //ng-init is not working when ng-model is object notation
             $scope.competitor.vat = true;
+            $scope.competitor.winner = false;
             $scope.competitor.bgAmount = null;
             $scope.competitor.bgValidity = null;
             $scope.competitor.bankName = null;
@@ -1071,6 +1093,7 @@ var tenderApp = angular
             $scope.competitor.quotation = competitor.quotation;
             $scope.competitor.currency = competitor.currency;
             $scope.competitor.vat = competitor.vat;
+            $scope.competitor.winner = competitor.winner;
             $scope.competitor.bgAmount = competitor.security;
             $scope.competitor.bgValidity = $filter('date')(competitor.validity, 'yyyy-MM-dd');
             $scope.competitor.bankName = competitor.issuer;
@@ -1192,7 +1215,7 @@ var tenderApp = angular
                             myTenderList.set(tenderList);   
                         };
 
-                        // remove all notification is any
+                        // remove all notification if any
                         if($scope.notify){
                             var notifyData = {
                                 'dates' : [],
@@ -1228,7 +1251,7 @@ var tenderApp = angular
 
         }
 
-        // Delete user created listing and remove all corresponding data if available
+        // Delete user created listing / or tender (admin) and remove all corresponding data if available
         $scope.deleteListing = function(){
 
             bootbox.confirm("Delete this listing ? <br>(<em>All your data including tags, notes and participation information for this listing will be permanently deleted</em>)", function(result){
@@ -1236,7 +1259,8 @@ var tenderApp = angular
                     var data = {
                         _id : $scope.tenderDetail._id
                     }
-                    httpService.deleteData('/Delete/User/Tender', data).then(function (userData){
+                    var url = $scope.tenderDetail.owner ? '/Delete/User/Tender' : '/Delete/Tender';
+                    httpService.deleteData(url, data).then(function (userData){
                         ngToast.create({
                             className : 'danger',
                             content : 'Listing <strong>' + $scope.tenderDetail.item + '</strong> and all your corresponding data deleted from the system',
@@ -1244,7 +1268,7 @@ var tenderApp = angular
                             dismissButton : true
                         });
                         // update user data
-                        userDataFactory.set(userData);
+                        if(userData) userDataFactory.set(userData);
                     });
 
                     // if ($scope.hasTenderInfo) { // if tender info for this listing is available
@@ -1411,6 +1435,9 @@ var tenderApp = angular
             $scope.listingType = tenderDetail.remarks;
             $scope.userTags = tenderDetail.category;
             $scope.url = tenderDetail.link;
+
+            $scope.type = tenderDetail.remarks;
+            $scope.img = tenderDetail.img;
         }
 
         $scope.goBack = function(){
@@ -1418,18 +1445,19 @@ var tenderApp = angular
         }
 
         $scope.editListing = function(){
-            var url = '/Edit/User/Tender';
+            var url = tenderDetail.owner ? '/Edit/User/Tender' : '/Edit/Tender';
             var data = {
                 '_id' : tenderDetail._id,
-                'owner' : $scope.user._id,
+                'owner' : tenderDetail.owner ? tenderDetail.owner : undefined, //check if user listing or public tender
                 'caller' : $scope.tenderCaller,
                 'item' : $scope.tenderTitle,
                 'pubDate'  : $scope.pubDate,
                 'subDate' : $scope.subDate,
                 'pubDaily' : $scope.pubDaily,
-                'remarks' : $scope.listingType,
+                'remarks' : tenderDetail.owner ? $scope.listingType : $scope.type, //check if user listing or public tender
                 'category' : $scope.userTags,
-                'link' : $scope.url ? $scope.url : undefined
+                'link' : $scope.url ? $scope.url : undefined,
+                'img' : $scope.img ? $scope.img : undefined
             };
 
             httpService.putData(url, data).then(function (response) {  
@@ -1458,7 +1486,7 @@ var tenderApp = angular
 
             var url = '/Create/User/Tender';
             var data = {
-                'owner' : $scope.user._id,
+                'owner' : $scope.isAdmin ? undefined : $scope.user._id,
                 'caller' : $scope.tenderCaller,
                 'item' : $scope.tenderTitle,
                 'pubDate'  : $scope.pubDate,
@@ -1504,6 +1532,8 @@ var tenderApp = angular
             $scope.listingType = "Tender";
             $scope.userTags = [];
             $scope.url = null;
+            $scope.img = null;
+            $scope.type = null;
 
             $scope.addlistingForm.$setPristine();
             $scope.addlistingForm.tenderTitle.$setPristine();
@@ -1993,6 +2023,10 @@ var tenderApp = angular
                 case 'All' :
                     title.foo = 'All postings';
                     title.bar = 'All';
+                    break;
+                case 'ETender' :
+                    title.foo = 'E-Tenders';
+                    title.bar = 'E-Tenders';
                     break;
             }
             return title;

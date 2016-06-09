@@ -82,6 +82,10 @@ var UserTender = new Schema({
             type : Boolean,
             default : true
         },
+        winner : {
+            type : Boolean,
+            default : false
+        },
         security : Number,
         validity : Date,
         issuer : String,
@@ -106,6 +110,10 @@ var UserTender = new Schema({
                 vat : {
                     type : Boolean,
                     default : true
+                },
+                winner : {
+                    type : Boolean,
+                    default : false
                 },
                 security : Number,
                 validity : Date,

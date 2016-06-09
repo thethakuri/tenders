@@ -1,6 +1,6 @@
  
  <!-- User created listing modification options -->
- <div class="row margintop20  text-right" ng-if="isMyListing">
+ <div class="row margintop20  text-right" ng-if="isMyListing || isAdmin">
     <div class="col-xs-12 ">
         <button class="btn fbtn btn-danger btn-round marginright5" data-toggle="tooltip" rel="tooltip" data-placement="bottom" data-original-title="Delete this listing" initialize-tooltip ng-click="deleteListing()"><span class="glyphicon glyphicon-remove"></span></button>
         <button class="btn fbtn btn-round btn-primary" data-toggle="tooltip" rel="tooltip" data-placement="bottom" data-original-title="Edit this listing" initialize-tooltip ng-click="editListing(tenderDetail)"><span class="glyphicon glyphicon-edit"></span>    </button>        
@@ -74,6 +74,11 @@
         
         <div class="row paddingbottom20">
             <div class="col-xs-12">
+                <blockquote>
+                <div ng-if="tenderDetail.remarks==='E-Tender'&&tenderDetail.link">
+                    <kbd class="font18">{{tenderDetail.sn}}</kbd>
+                </div>
+
                 <span>Published in<a ui-sref="home" class="padding5 nounderline lead" ng-click="searchTag(tenderDetail.pubDaily)">{{tenderDetail.pubDaily}}</a></span><br>
                 <span><text class="text-primary">Publication Date</text> : {{tenderDetail.pubDate | date : 'EEEE MMMM d, yyyy'}}</span><br>
                 <span><text class="text-primary lead">Submission Date</text> : {{tenderDetail.subDate | date : 'EEEE MMMM d, yyyy'}}
@@ -82,6 +87,7 @@
                     </code>  
                 </span><br>
                 <span ng-if="tenderDetail.remarks!=='E-Tender'&&tenderDetail.link">Link : <a href="{{tenderDetail.link}}">{{tenderDetail.link}}</a> </span>
+                </blockquote>
             </div>
         </div>
         <!--E-Tender-->
@@ -238,7 +244,12 @@
                                                 
                                                 
                                             </div>
-                                            <input type="checkbox" name="vat" id="vat" ng-model="vat"> Vat Included
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" name="vat" id="vat" ng-model="vat"> Vat Included
+                                            </label>
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" name="winner" id="winner" ng-model="winner" ng-click="resetWinner('me')"> Winning Bid
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -389,9 +400,26 @@
                         </div>
                         
                         <!--Bid Participation Information-->
-                        <div class="row marginleftright15" ng-show="hasPartInfo&&!bidInfoForm">
+                        <div id="bidPartInfo" class="row marginleftright15" ng-show="hasPartInfo&&!bidInfoForm">
+
+                            <style>
+                                @media print {
+                                    body * {
+                                        visibility: hidden;
+                                    }
+                                    #bidPartInfo, #bidPartInfo * {
+                                        visibility: visible;
+                                    }
+                                  
+                                }
+                            </style>
+
+
                             <div class="row paddingbottom20">
-                                <div class="col-xs-12 nopaddingleftright text-right">
+                                <div class="col-xs-4 nopaddingleftright">
+                                    <button class="btn " ng-click="print()" data-toggle="tooltip" data-placement="top" data-original-title="Print" initialize-tooltip><span class="glyphicon glyphicon-print"></span> Print</button>
+                                </div>
+                                <div class="col-xs-8 nopaddingleftright text-right">
                                     <button class="btn btn-primary  marginright5" ng-click="populateBidInfo();bidInfoForm = true" data-toggle="tooltip" data-placement="top" data-original-title="Edit participation information" initialize-tooltip>Edit</button>
                                     <button class="btn btn-danger " ng-click="deleteAllPartInfo()" data-toggle="tooltip" data-placement="top" data-original-title="Delete participation information" initialize-tooltip>Delete</button>
                                 </div>
@@ -405,7 +433,7 @@
                                             Quotation
                                         </td>
                                         <td>
-                                            {{partInfo.currency}} {{partInfo.quotation | currency:''}} (<em>{{partInfo.vat ? 'with VAT' : 'without VAT'}}</em>)
+                                            {{partInfo.currency}} {{partInfo.quotation | currency:''}} (<em>{{partInfo.vat ? 'with VAT' : 'without VAT'}}</em>) <span ng-show="partInfo.winner" class='glyphicon glyphicon-star font18 text-danger' data-toggle="tooltip" data-placement="top" data-original-title="Winning bid" initialize-tooltip></span>
                                         </td>
                                     </tr>
                                     <tr ng-if="partInfo.security">
@@ -463,7 +491,9 @@
                                         <dl class="dl-horizontal bidInfoList" >
                                             <dt></dt>
                                             <dt>Quotation</dt>
-                                            <dd>{{competitorBid.currency}} {{competitorBid.quotation | currency:''}} (<em>{{competitorBid.vat ? 'with VAT' : 'without VAT'}}</em>)</dd>
+                                            <dd>{{competitorBid.currency}} {{competitorBid.quotation | currency:''}} (<em>{{competitorBid.vat ? 'with VAT' : 'without VAT'}}</em>)
+                                                <span ng-show="competitorBid.winner" class='glyphicon glyphicon-star font18 text-danger' data-toggle="tooltip" data-placement="top" data-original-title="Winning bid" initialize-tooltip></span>
+                                            </dd>
                                             
                                             <dt ng-if="competitorBid.security">Bid Security</dt>
                                             <dd ng-if="competitorBid.security">{{competitorBid.security | currency:''}}</dd>
@@ -581,7 +611,12 @@
                                         </div>
                                         <input id="compQuotation" name="compQuotation" class="form-control" type="number" placeholder="Bid amount" required ng-model="competitor.quotation">
                                     </div>
-                                    <input type="checkbox" name="compVat" id="compVat" ng-checked="true" ng-model="competitor.vat"> Vat Included
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="compVat" id="compVat" ng-checked="true" ng-model="competitor.vat"> Vat Included
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="compWinner" id="compWinner" ng-model="competitor.winner" ng-click="resetWinner()"> Winning Bid
+                                    </label>
                                 </div>
                             </div>
                             <div class="row">

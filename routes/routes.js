@@ -163,6 +163,21 @@ module.exports = function (app, passport) {
     });
     
     /*********************************/
+    // Get only e-tenders
+    app.get('/ETender', isLoggedIn, function(req, res){
+        var now = new Date();
+        now.setHours(0,0,0,0);
+        
+        Tender.find({subDate : {$gte : now}, remarks : 'E-Tender'}, function(err, docs){
+            res.json(docs);
+        });
+
+
+        // Tender.find({subDate : {$gte : now}}, function(err, docs){
+        //     res.json(docs);
+        // });
+        
+    });
     // Get only active tenders
     app.get('/Active', isLoggedIn, function(req, res){
         var now = new Date();
@@ -519,18 +534,87 @@ module.exports = function (app, passport) {
         })
 
     });
+    
+    // Admin api
+    app.put('/Edit/Tender', isLoggedIn, function (req, res) {  
+       Tender.findByIdAndUpdate(req.body._id, {
+           $set : {
+               'caller' : req.body.caller,
+                'item' : req.body.item,
+                'pubDate'  : req.body.pubDate,
+                'subDate' : req.body.subDate,
+                'pubDaily' : req.body.pubDaily,
+                'remarks' : req.body.remarks,
+                'category' : req.body.category,
+                'link' : req.body.link,
+                'img' : req.body.img
+           }
+       }, {new : true, upsert : false}, function (err, tender) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send();
+                }
+                
+                return Users.update({'tenders._id' : tender._id},{
+                    $set : {
+                        'tenders.$.item' : tender.item
+                    }
+                },
+                {new: true, upsert : false, select : '-password -isAuthenticated', multi: true},
+                function(err, user){
+                    if(err){
+                        console.log(err);
+                        res.status(500).send();
+                    }
+                    return Notify.update({'tender._id' : tender._id},{
+                        $set : {
+                            'tender.item' : tender.item
+                        }
+                    },
+                    {new: true, upsert : false, multi: true},
+                    function(err, notify){
+                        if(err){
+                            console.log(err);
+                            res.status(500).send();
+                        }
+                        res.send();
+                    }) 
+                    
+                });
+       }) 
+    });
+    
+    // Admin api
+    app.delete('/Delete/Tender', isLoggedIn, function(req, res){
+        Tender.findByIdAndRemove(req.body._id, function(err, tender){
+            if(err){
+                console.log(err);
+                res.status(500).send();
+            }
+            return Notify.remove({'tender._id' : req.body._id}, function(err, count){
+                if(err){
+                    console.log(err);
+                    res.status(500).send();
+                }
+                return res.send();
+            })
+        })
+    })
+    
     app.put('/Edit/User/Tender', isLoggedIn, function (req, res){
 
         Tender.findByIdAndUpdate(req.body._id, {
             $set : {
-                'owner' : req.user._id,
+                'owner' : req.body.owner,
                 'caller' : req.body.caller,
                 'item' : req.body.item,
                 'pubDate'  : req.body.pubDate,
                 'subDate' : req.body.subDate,
                 'pubDaily' : req.body.pubDaily,
                 'remarks' : req.body.remarks,
-                'category' : req.body.category
+                'category' : req.body.category,
+                'link' : req.body.link,
+                'img' : req.body.img
             }
         }, {new: true, upsert : false}, function (err, tender){
             if (err) {
@@ -551,7 +635,20 @@ module.exports = function (app, passport) {
                         res.status(500).send();
                     }
                     
-                    return res.json(userData);
+                    return Notify.update({'tender._id' : tender._id},{
+                        $set : {
+                            'tender.item' : tender.item
+                        }
+                    },
+                    {new: true, upsert : false, multi: true},
+                    function(err, notify){
+                        if(err){
+                            console.log(err);
+                            res.status(500).send();
+                        }
+                        return res.json(userData);
+                    }) 
+                    
                 })
             
         })
@@ -559,7 +656,6 @@ module.exports = function (app, passport) {
     });
 
     app.delete('/Delete/User/Tender', isLoggedIn, function (req, res){
-
         Tender.findByIdAndRemove(req.body._id, function (err, tender){
             if(err){
                 console.log(err);
@@ -579,7 +675,17 @@ module.exports = function (app, passport) {
                                 console.log(err);
                                 res.status(500).send();
                             }
-                            return res.json(doc);
+                            
+                            Notify.remove({'tender._id' : tender._id}, function(err, count){
+                                //console.log('Removed: '+count);
+                                if(err){
+                                    console.log(err);
+                                    res.status(500).send();
+                                }
+                                return res.json(doc);    
+                            }); 
+                            
+                           
                         })
 
                     });
