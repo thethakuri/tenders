@@ -87,6 +87,7 @@
                     </code>  
                 </span><br>
                 <span ng-if="tenderDetail.remarks!=='E-Tender'&&tenderDetail.link">Link : <a href="{{tenderDetail.link}}">{{tenderDetail.link}}</a> </span>
+                <button class="btn btn-xs btn-default margintop10" data-toggle="modal" data-target="#errorModal">Report error</button>
                 </blockquote>
             </div>
         </div>
@@ -351,7 +352,7 @@
                                                             <div class="panel-body row padding10">
                                                                 
                                                                 <div class="col-xs-12 margin5 nomargintop nomarginleft nopaddingright">
-                                                                    <span>Quotation:</span> {{competitorBid.currency}} {{competitorBid.quotation | currency:''}} (<em>{{competitorBid.vat ? 'with VAT' : 'without VAT'}}</em>)
+                                                                    <span>Quotation:</span> {{competitorBid.currency}} {{competitorBid.quotation | currency:''}} (<em>{{competitorBid.vat ? 'with VAT' : 'without VAT'}}</em>) <span ng-show="competitorBid.winner" class='glyphicon glyphicon-star text-primary' data-toggle="tooltip" data-placement="top" data-original-title="Winning bid" initialize-tooltip></span>
                                                                 </div>
                                                                 <div class="col-xs-12 margin5 nomargintop nomarginleft nopaddingright" ng-show="competitorBid.security">
                                                                     <span>Bid Security:</span> {{competitorBid.security | currency:''}}
@@ -402,22 +403,9 @@
                         <!--Bid Participation Information-->
                         <div id="bidPartInfo" class="row marginleftright15" ng-show="hasPartInfo&&!bidInfoForm">
 
-                            <style>
-                                @media print {
-                                    body * {
-                                        visibility: hidden;
-                                    }
-                                    #bidPartInfo, #bidPartInfo * {
-                                        visibility: visible;
-                                    }
-                                  
-                                }
-                            </style>
-
-
                             <div class="row paddingbottom20">
                                 <div class="col-xs-4 nopaddingleftright">
-                                    <button class="btn " ng-click="print()" data-toggle="tooltip" data-placement="top" data-original-title="Print" initialize-tooltip><span class="glyphicon glyphicon-print"></span> Print</button>
+                                    <button class="btn " ng-click="print('#partInfoPrint')" data-toggle="tooltip" data-placement="top" data-original-title="Print" initialize-tooltip><span class="glyphicon glyphicon-print"></span> Print</button>
                                 </div>
                                 <div class="col-xs-8 nopaddingleftright text-right">
                                     <button class="btn btn-primary  marginright5" ng-click="populateBidInfo();bidInfoForm = true" data-toggle="tooltip" data-placement="top" data-original-title="Edit participation information" initialize-tooltip>Edit</button>
@@ -433,7 +421,7 @@
                                             Quotation
                                         </td>
                                         <td>
-                                            {{partInfo.currency}} {{partInfo.quotation | currency:''}} (<em>{{partInfo.vat ? 'with VAT' : 'without VAT'}}</em>) <span ng-show="partInfo.winner" class='glyphicon glyphicon-star font18 text-danger' data-toggle="tooltip" data-placement="top" data-original-title="Winning bid" initialize-tooltip></span>
+                                            {{partInfo.currency}} {{partInfo.quotation | currency:''}} (<em>{{partInfo.vat ? 'with VAT' : 'without VAT'}}</em>) <span ng-show="partInfo.winner" class='glyphicon glyphicon-star font18 text-primary' data-toggle="tooltip" data-placement="top" data-original-title="Winning bid" initialize-tooltip></span>
                                         </td>
                                     </tr>
                                     <tr ng-if="partInfo.security">
@@ -492,7 +480,7 @@
                                             <dt></dt>
                                             <dt>Quotation</dt>
                                             <dd>{{competitorBid.currency}} {{competitorBid.quotation | currency:''}} (<em>{{competitorBid.vat ? 'with VAT' : 'without VAT'}}</em>)
-                                                <span ng-show="competitorBid.winner" class='glyphicon glyphicon-star font18 text-danger' data-toggle="tooltip" data-placement="top" data-original-title="Winning bid" initialize-tooltip></span>
+                                                <span ng-show="competitorBid.winner" class='glyphicon glyphicon-star font18 text-primary' data-toggle="tooltip" data-placement="top" data-original-title="Winning bid" initialize-tooltip></span>
                                             </dd>
                                             
                                             <dt ng-if="competitorBid.security">Bid Security</dt>
@@ -720,3 +708,124 @@
     
 </div>
 
+
+<!-- Error reporting form -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="errorDetail=null"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Report error</h4>
+      </div>
+      <div class="modal-body">
+        <span>Did you spot any error for the listing {{tenderDetail.item}} ?</span>
+        <form name="errorForm" class="form-horizontal margintop15">
+            <fieldset>
+            <!-- Textarea -->
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="errorDetail">Error detail</label>
+              <div class="col-md-7">                     
+                <textarea rows="4" class="form-control" id="errorDetail" name="errorDetail" ng-model="errorDetail" required>error</textarea>
+              </div>
+            </div>
+            </fieldset>
+            </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="errorDetail=null">Cancel</button>
+        <button type="button" class="btn btn-primary" ng-disabled="disableError||errorForm.errorDetail.$invalid" ng-click="reportError()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Participation Info Print -->
+<div id="partInfoPrint">
+    <img src="/assets/tender_logo_white.png" width="100">
+    <h3>{{tenderDetail.item}}</h3>
+    <h4 ><strong>{{tenderDetail.caller}}</strong></h4>
+    Published in {{tenderDetail.pubDaily}} <br>
+    Publication Date : {{tenderDetail.pubDate | date : 'yyyy-MM-dd'}} <br>
+    Submission Date : {{tenderDetail.subDate | date : 'yyyy-MM-dd'}} <br>
+
+    <h4 class="paddingtop20" ><strong class="font22">My submission detail</strong></h4>
+    <div >
+        <table class="table nomarginbottom">
+            <tr>
+                <td class="title padding5">
+                    <strong>Quotation</strong>
+                </td>
+                <td>
+                    {{partInfo.currency}} {{partInfo.quotation | currency:''}}{{partInfo.winner ? '* ' : ''}} (<em>{{partInfo.vat ? 'with VAT' : 'without VAT'}}</em>)
+                </td>
+            </tr>
+            <tr ng-if="partInfo.security">
+                <td class="title padding5">
+                    <strong>Bid Security</strong>
+                </td>
+                <td>
+                    {{partInfo.security | currency:''}}
+                </td>
+            </tr>
+            <tr ng-if="partInfo.validity">
+                <td class="title padding5">
+                    <strong>Guarantee Validity</strong>
+                </td>
+                <td>
+                    {{partInfo.validity | date : 'yyyy-MM-dd'}}
+                </td>
+            </tr>
+            <tr ng-if="partInfo.issuer">
+                <td class="title padding5">
+                    <strong>Guarantee Issuer</strong>
+                </td>
+                <td>
+                    {{partInfo.issuer}}
+                </td>
+            </tr>
+            <tr ng-if="partInfo.manufacturer">
+                <td class="title padding5">
+                    <strong>Manufacturer</strong>
+                </td>
+                <td>
+                    {{partInfo.manufacturer}}
+                </td>
+            </tr>
+            <tr ng-if="partInfo.remarks">
+                <td class="title padding5">
+                    <strong>Remarks</strong>
+                </td>
+                <td>
+                    {{partInfo.remarks}}
+                </td>
+            </tr>
+        </table>
+    </div>
+        
+    
+    <div class="paddingtop20" ng-if="competitorsBid.length">
+        <h4 ><strong class="font22">Competitors</strong></h4>
+        <table class="table">
+            <tr>
+                <th class="padding5">Competitor</th>
+                <th class="padding5">Quotation</th>
+                <th class="padding5">Bid Security</th>
+                <th class="padding5">Guarantee Validity</th>
+                <th class="padding5">Guarantee Issuer</th>
+                <th class="padding5">Manufacturer</th>
+                <th class="padding5">Remarks</th>
+            </tr>
+            <tr ng-repeat="competitorBid in competitorsBid" >
+                <td class="padding5">{{competitorBid.name}}</td>
+                <td class="padding5">{{competitorBid.currency}} {{competitorBid.quotation | currency:''}}{{competitorBid.winner ? '* ' : ''}} (<em>{{competitorBid.vat ? 'with VAT' : 'without VAT'}}</em>)</td>
+                <td class="padding5">{{competitorBid.security | currency:''}}</td>
+                <td class="padding5">{{competitorBid.validity | date : 'yyyy-MM-dd'}}</td>
+                <td class="padding5">{{competitorBid.issuer}}</td>
+                <td class="padding5">{{competitorBid.manufacturer}}</td>
+                <td class="padding5">{{competitorBid.remarks}}</td>
+            </tr>
+        </table>
+        <small>* winning bid</small>
+    </div>
+
+</div>

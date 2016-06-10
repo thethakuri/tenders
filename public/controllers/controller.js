@@ -619,9 +619,13 @@ var tenderApp = angular
         
         $scope.$state = $state;
 
-
-        $scope.print = function(){
-            $window.print();
+        // print html element
+        $scope.print = function(printElem){
+            var content = document.querySelector(printElem).innerHTML;
+            var myWindow = window.open('', '_blank', 'width=800, height=600');
+            myWindow.document.open();
+            myWindow.document.write('<html><head><link rel="stylesheet" type="text/css" href="/css/style.css" /><link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" /></head><body onload="window.print()">' + content + '</body></html>');
+            myWindow.document.close();
         }
 
         //$scope.userData = userDataFactory.get();
@@ -916,7 +920,27 @@ var tenderApp = angular
             }
         };
 
-        
+        // report error in listing detail
+        $scope.disableError = false;
+        $scope.reportError = function(){
+            $scope.disableError = true;
+            var data = {
+                'item' : $scope.tenderDetail.item,
+                '_id' : $scope.tenderDetail._id,
+                'error' : $scope.errorDetail
+            }
+            httpService.putData('/Tender/Error', data).then(function (response) {  
+                $scope.errorDetail = null;
+                $scope.disableError = false;
+                ngToast.create({
+                    content : 'Eror report has been sent to the administrator',
+                    timeout : 6000,
+                    dismissButton : true
+                });
+                angular.element(document.querySelector('#errorModal')).modal('hide'); //hide modal
+            });
+        };
+
 
         // Main SAVE action of the tenderview page
         $scope.saveUserForm = function(){

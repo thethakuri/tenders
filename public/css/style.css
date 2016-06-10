@@ -12,6 +12,11 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+/* Print element */
+#partInfoPrint{
+    display: none;
+}
+
 /*.jumbotron{
 
     background-color: #0ac2d2;
@@ -801,6 +806,9 @@ div.form-signup input[type="email"] {
 .font18{
     font-size: 18px;
 }
+.font22{
+    font-size: 22px;
+}
 .font28{
     font-size: 28px !important;
 }
@@ -839,8 +847,6 @@ div.form-signup input[type="email"] {
 /*==================================================
 =            Bootstrap 3 Media Queries             =
 ==================================================*/
-
-
 
 
     /*==========  Mobile First Method  ==========*/

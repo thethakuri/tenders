@@ -738,6 +738,43 @@ module.exports = function (app, passport) {
         }
 
     );
+    
+    // send tender error report
+    app.put('/Tender/Error', function(req, res){
+        var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: gmailCredentials.user,
+                pass: gmailCredentials.pass
+            }
+        });
+        var recipient = 'thethakuri@gmail.com'; //admin
+
+        var html = "Error reported : <br><br>";
+        html += "<ul style='list-style-type: none; padding:0; margin:0;'>";
+        html += "<li>Reported by: " + req.user.email + "</li>";
+        html += "<li>Reporter's id: " + req.user._id + "</li>";
+        html += "<li>&nbsp;</li>"
+        html += "<li>Listing title: " + req.body.item + "</li>";
+        html += "<li>Listing's id: " + req.body._id + "</li>";
+        html += "<li>&nbsp;</li>";
+        html += "<li>Error detail: " + req.body.error + "</li>";
+        html += "</ul>";
+        html += "<br><br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'>";
+        var mailOptions = {
+            from: 'Rudra International<no-reply@rudra.com.np>', // sender address
+            to: recipient, // list of receivers
+            subject: 'Error reported - Tender Portal', // Subject line
+            html: html
+        };
+        transporter.sendMail(mailOptions, function(error, info){
+            if(error){
+                console.log(error);
+                res.status(500).send();
+            }   
+            return res.send();
+        });
+    })
 
     // reset password
     app.post('/reset', function(req,res){
