@@ -1388,6 +1388,10 @@ var tenderApp = angular
       
     }])
 
+    .controller('AboutCtrl', ['$scope', function($scope){
+        
+    }])
+
     .controller('DefaultCtrl', function($scope, $state){
         $scope.$state = $state;
     })

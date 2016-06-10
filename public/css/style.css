@@ -10,6 +10,7 @@ body {
   /* Margin bottom by footer height */
     margin-bottom: 100px;
     font-family: 'Roboto', sans-serif;
+    background-color: #fefefe;
 }
 
 /* Print element */
@@ -643,6 +644,10 @@ div.form-signup input[type="email"] {
     border-color: #7DBCE0;
 }
 
+.jumboHR {
+    border-bottom: 1px solid #ddd;
+}
+
 /*==================================================
 =            Helper Styles:         ;             =
 ==================================================*/
@@ -677,6 +682,9 @@ div.form-signup input[type="email"] {
 }
 .margintop40{
     margin-top: 40px !important;
+}
+.margintop60{
+    margin-top: 60px !important;
 }
 .marginright10{
     margin-right: 10px;
@@ -812,6 +820,9 @@ div.form-signup input[type="email"] {
 .font28{
     font-size: 28px !important;
 }
+.font48{
+    font-size: 48px !important;
+}
 
 /*Round button*/
 .btn-round {
@@ -905,6 +916,10 @@ div.form-signup input[type="email"] {
         .navbar-inverse .navbar-nav .dropdown-menu>li>button {
             color: #9d9d9d !important;
             padding-left: 25px !important;
+        }
+
+        .listTable{
+            margin-top: 40px !important;
         }
     }
 

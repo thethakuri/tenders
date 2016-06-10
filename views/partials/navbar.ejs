@@ -18,7 +18,7 @@
                 <!-- <li class="nav_user">Welcome, <span ng-bind="userData.name ? userData.name : userData.email + '@rudra.com.np'"></span></li> -->
                 <li class="nav_user">Welcome, <span ng-bind="userData.name ? userData.name : userData.email"></span><span class="label label-danger marginleft5 " ng-if="isAdmin">admin</span></li>
                 <li ui-sref-active="active"><a ui-sref="home" ng-click="setView('Active')">Home</a></li>
-                <li><a href="">About</a></li>
+                <li ui-sref-active="active"><a ui-sref="about">About</a></li>
                 <li class="dropdown" ui-sref-active="active">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button">My Account <span class="caret"></span></a>
                     <ul class="dropdown-menu myacct" role="menu">
