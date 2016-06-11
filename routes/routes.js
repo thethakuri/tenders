@@ -142,6 +142,7 @@ module.exports = function (app, passport) {
     });
     
     app.get('/', isLoggedIn, function(req, res) {
+        console.log(req.ip);
         req.flash('reset', 'Password reset successful');
         res.render('home', {
             user : { // get the user out of session and pass to template
