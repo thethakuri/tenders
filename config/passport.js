@@ -102,7 +102,7 @@ module.exports = function(passport) {
                         if(data){
                             if(data.status === "success") newUser.location = data.city + ', ' + data.country;
                         }
-                        // save the user
+                        // save the user info
                         newUser.save(function(err) {
                             if (err)
                                 throw err;
