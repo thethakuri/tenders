@@ -40,7 +40,7 @@
 <div class="row paddingbottom20">
     <div class="col-sm-12">
         <div ng-show="userSearch.length" class="marginbottom20">
-            <kbd class="padding5">Search results for <em>{{userSearch}}</em> in {{getTitle(currentView).foo}} :</kbd>
+            <kbd class="padding5">Search results for <em><strong>{{userSearch}}</strong></em> in {{getTitle(currentView).foo}} :</kbd>
         </div>
         <samp class="text-danger marginbottom20" ng-hide="filtered.length || loadingData">No records found !</samp>
         <samp class="text-danger marginbottom20" ng-show="!filtered.length && loadingData">Loading tender data ...</samp>
