@@ -106,16 +106,16 @@ module.exports = function(passport) {
                         path : 'json/' + newUser.ip
                     };
 
-                    var url = 'http://ip-as.com/' + newUser.ip;
+                    var url = 'http://ip-api.com/json/' + newUser.ip;
                     callback = function (response){
                         var body = '';
                         response.on('data', function(chunk){
                             body += chunk;
                         });
                         response.on('end', function(){
+
                             var geo;
-                            
-                            try {
+                            try { //try and catch parse error
                                 geo = JSON.parse(body);
                                 if(geo && geo.status === "success"){
                                     newUser.location = geo;
@@ -124,13 +124,6 @@ module.exports = function(passport) {
                             catch (e){
                                 console.error(e);
                             }
-
-                            // if(body){
-                            //     var geo = JSON.parse(body);
-                            //     if(geo && geo.status === "success"){
-                            //         newUser.location = geo;
-                            //     }
-                            // }
 
                             // save the user info
                             newUser.save(function(err) {
