@@ -48,7 +48,7 @@ app.use('/ping', function(req, res){
     res.send(200); 
 });
 app.head('/', function (req, res){  
-   res.status(200).dropBody().end(); 
+   res.end(); 
 });
 
 /* Configuration */
