@@ -98,9 +98,7 @@ module.exports = function(passport) {
                     newUser.password = newUser.generateHash(password);
                     newUser.authToken = authToken;
                     newUser.isAuthenticated = false;
-                    newUser.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-
-                    console.log('User ip ' + newUser.ip);
+                    newUser.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress; // get user's ip
 
                     // get location based on user's ip address
                     var httpOptions = {
@@ -115,11 +113,14 @@ module.exports = function(passport) {
                             body += chunk;
                         });
                         response.on('end', function(){
-                            console.log('Body ' + body);
-                            var geo = JSON.parse(body);
-                            if(geo){
-                                if(geo.status === "success") newUser.location = geo.city + ', ' + geo.country;
+                            
+                            if(body){
+                                var geo = JSON.parse(body);
+                                if(geo && geo.status === "success"){
+                                    newUser.location = geo;
+                                }
                             }
+
                             // save the user info
                             newUser.save(function(err) {
                                 if (err)
