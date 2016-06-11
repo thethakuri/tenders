@@ -113,13 +113,24 @@ module.exports = function(passport) {
                             body += chunk;
                         });
                         response.on('end', function(){
+                            var geo;
                             
-                            if(body){
-                                var geo = JSON.parse(body);
+                            try {
+                                geo = JSON.parse(body);
                                 if(geo && geo.status === "success"){
                                     newUser.location = geo;
                                 }
                             }
+                            catch (e){
+                                console.error(e);
+                            }
+
+                            // if(body){
+                            //     var geo = JSON.parse(body);
+                            //     if(geo && geo.status === "success"){
+                            //         newUser.location = geo;
+                            //     }
+                            // }
 
                             // save the user info
                             newUser.save(function(err) {
