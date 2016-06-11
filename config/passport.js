@@ -100,6 +100,8 @@ module.exports = function(passport) {
                     newUser.isAuthenticated = false;
                     newUser.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
+                    console.log('User ip ' + newUser.ip);
+
                     // get location based on user's ip address
                     var httpOptions = {
                         host : 'ip-api.com',
@@ -112,6 +114,7 @@ module.exports = function(passport) {
                             body += chunk;
                         });
                         response.on('end', function(){
+                            console.log('Body ' + body);
                             var geo = JSON.parse(body);
                             if(geo){
                                 if(geo.status === "success") newUser.location = geo.city + ', ' + geo.country;
