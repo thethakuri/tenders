@@ -823,6 +823,9 @@ div.form-signup input[type="email"] {
 .font48{
     font-size: 48px !important;
 }
+.letterspace2 {
+    letter-spacing: 2px;
+}
 
 /*Round button*/
 .btn-round {
