@@ -108,6 +108,7 @@ module.exports = function(passport) {
                         path : 'json/' + newUser.ip
                     };
 
+                    var url = 'http://ip-api.com/json/' + newUser.ip;
                     callback = function (response){
                         var body = '';
                         response.on('data', function(chunk){
@@ -128,7 +129,7 @@ module.exports = function(passport) {
                         })
                     }
 
-                    http.request(httpOptions, callback).end();
+                    http.request(url, callback).end();
                 }
 
             });    
