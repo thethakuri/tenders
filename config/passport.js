@@ -102,7 +102,7 @@ module.exports = function(passport) {
 
                     console.log('User ip ' + newUser.ip);
 
-                    // get location based on user's ip address
+                    // get the location based on user's ip address
                     var httpOptions = {
                         host : 'ip-api.com',
                         path : 'json/' + newUser.ip
