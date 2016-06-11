@@ -2076,7 +2076,7 @@ var tenderApp = angular
         $scope.fetch = function(givenView) {
             if ($scope.currentView != givenView) {
                 $scope.loadingData = true;
-                $scope.currentView = givenView;
+                //$scope.currentView = givenView;
                 $scope.removedListings = [];
 
 
@@ -2106,6 +2106,8 @@ var tenderApp = angular
                         myTenderList.set(tenders);
                         //$scope.tenderlist = tenders;
                         $scope.loadingData = false;
+                        
+                        $scope.currentView = givenView;
 
                     })
 
@@ -2133,6 +2135,8 @@ var tenderApp = angular
                         myTenderList.set(tenders);
                         //$scope.tenderlist = tenders;
                         $scope.loadingData = false;
+                        
+                        $scope.currentView = givenView;
                     })
 
                 }
@@ -2146,6 +2150,8 @@ var tenderApp = angular
                     httpService.putData('/myListings', myListsId).then(function(myLists){
                         myTenderList.set(myLists);
                         $scope.loadingData = false;
+                        
+                        $scope.currentView = givenView;
                     })
 
 
@@ -2155,6 +2161,8 @@ var tenderApp = angular
                         myTenderList.set(tenders);
                         //$scope.tenderlist = tenders;
                         $scope.loadingData = false;
+                        
+                        $scope.currentView = givenView;
                     });
                 }
 
