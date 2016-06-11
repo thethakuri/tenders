@@ -26,6 +26,11 @@ var hours = 24; // token validity time frame for password reset
 module.exports = function (app, passport) {
     /* Define http endpoints */
     
+    app.head('/', function (req, res){  
+        req.session.destroy();
+        res.status(200).end(); 
+    });
+    
     app.get('/login', function(req, res) {
         res.render('login', { 
             message: req.flash('loginMessage'),

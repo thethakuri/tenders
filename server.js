@@ -47,9 +47,7 @@ app.use('/ping', function(req, res){
     //req.session.destroy();
     res.send(200); 
 });
-app.head('/', function (req, res){  
-   res.end(); 
-});
+
 
 /* Configuration */
 app.set('view engine', 'ejs'); // set up ejs for templating
