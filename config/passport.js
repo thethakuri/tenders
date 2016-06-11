@@ -100,7 +100,7 @@ module.exports = function(passport) {
                     newUser.isAuthenticated = false;
                     newUser.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress; // get user's ip
 
-                    // location 
+                    // location
                     var url = 'http://ip-api.com/json/' + newUser.ip;
                     callback = function (response){
                         var body = '';
