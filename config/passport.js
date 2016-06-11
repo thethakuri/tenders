@@ -8,6 +8,8 @@ var User            = require('../models/users');
 
 var crypto = require('crypto');
 
+var http = require("http");
+
 // expose this function to our app using module.exports
 module.exports = function(passport) {
     // =========================================================================
@@ -98,18 +100,31 @@ module.exports = function(passport) {
                     newUser.isAuthenticated = false;
                     newUser.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
-                    var geo = $http.get('http://ip-api.com/json/' + newUser.ip + '?callback=?', function(data){
-                        if(data){
-                            if(data.status === "success") newUser.location = data.city + ', ' + data.country;
-                        }
-                        // save the user info
-                        newUser.save(function(err) {
-                            if (err)
-                                throw err;
-                            return done(null, newUser);
+                    var httpOptions = {
+                        host : 'http://ip-api.com',
+                        path : 'json/' + newUser.ip + '?callback=?'
+                    };
+
+                    callback = function (response){
+                        var body = '';
+                        response.on('data', function(chunk){
+                            body += chunk;
                         });
-                    }); 
-                    
+                        response.on('end', function(){
+                            var geo = JSON.parse(body);
+                            if(geo){
+                                if(geo.status === "success") newUser.location = geo.city + ', ' + geo.country;
+                            }
+                            // save the user info
+                            newUser.save(function(err) {
+                                if (err)
+                                    throw err;
+                                return done(null, newUser);
+                            });
+                        })
+                    }
+
+                    http.request(httpOptions, callback).end();
                 }
 
             });    
