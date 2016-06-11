@@ -158,7 +158,8 @@ var userSchema = new Schema({
     position : String,
     address : String,
     phone : String,
-    ip : String
+    ip : String,
+    location : String
     
 }, { timestamps : true }, {collection: 'users'});
 

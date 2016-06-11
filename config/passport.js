@@ -97,13 +97,18 @@ module.exports = function(passport) {
                     newUser.authToken = authToken;
                     newUser.isAuthenticated = false;
                     newUser.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-                    
-                    // save the user
-                    newUser.save(function(err) {
-                        if (err)
-                            throw err;
-                        return done(null, newUser);
-                    });
+
+                    var geo = $http.get('http://ip-api.com/json/' + newUser.ip + '?callback=?'}, function(data){
+                        if(data){
+                            if(data.status === "success") newUser.location = data.city + ', ' + data.country;
+                        }
+                        // save the user
+                        newUser.save(function(err) {
+                            if (err)
+                                throw err;
+                            return done(null, newUser);
+                        });
+                    }) 
                     
                 }
 
