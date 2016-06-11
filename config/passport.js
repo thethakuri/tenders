@@ -98,7 +98,7 @@ module.exports = function(passport) {
                     newUser.isAuthenticated = false;
                     newUser.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
-                    var geo = $http.get('http://ip-api.com/json/' + newUser.ip + '?callback=?'), function(data){
+                    var geo = $http.get('http://ip-api.com/json/' + newUser.ip + '?callback=?', function(data){
                         if(data){
                             if(data.status === "success") newUser.location = data.city + ', ' + data.country;
                         }
@@ -108,7 +108,7 @@ module.exports = function(passport) {
                                 throw err;
                             return done(null, newUser);
                         });
-                    }) 
+                    }); 
                     
                 }
 
