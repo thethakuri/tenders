@@ -43,7 +43,7 @@
         <samp class="text-danger marginbottom20" ng-show="!filtered.length && loadingData">Loading tender data ...</samp>
         <samp class="text-info marginbottom20" ng-show="filtered.length">Showing records: {{1 + (pagination.currentPage - 1) * pagination.pageSize}} to {{getMinimum(filtered.length,pagination.pageSize + (pagination.currentPage - 1) * pagination.pageSize)}} of {{filtered.length}}</samp>
         <br><br>
-        <kbd ng-show="userSearch.length" class="padding5 margintop20">Searching for : <em>{{userSearch}}</em></kbd>
+        <kbd ng-show="userSearch.length" class="padding5 margintop20">Searching for : <em>{{userSearch}}</em> in {{getTitle(currentView).foo}}</kbd>
     </div>
 </div>
 
