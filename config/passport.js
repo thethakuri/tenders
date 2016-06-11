@@ -96,7 +96,7 @@ module.exports = function(passport) {
                     newUser.password = newUser.generateHash(password);
                     newUser.authToken = authToken;
                     newUser.isAuthenticated = false;
-                    newUser.ip = req.headers['x-forwarded-for'];
+                    newUser.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
                     
                     // save the user
                     newUser.save(function(err) {
