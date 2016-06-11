@@ -47,8 +47,8 @@ app.use('/ping', function(req, res){
     //req.session.destroy();
     res.send(200); 
 });
-app.head('/', function (req, res){  
-   res.send(200); 
+app.head('/', function (req, res, next){  
+   res.status(200).end(); 
 });
 
 /* Configuration */
