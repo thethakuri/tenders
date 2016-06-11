@@ -157,7 +157,8 @@ var userSchema = new Schema({
     company : String,
     position : String,
     address : String,
-    phone : String
+    phone : String,
+    ip : String
     
 }, { timestamps : true }, {collection: 'users'});
 

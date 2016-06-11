@@ -1,8 +1,9 @@
 <div class="jumbotron jumboHR">
     <div class="container text-center paddingbottom20 paddingtop20">
         <div class="row marginbottom20">
-            <div class="col-md-4 col-md-offset-4 col-sm-2 col-sm-offset-5 text-center">
+            <div class="col-md-4 col-md-offset-4 col-sm-2 col-sm-offset-5 text-left">
                 <img class="img-responsive" src="/assets/tender_logo_white.png" alt="Tender Portal">
+                <h5 class="margintop5 text-muted ">A product of <a href="http://www.rudra.com.np" class="nounderline text-muted ">Rudra International</a></h5>
                 <!--<h1 class="no-fontwt">Tender Portal</h1>
                 <p>View, edit, add and manage listings for Tenders, Quotations, EOIs etc.</p>-->
             </div>
@@ -54,18 +55,18 @@
                     <div class="col-sm-3">
                         <div class="input-group col-xs-2 paddingleft15">
                             <label class="checkbox-inline tenderOption btn fbtn  btn-success " data-toggle='tooltip' data-original-title="Select to get email notification" initialize-tooltip >
-                            <input type="checkbox"><span class="lineheight24">Receive notification</span>
+                            <input type="checkbox" ng-model="notify"><span class="lineheight24">Receive notification</span>
                             </label>
                             <!--Notification frequency dropdown-->
                             <div class="input-group-btn">
-                                <button type="button" class="btn btn-default notifyMenu dropdown-toggle" data-toggle="dropdown" data-original-title="Frequency" >
+                                <button ng-disabled="!notify" type="button" class="btn btn-default notifyMenu dropdown-toggle" data-toggle="dropdown" data-original-title="Frequency" >
                                     <span class="glyphicon glyphicon-envelope"></span> <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu notifyDropdown pull-right" role="menu">
                                     <li><span>Select alert frequency</span></li>
                                     <li class="divider"></li>
                                     <li>
-                                        <a data-value="oneday" tabIndex="-1">
+                                        <a data-value="oneday" tabIndex="-1" >
                                             <label class="checkbox-inline">
                                                 <input type="checkbox"/>1 day prior
                                             </label>
