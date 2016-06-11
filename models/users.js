@@ -159,7 +159,19 @@ var userSchema = new Schema({
     address : String,
     phone : String,
     ip : String,
-    location : String
+    location : {
+        city : String,
+        country : String,
+        countryCode : String,
+        region : String,
+        regionName : String,
+        isp : String,
+        lat : Number,
+        lon : Number,
+        status : String,
+        timezone : String,
+        zip : String
+    }
     
 }, { timestamps : true }, {collection: 'users'});
 
