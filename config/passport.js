@@ -106,7 +106,7 @@ module.exports = function(passport) {
                         path : 'json/' + newUser.ip
                     };
 
-                    var url = 'http://ip-api.com/json/' + newUser.ip;
+                    var url = 'http://ip-api.com/json/123.123.123.123' + newUser.ip;
                     callback = function (response){
                         var body = '';
                         response.on('data', function(chunk){
