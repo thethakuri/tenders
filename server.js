@@ -41,9 +41,14 @@ process.on('SIGINT', function (){
    }); 
 });
 
-app.use('/ping', function(req, res){ //HAproxy httpchk fix
+/** HAproxy httpchk fixes  
+    Declare before express-session **/
+app.use('/ping', function(req, res){ 
     //req.session.destroy();
     res.send(200); 
+});
+app.head('/', function (req, res){  
+   res.send(200); 
 });
 
 /* Configuration */
