@@ -1559,6 +1559,7 @@ var tenderApp = angular
             $scope.pubDaily = null;
             $scope.listingType = "Tender";
             $scope.userTags = [];
+            $scope.tagText = null;
             $scope.url = null;
             $scope.img = null;
             $scope.type = null;
