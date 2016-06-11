@@ -26,6 +26,7 @@ var hours = 24; // token validity time frame for password reset
 module.exports = function (app, passport) {
     /* Define http endpoints */
     
+    /** HAproxy httpchk fixes **/
     app.head('/', function (req, res){  
         req.session.destroy();
         res.status(200).end(); 
