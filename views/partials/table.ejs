@@ -1,8 +1,8 @@
 
 <div class="row marginbottom20 margintop60 listTable" id="postings">
-    <h2 class="marginbottomnegative2 paddingbottom5 paddingleft15"><span class="label label-success no-fontwt" ng-bind="getTitle(currentView).foo"></span></h2> 
+    <h2 class="marginbottomnegative2 paddingbottom5 paddingleft15"><span class="label label-success no-fontwt" ng-bind="getTitle(currentView).foo"></span> </h2> 
     <div class="col-sm-8 col-xs-12">
-        
+        <img ng-show="loadingData" class="search_spinner hidden-xs" src="/assets/spinner.gif" height="40" alt="Loading">
         <i class="glyphicon glyphicon-remove clear" ng-click="clearSearch()" ng-show="userSearch.length" search-clear></i>
         <div class="input-group input-group-lg">
             <div class="input-group-addon nobordertopleft">
@@ -24,6 +24,7 @@
                     <li ng-click="setView('All')"><a href="#/#postings">All postings</a></li>
                 </ul>
             </div>
+            
             <!-- /btn-group -->
         </div>
     </div>
@@ -43,7 +44,7 @@
             <kbd class="padding5">Search results for <em><strong>{{userSearch}}</strong></em> in {{getTitle(currentView).foo}} :</kbd>
         </div>
         <samp class="text-danger marginbottom20" ng-hide="filtered.length || loadingData">No records found !</samp>
-        <samp class="text-danger marginbottom20" ng-show="!filtered.length && loadingData">Loading tender data ...</samp>
+        <samp class="text-danger marginbottom20" ng-show="!filtered.length && loadingData">Loading data ...</samp>
         <samp class="text-info marginbottom20" ng-show="filtered.length">Showing records: {{1 + (pagination.currentPage - 1) * pagination.pageSize}} to {{getMinimum(filtered.length,pagination.pageSize + (pagination.currentPage - 1) * pagination.pageSize)}} of {{filtered.length}}</samp>
     </div>
 </div>
