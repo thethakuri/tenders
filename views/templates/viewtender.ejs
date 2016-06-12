@@ -110,16 +110,17 @@
                 
             </div>
         </div>
-        <div class="row paddingbottom20">
-            <div class="col-xs-12 form-group">
-                <label for="permalink">PermaLink</label>
-                <input type="text" class="form-control" disabled id="permalink" ng-model="permalink">
+        <div class="row ">
+            <div class="col-sm-6 marginbottom40">
+                <span class="glyphicon glyphicon-link"></span> <label for="permalink"> PermaLink</label>
+                <pre type="text" class="form-control" id="permalink" ng-model="permalink">{{permalink}}</pre>
                 <button class="btn btn-small btn-default margintop5" clipboard supported="supported" text="permalink" on-copied="success()" on-error="fail(err)">Copy</button>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
+        <!-- </div>
+        <div class="row"> -->
+            <div class="col-sm-6">
                 <div ng-if="tenderDetail.img">
+                    <div><span class="glyphicon glyphicon-picture"></span> <label> Paper clipping</label></div>
                     <a href="" class="imgwrapper" data-toggle="modal" data-target="#imgViewer">
                         <img ng-src="{{tenderDetail.img}}" class="img-thumbnail" alt="Tender Clipping" width="200">
                         <span class="glyphicon glyphicon-zoom-in"></span>
