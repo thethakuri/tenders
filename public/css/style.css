@@ -663,7 +663,33 @@ div.form-signup input[type="email"] {
 }
 
 .jumboHR {
+    
     border-bottom: 1px solid #ddd;
+}
+.specText{
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 300;
+    font-size: 20px !important;
+}
+.specTitle{
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 200;
+    font-size: 25px !important;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    color: #fff;
+}
+.specJumboLogo{
+    background-image: url('../assets/tp_jumbotron.png');
+    background-repeat: no-repeat;
+    height: 300px;
+}
+.jumbobg {
+    padding-bottom: 0;
+    margin-bottom: 0;
+
+    border-bottom: 1px solid #ddd;
+    background-color: #373737;
 }
 
 /*==================================================
