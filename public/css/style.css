@@ -87,6 +87,12 @@ body {
 .clear:hover{
     color: #67655D;
 }
+
+#searchHelper{
+    float: none;
+    color: #fff !important;
+}
+
 th {
 	cursor:pointer;
     color: steelblue;
@@ -302,6 +308,26 @@ div.form-signup input[type="email"] {
     -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
 }
 
+/**View tender**/
+#viewTitleContainer{
+    display: flex;
+}
+.viewTitle{
+    font-size: 24px;
+    font-weight : 500;
+    line-height: 1.1;
+}
+
+.firstChar::first-letter{
+    background: #337ab7;
+    color: #fff;
+    
+    padding: 4px 11px;
+    text-transform: uppercase;
+    border-radius: 50%;
+    margin-right: 4px;
+}
+
 .tenderOption input[type=checkbox]{
     margin: 6px 0;
 }
@@ -429,16 +455,6 @@ div.form-signup input[type="email"] {
     background-color: #e6e6e6;
     color: #bbb;
     text-decoration: none;
-}
-
-.firstChar::first-letter{
-    background: #337ab7;
-    color: #fff;
-    
-    padding: 4px 11px;
-    text-transform: uppercase;
-    border-radius: 50%;
-    margin-right: 3px;
 }
 
 .oh-well{

@@ -7,7 +7,15 @@
     </div>        
 </div>
 
-<h3 class="page-header firstChar">{{tenderDetail.item}}</h3>
+<div class="page-header" id="viewTitleContainer">
+    <div class="pull-left firstChar viewTitle" >
+        {{tenderDetail.item.charAt(0)}}
+    </div>
+    <div class="viewTitle">
+        {{tenderDetail.item.slice(1)}}
+    </div>
+</div>
+
 <div class="row">
     <div class="col-lg-8 col-md-7 tenderCaller">
         <h4 class="paddingleft15 nomargin"> {{tenderDetail.caller}}</h4>
