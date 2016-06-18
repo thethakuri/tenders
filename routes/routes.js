@@ -979,7 +979,7 @@ module.exports = function (app, passport) {
                 transporter.sendMail(mailOptions, function(error, info){
 
                     // remove sent notification collections from the database 
-                    Notify.remove({ date : { $lte : now }}, function(err, count){
+                    Notify.remove({ date : { $lte : tomorrow }}, function(err, count){
                         if(err){
                             console.log(err);
                             res.status(500).send();
