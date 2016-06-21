@@ -709,14 +709,22 @@ module.exports = function (app, passport) {
     //Peek
     app.get('/Peek/:id', function (req, res) {
         Tender.findById(req.params.id, function (err, doc) {
-            if(req.isAuthenticated()){
-                doc.loggedIn = true;
-            }
-            else doc.loggedIn = false;
-            console.log(JSON.stringify(doc));
             res.render('peek', doc);
         });
     })
+
+    //E-Mail link
+    // app.get('/LinkMail/:id', function (req, res) {
+    //     Tender.findById(req.params.id, function (err, doc) {
+    //         if(req.isAuthenticated()){
+    //             console.log('User logged in');
+    //             doc.loggedIn = true;
+    //         }
+    //         else {console.log('Not looged in'); doc.loggedIn = false;}
+            
+    //         res.render('peek', doc);
+    //     });
+    // })
     
     // process the signup form
     app.post('/signup', captchaVerify, passport.authenticate('local-signup', {

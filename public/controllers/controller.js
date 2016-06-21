@@ -716,6 +716,12 @@ var tenderApp = angular
                     $scope.userData = userDataFactory.get();
                     $scope.tenderDetail = tenderFactory.get();
 
+                    // check is url param is valid tender._id
+                    // cache is returned if available (need to work on that) 
+                    if(!$scope.tenderDetail._id){
+                        $state.go('home');
+                    }
+
                     $scope.isMyListing = false;
                     if ($scope.tenderDetail.owner){
                         if($scope.tenderDetail.owner === $scope.user._id)
