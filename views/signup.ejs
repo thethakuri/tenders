@@ -72,7 +72,7 @@ browser</a> to improve your experience on this site.</p>
 	                                    <input type="password" name="password" placeholder="Password" class="form-control" id="password" required ng-minlength="6"
 	                                    ng-model="password">
 	                                </div>
-	                                <p ng-show="userForm.password.$error.minlength" class="formError text-danger">
+	                                <p ng-show="userForm.password.$error.minlength" class="formError text-danger ng-cloak">
 	                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Password must contain at least 6 characters</p>
 
 	                                <div class="form-group" ng-class="{ 'has-error' : userForm.confirm_password.$invalid && !userForm.confirm_password.$pristine }">
@@ -80,7 +80,7 @@ browser</a> to improve your experience on this site.</p>
 	                                    <input type="password" name="confirm_password" placeholder="Confirm Password" class="form-control" id="confirm_password"
 	                                    required ng-model="confirm_password" compare-to="password">
 	                                </div>
-	                                <p ng-show="userForm.confirm_password.$invalid && !userForm.confirm_password.$pristine" class="formError text-danger">
+	                                <p ng-show="userForm.confirm_password.$invalid && !userForm.confirm_password.$pristine" class="formError text-danger ng-cloak">
 	                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Both passwords should match</p>
 
 	                                <div class="form-group">
@@ -89,7 +89,7 @@ browser</a> to improve your experience on this site.</p>
 	                                <div class="form-group">
 	                                    <button type="submit" class="btn fbtn btn-lg btn-primary marginright5" ng-disabled="userForm.$invalid">Sign me up !</button>
 
-	                                    <button ng-click="goBack()" type="button" class="btn fbtn btn-lg btn-danger paddingleftright20"><span class="glyphicon glyphicon-share-alt gly-flip-horizontal"></span></button>
+	                                    <button onclick="location.href='/login'" type="button" class="btn fbtn btn-lg btn-danger paddingleftright20"><span class="glyphicon glyphicon-share-alt gly-flip-horizontal"></span></button>
 
 	                                </div>
 
