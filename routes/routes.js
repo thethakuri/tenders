@@ -259,6 +259,27 @@ module.exports = function (app, passport) {
     });
 
     //Notifications
+    app.get('/User/Notifications', isLoggedIn, function(req, res) {
+        
+        Notify.find({email: req.user.email}, function(err, docs){
+            if(err){
+                console.log(err);
+                res.status(500).send();
+            }
+            res.json(docs);
+        })
+    })
+
+    app.delete('/Delete/User/Notification', isLoggedIn, function(req, res){
+        Notify.remove({email:req.user.email, 'tender._id' : req.body.tender._id}, function(err, count){
+            if(err){
+                console.log(err);
+                res.status(500).send();
+            }
+            res.send();
+        })
+    })
+
     app.put('/Update/User/Notification', isLoggedIn, function(req, res, next){
 
         Notify.remove({email : req.body.email, 'tender._id' : req.body.tender._id}, function(err, count){
@@ -292,7 +313,7 @@ module.exports = function (app, passport) {
     });
 
 
-    /************** Uer updates  ***************/
+    /************** User updates  ***************/
     app.post('/Change/User/Password', isLoggedIn, function(req, res){
         Users.findById(req.user._id, 'password', function(err, user){
             if(err){
@@ -976,7 +997,7 @@ module.exports = function (app, passport) {
 
                 var html = "Dear "+ userid +",<br><br>Following listings are nearing their submission deadline:<br><br>";
                 html += tenderlist;
-                html += "<br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'><br><br><span style='font-size:11px'>You are receiving these notifications as per your settings. Please edit your setting from the listings' page if you do not wish to receive further notification.</span>";
+                html += "<br>Thank you,<br><a href='http://tenders.rudra.com.np'>Tender Portal Team</a>,<br><a href='http://www.rudra.com.np'>Rudra International</a><br><br><img src='http://www.rudra.com.np/images/tender_logo_mail.png' alt='Tender Portal'><br><br><span style='font-size:11px'>You are receiving these notifications as per your settings. Please edit your setting from the listings' page itself or the Settings page if you do not wish to receive further notification.</span>";
                 
                 var mailOptions = {
                     from: 'Rudra International<no-reply@rudra.com.np>', // sender address

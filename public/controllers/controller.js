@@ -1919,8 +1919,6 @@ var tenderApp = angular
 
         }
 
-        $scope.showPassForm = false;
-
         $scope.validPassword = true;
         $scope.$watch(
             'oldPassword',
@@ -1943,15 +1941,89 @@ var tenderApp = angular
                         dismissButton : true
                 });
                 if(message.result === 'success'){
-                    $scope.oldPassword = null;
-                    $scope.newPassword = null;
-                    $scope.confirmPassword = null;
-                    $scope.passwordResetForm.$setPristine();
+                    $scope.resetPasswordForm();
+                    angular.element(document.querySelector('.modal')).modal('hide'); //hide modal
                 }
                 else $scope.validPassword = false;
                     
             })
         }
+
+        $scope.resetPasswordForm = function(){
+            $scope.oldPassword = null;
+            $scope.newPassword = null;
+            $scope.confirmPassword = null;
+            $scope.passwordResetForm.$setPristine();
+        }
+
+
+        //Notifications
+        function getNotifications(){
+            var data = {
+                email : $scope.userData.email
+            }
+
+            httpService.getData('/User/Notifications', data).then(function (notifications) {    
+                $scope.notifications = notifications;
+            });
+
+        }
+        getNotifications();
+
+        $scope.deleteNotification = function(tender){
+            var userTenderData = $scope.userData.tenders[$scope.userData.tenders.map(function(o){return o._id;}).indexOf(tender._id)];
+
+            var data = {
+                tender : tender
+            }
+            bootbox.confirm({
+                size : 'small',
+                message : 'Delete notification for <strong>'+ tender.item +'</strong> ?',
+                callback :  function(result){
+                                if(result){
+                                    
+                                    httpService.deleteData('/Delete/User/Notification', data).then(function () {
+
+                                        // reset user notification frequency (dropdown)
+                                        var userData = {
+                                            '_id' : userTenderData._id,
+                                            'item' : userTenderData.item,
+                                            'preferences' : {
+                                                'notify' : false,
+                                                'notifyFrequency' : {
+                                                    'oneday' : true,
+                                                    'threedays' : false,
+                                                    'fivedays' : false,
+                                                    'sevendays' : false
+                                                }
+                                            },
+                                            'userTags' : userTenderData.userTags,
+                                            'notes'  : userTenderData.notes,
+                                            'participationInfo' : userTenderData.participationInfo
+                                        };
+                                        httpService.putData('/Update/User/TenderData', userData).then(function (userData) {  
+                            
+                                            userDataFactory.set(userData);
+                                            $scope.userData = userDataFactory.get();
+
+                                                ngToast.create({
+                                                className : 'danger',
+                                                content : 'Notification for <strong>' + tender.item + '</strong> deleted',
+                                                timeout : 6000,
+                                                dismissButton : true
+                                            });
+
+                                            getNotifications();
+
+                                        });
+                                        
+                                    });
+
+                                }
+                            }
+            })
+        }
+        
 
 
     }])
@@ -2239,6 +2311,25 @@ var tenderApp = angular
 
             return result;
         }
-    }]);
+    }])
+    .filter('unique', function() {
+        return function(collection, primaryKey, secondaryKey) { //optional secondary key
+          var output = [], 
+              keys = [];
+
+          angular.forEach(collection, function(item) {
+                var key;
+                secondaryKey === undefined ? key = item[primaryKey] : key = item[primaryKey][secondaryKey];
+
+                if(keys.indexOf(key) === -1) {
+                  keys.push(key);
+                  output.push(item);
+                }
+          });
+
+          return output;
+        };
+    });
+
 
 

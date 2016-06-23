@@ -69,7 +69,7 @@
                                 <span class="marginleft15">Password</span> 
                             </td>
                             <td>
-                                <button class="btn btn-lg btn-link nopadding nounderline" ng-disabled="showPassForm" ng-click="showPassForm = true"><span class="text-danger">Change password</span>
+                                <button class="btn btn-lg btn-link nopadding nounderline" data-toggle="modal" data-target="#changePassword"><span class="text-danger">Change password</span>
                                 </button>
                             </td>
                         </tr>
@@ -87,84 +87,36 @@
                     </table>
                 </div>
             </div>
-            <!-- Change Password -->
-            <div class="row" ng-show="showPassForm">
+
+            <!-- Notifications -->
+            <div class="row">
                 <div class="col-xs-12">
-                    <h3 class="page-header margintop20"><span class="glyphicon glyphicon-lock font18" ></span> Change Password</h3>
-                    <form class="form-horizontal well noradiusborder" name="passwordResetForm" novalidate>
-                        <fieldset>
-                            <!-- Hack for browser prepopulating form -->
-                            <input type="text" class="hidden">
-                            <input type="password" class="hidden">
-                            <!-- ------------------------------------- -->
-                                
-                            <!-- Old Password -->
-                            <div class="form-group form-group-lg margintop20">
-                                <label for="oldPassword" class="control-label col-sm-4">Old Password<sup class="required">*</sup></label>
-                                <div class="col-sm-7">
-                                    <input type="password" class="form-control" id="oldPassword" ng-model="oldPassword" placeholder="Old password" required>
-                                    
+                    <h3 class="page-header margintop20 marginbottom10"><span class="glyphicon glyphicon-bell font18" ></span> Notifications</h3>
+                    <div class="row marginbottom20">
+                        <div class="col-sm-12">
+                            <p class="text-muted">Active listings you have set to receive e-mail notification
+                            </p>
+                        </div>
+                    </div>
+                    <table class="table table-condensed table-striped table-hover bidInfoTable ">
+                        <tr ng-hide="notifications.length">
+                            <td>
+                                <span class="marginleft15">No notifications set !</span>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="notify in notifications | unique: 'tender':'item'">
+                            <td>
+                                <div class="row">
+                                    <div class="col-xs-10">
+                                        <div class="marginleft15">{{notify.tender.item}}</div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <span class="glyphicon glyphicon-remove btn btn-xs btn-danger "  data-original-title='Delete notification' initialize-tooltip ng-click="deleteNotification(notify.tender)" data-toggle="tooltip" ></span>
+                                    </div>  
                                 </div>
-                            </div>
-                            <!-- Error -->
-                             <div class="row">
-                                <div class="col-md-4"></div>
-                                <div class="col-md-6">
-                                    <p ng-show="!validPassword && !passwordResetForm.oldPassword.$pristine" class="formError text-danger" ng-cloak>
-                                        <i class="glyphicon glyphicon-exclamation-sign"></i> Password is incorrect
-                                    </p>
-                                </div>
-                                <div class="col-md-2"></div>
-                            </div>
-                            
-                            <!-- New Password -->
-                            <div class="form-group form-group-lg " ng-class="{ 'has-error' : passwordResetForm.newPassword.$invalid && !passwordResetForm.newPassword.$pristine }">
-                                <label for="newPassword" class="control-label col-sm-4">New<sup class="required">*</sup></label>
-                                <div class="col-sm-7">
-                                    <input type="password" class="form-control" name="newPassword" id="newPassword" ng-model="newPassword" placeholder="New password" required ng-minlength="6">
-                                </div>
-                            </div>
-                            <!-- Error -->
-                             <div class="row">
-                                <div class="col-md-4"></div>
-                                <div class="col-md-6">
-                                    <p ng-show="passwordResetForm.newPassword.$invalid && !passwordResetForm.newPassword.$pristine" class="formError text-danger" ng-cloak>
-                                        <i class="glyphicon glyphicon-exclamation-sign"></i> New password too short
-                                    </p>
-                                </div>
-                                <div class="col-md-2"></div>
-                            </div>
-                        
-                            <!-- Confirm Password -->
-                            <div class="form-group form-group-lg " ng-class="{ 'has-error' : passwordResetForm.confirmPassword.$invalid && !passwordResetForm.confirmPassword.$pristine }">
-                                <label for="confirmPassword" class="control-label col-sm-4">Confirm<sup class="required">*</sup></label>
-                                <div class="col-sm-7">
-                                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="confirmPassword" placeholder="Confirm new password" required compare-to="newPassword">
-                                    
-                                </div>
-                            </div>
-                            <!-- Error -->
-                             <div class="row">
-                                <div class="col-md-4"></div>
-                                <div class="col-md-6">
-                                    <p ng-show="passwordResetForm.confirmPassword.$invalid && !passwordResetForm.confirmPassword.$pristine" class="formError text-danger" ng-cloak>
-                                        <i class="glyphicon glyphicon-exclamation-sign"></i> Does not match with new
-                                    </p>
-                                </div>
-                                <div class="col-md-2"></div>
-                            </div>
-                            
-                            <!-- Button  -->
-                            <div class="form-group">
-                            <span class="col-md-4 text-left" ><sup class="required">* </sup><span class="smallerItalic">Required</span></span>
-                            <div class="text-right col-sm-7">
-                                <button type="button" id="submitPassword" name="submitPassword" class="btn btn-primary btn-lg" ng-disabled="!validPassword || passwordResetForm.$invalid" ng-click="changePassword()">Update</button>
-                                
-                            </div>
-                            </div>
-                            
-                        </fieldset>
-                    </form>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             
@@ -246,4 +198,94 @@
         
     </div>
     
+</div>
+
+<!-- Change Password Modal-->
+<div class="modal fade" id="changePassword" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" ng-click="resetPasswordForm()"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-lock font18" ></span> Change Password</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" name="passwordResetForm" novalidate>
+                    <fieldset>
+                        <!-- Hack for browser prepopulating form -->
+                        <input type="text" class="hidden">
+                        <input type="password" class="hidden">
+                        <!-- ------------------------------------- -->
+                            
+                        <!-- Old Password -->
+                        <div class="form-group form-group-lg margintop20">
+                            <label for="oldPassword" class="control-label col-sm-4">Old Password<sup class="required">*</sup></label>
+                            <div class="col-sm-7">
+                                <input type="password" class="form-control" id="oldPassword" ng-model="oldPassword" placeholder="Old password" required>
+                                
+                            </div>
+                        </div>
+                        <!-- Error -->
+                         <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <p ng-show="!validPassword && !passwordResetForm.oldPassword.$pristine" class="formError text-danger" ng-cloak>
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Password is incorrect
+                                </p>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                        
+                        <!-- New Password -->
+                        <div class="form-group form-group-lg " ng-class="{ 'has-error' : passwordResetForm.newPassword.$invalid && !passwordResetForm.newPassword.$pristine }">
+                            <label for="newPassword" class="control-label col-sm-4">New<sup class="required">*</sup></label>
+                            <div class="col-sm-7">
+                                <input type="password" class="form-control" name="newPassword" id="newPassword" ng-model="newPassword" placeholder="New password" required ng-minlength="6">
+                            </div>
+                        </div>
+                        <!-- Error -->
+                         <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <p ng-show="passwordResetForm.newPassword.$invalid && !passwordResetForm.newPassword.$pristine" class="formError text-danger" ng-cloak>
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i> New password too short
+                                </p>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    
+                        <!-- Confirm Password -->
+                        <div class="form-group form-group-lg " ng-class="{ 'has-error' : passwordResetForm.confirmPassword.$invalid && !passwordResetForm.confirmPassword.$pristine }">
+                            <label for="confirmPassword" class="control-label col-sm-4">Confirm<sup class="required">*</sup></label>
+                            <div class="col-sm-7">
+                                <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" ng-model="confirmPassword" placeholder="Confirm new password" required compare-to="newPassword">
+                                
+                            </div>
+                        </div>
+                        <!-- Error -->
+                         <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                <p ng-show="passwordResetForm.confirmPassword.$invalid && !passwordResetForm.confirmPassword.$pristine" class="formError text-danger" ng-cloak>
+                                    <i class="glyphicon glyphicon-exclamation-sign"></i> Does not match with new
+                                </p>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="row">  
+                    <div class="col-xs-4 text-left">
+                        <sup class="required">*</sup><span class="smallerItalic">Required</span>
+                    </div>
+                    <div class="col-xs-8">
+                        <button type="button" class="btn btn-lg btn-default" data-dismiss="modal" ng-click="resetPasswordForm()">Cancel</button>
+                        <button type="button" id="submitPassword" name="submitPassword" class="btn btn-primary btn-lg" ng-disabled="!validPassword || passwordResetForm.$invalid" ng-click="changePassword()">Change</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
