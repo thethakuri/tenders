@@ -1,3 +1,8 @@
+<!--[if lte IE 8]>
+    <script type="text/javascript">
+        location.assign('lteie8.html');
+    </script>
+<![endif]-->
 <!DOCTYPE>
 <html ng-app="formValidationApp">
 
@@ -14,13 +19,6 @@
 
 <body ng-controller="FormCtrl" ng-init="message = '<%= message %>'; alert = '<%= alert %>'">
     <toast></toast>
-
-    <!--[if lte IE 8]>
-    <div class="alert alert-danger noradiusborder nomarginbottom" role="alert">
-        <p class=chromeframe><span class="glyphicon glyphicon-warning-sign"></span> You are using an <strong>outdated</strong> browser which is not compatible with this website. <a href="http://browsehappy.com/">Upgrade to a different 
-browser</a> to improve your experience on this site.</p>
-    </div>
-    <![endif]-->
 
     <div class="container">
         <div class="row">
