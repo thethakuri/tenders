@@ -964,7 +964,7 @@ var tenderApp = angular
                 $scope.errorDetail = null;
                 $scope.disableError = false;
                 ngToast.create({
-                    content : 'Eror report has been sent to the administrator',
+                    content : 'Error report has been sent to the administrator',
                     timeout : 6000,
                     dismissButton : true
                 });
