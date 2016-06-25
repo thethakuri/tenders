@@ -255,6 +255,33 @@ var tenderApp = angular
             }
         };// compare two input fields if they match (eg. passwords)
     })
+    .directive('imageLoad', function(){ //paper clipping preload spinner and broken link detector
+        return {
+            restrict : 'A',
+            scope : {
+                ngSrc : '@'
+            },
+            link : function(scope, elem){
+                elem.on('load', function(){
+                    angular.element(document.querySelector('.imgloading')).hide();
+                    elem.parent().show();
+                    elem.addClass('in');
+                }).on('error', function(){
+                    angular.element(document.querySelector('.clipnotfound')).removeClass('hidden');
+                    elem.parent().hide();
+                    angular.element(document.querySelector('.imgloading')).hide();
+                    
+                    console.log('Image load error');
+                });
+                scope.$watch('ngSrc', function(){
+                    elem.parent().hide();
+                    angular.element(document.querySelector('.clipnotfound')).addClass('hidden');
+                    angular.element(document.querySelector('.imgloading')).show();
+                    elem.removeClass('in');
+                })
+            }
+        }
+    })
     .factory('userDataFactory', function() { //holds comprehensive information about user's tenders
         var userDataObj = {};
         return {

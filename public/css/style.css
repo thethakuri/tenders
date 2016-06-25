@@ -518,6 +518,14 @@ div.form-signup input[type="email"] {
     opacity: 0.7;
 }
 
+.imgloading {
+    margin-top: 25px;
+    margin-left: -25px;
+}
+.clipnotfound{
+    margin-top: 25px;
+    margin-left: -25px;
+}
 
 /*****Bid Participation****/
 
@@ -788,6 +796,10 @@ div.form-signup input[type="email"] {
 }
 .paddingtop20{
     padding-top: 20px;
+}
+.paddingtopbottom20{
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 .paddingleft15{
     padding-left: 15px;

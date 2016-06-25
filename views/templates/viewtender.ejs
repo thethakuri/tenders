@@ -129,10 +129,15 @@
             <div class="col-sm-6">
                 <div ng-if="tenderDetail.img">
                     <div><span class="glyphicon glyphicon-picture"></span> <label> Paper clipping</label></div>
+                    <div class="imgloading text-center text-muted small"><img src="/assets/spinner.gif" height="40" alt="Loading"/><br>Loading clipping ...</div>
                     <a href="" class="imgwrapper" data-toggle="modal" data-target="#imgViewer">
-                        <img ng-src="{{tenderDetail.img}}" class="img-thumbnail" alt="Tender Clipping" width="200">
-                        <span class="glyphicon glyphicon-zoom-in"></span>
+                        
+                        <img class="fade" image-load ng-src="{{tenderDetail.img}}" class="img-thumbnail" alt="Tender Clipping" width="200">
+                        <span class=" glyphicon glyphicon-zoom-in"></span>
+
+
                     </a>
+                    <div class="clipnotfound hidden text-center text-muted small" ><span class="glyphicon glyphicon-ban-circle"></span><br> Clipping not found<br><button class="btn btn-xs btn-default margintop10" data-toggle="modal" data-target="#errorModal">Report error</button></div>
                     
                     <!--Modal Image Viewer-->
                     <div class="modal fade" id="imgViewer" tabindex="-1" role="dialog" prevent-backspace>
