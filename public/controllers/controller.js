@@ -270,8 +270,6 @@ var tenderApp = angular
                     angular.element(document.querySelector('.clipnotfound')).removeClass('hidden');
                     elem.parent().hide();
                     angular.element(document.querySelector('.imgloading')).hide();
-                    
-                    console.log('Image load error');
                 });
                 scope.$watch('ngSrc', function(){
                     elem.parent().hide();
