@@ -14,7 +14,14 @@ body {
 }
 
 .fullBackground{
-    background: url('../assets/fullback.jpg') no-repeat scroll 0px 100% / cover transparent;
+    /*background-image: url('../assets/background/1.jpg');*/
+    background-position: 0px 100%;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
     min-height: 350px;
 }
 
@@ -184,6 +191,14 @@ line height is 20px by default so add 30px top and bottom to equal the new .navb
 /*              LOGIN - SIGNUP                */
 /**********************************************/
 
+#bgannotate{
+    position: fixed;
+    bottom: 65px;
+    font-size: small;
+}
+#bgannotate a {
+    font-size: small;
+}
 .formError{
     margin-top: -10px;
 }
