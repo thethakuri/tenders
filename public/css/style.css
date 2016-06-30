@@ -192,7 +192,8 @@ line height is 20px by default so add 30px top and bottom to equal the new .navb
 /**********************************************/
 
 #bgannotate{
-    position: fixed;
+    position: absolute;
+    /*height: 100%;*/
     bottom: 65px;
     font-size: small;
 }
@@ -904,6 +905,14 @@ div.form-signup input[type="email"] {
     outline: none !important;
 }
 
+.plain-hyperlink{
+    color: #777;
+}
+.plain-hyperlink:hover{
+    color: #777;
+    text-decoration: none;
+}
+
 .no-fontwt{
     font-weight: 400;
 }
@@ -1021,6 +1030,9 @@ div.form-signup input[type="email"] {
         .listTable{
             margin-top: 40px !important;
         }
+        #bgannotate{
+            bottom: 52px;
+        }
     }
 
     /* Extra Small Devices, Phones */ 
@@ -1031,4 +1043,13 @@ div.form-signup input[type="email"] {
     /* Custom, iPhone Retina */ 
     @media only screen and (max-width : 320px) {
         
+    }
+
+    /* Landscape mode on small screen */
+    @media only screen and (min-width: 480px) and (max-width: 767px) {
+        .col-sm-6{ 
+            width: 58%;
+            margin-left: 21%;
+            margin-right: 21%; 
+        }
     }
