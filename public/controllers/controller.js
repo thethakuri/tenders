@@ -1,4 +1,4 @@
-//$scope is the glue between application controller and the view
+//Business Logic
 var tenderApp = angular
     .module('tenderApp', ['angularUtils.directives.dirPagination', 'angular-loading-bar', 'ui.router', 'angularjs-datetime-picker', 'ngSanitize', 'MassAutoComplete', 'ngToast', 'puElasticInput', 'angular-clipboard'])
     .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {  
